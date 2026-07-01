@@ -330,6 +330,8 @@
     <div class="toolbar">
       <button class="primary" id="btn-reset">Zurücksetzen</button>
       <button id="btn-export">Exportieren (JSON)</button>
+      <button id="btn-import">Importieren (JSON)</button>
+      <input type="file" id="file-import" accept=".json" style="display:none">
       <span class="status-msg" id="status-msg"></span>
     </div>
 
@@ -706,6 +708,45 @@ document.getElementById('btn-export').addEventListener('click', () => {
   a.click();
   URL.revokeObjectURL(url);
   setStatus('JSON exportiert.');
+});
+
+document.getElementById('btn-import').addEventListener('click', () => {
+  document.getElementById('file-import').value = '';
+  document.getElementById('file-import').click();
+});
+
+document.getElementById('file-import').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!Array.isArray(data)) throw new Error('Array von Sitzplatz-Einträgen erwartet');
+      let updated = 0, skipped = 0;
+      data.forEach(entry => {
+        if (!entry || typeof entry.seatId !== 'string' ||
+            typeof entry.occupant !== 'string' || typeof entry.party !== 'string') {
+          skipped++;
+          return;
+        }
+        if (!seatOccupants[entry.seatId]) { skipped++; return; }
+        const original = INITIAL_SEATS.find(s => s.name === entry.occupant);
+        seatOccupants[entry.seatId] = {
+          name:  entry.occupant,
+          party: entry.party,
+          isFp:  original ? original.isFp : false
+        };
+        updated++;
+      });
+      renderSeats();
+      const msg = `JSON importiert (${updated} Sitze aktualisiert${skipped ? ', ' + skipped + ' übersprungen' : ''}).`;
+      setStatus(msg);
+    } catch (err) {
+      setStatus('Fehler beim Import: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
 });
 
 // ═══════════════════════════════════════════════════════════════════
