@@ -115,10 +115,17 @@
     <p>
       Die Website ist eine statische Seite ohne Server-Logik. Es werden keine Cookies gesetzt,
       keine Nutzerkonten geführt und keine Analyse- oder Tracking-Dienste eingebunden.
-      Einstellungen (z.B. eine angepasste Sitzordnung) verbleiben im Browser. Für Diagramme
+      Einstellungen (z.B. eine angepasste Sitzordnung) verbleiben im Browser. Der Zugang ist
+      durch ein gemeinsames Passwort geschützt: Die Daten werden verschlüsselt ausgeliefert
+      und erst im Browser entschlüsselt; der daraus abgeleitete Schlüssel bleibt nur für die
+      Dauer der Browser-Sitzung lokal gespeichert und wird nicht übermittelt. Für Diagramme
       wird die Bibliothek Chart.js von einem öffentlichen CDN (jsDelivr) nachgeladen; dabei
       wird die IP-Adresse an den CDN-Betreiber übermittelt. Ist das CDN nicht erreichbar,
       werden die Werte stattdessen als Tabelle dargestellt.
+    </p>
+    <p>
+      Gehostet wird die Seite als statische Website bei GitHub Pages (GitHub, Inc.); beim
+      Aufruf verarbeitet GitHub technisch notwendige Verbindungsdaten wie die IP-Adresse.
     </p>
     <p>
       Der Quellcode und die Daten werden in einem privaten Repository gepflegt und sind

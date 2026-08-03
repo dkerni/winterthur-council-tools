@@ -7,6 +7,7 @@
  */
 
 import { siteUrl } from './paths.js';
+import { ensureAccess, forgetKey } from './access.js';
 import { loadPartyMeta, applyPartyCssVars } from './parties.js';
 import { loadDatabase, formatDate } from './data.js';
 
@@ -94,6 +95,22 @@ async function fillDataStatus() {
   }
 }
 
+/** Fügt bei geschützten Deployments einen «Sperren»-Knopf in den Footer ein. */
+function addLockButton() {
+  const target = document.querySelector('.site-footer .footer-inner');
+  if (!target || target.querySelector('.lock-button')) return;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'lock-button';
+  button.textContent = 'Sperren';
+  button.title = 'Zugang für diesen Browser wieder sperren';
+  button.addEventListener('click', () => {
+    forgetKey();
+    window.location.reload();
+  });
+  target.append(button);
+}
+
 /** Baut Header, Navigation und Footer auf und aktiviert die Partei-Farbvariablen. */
 export function initLayout() {
   const activePage = document.body.dataset.page || '';
@@ -101,13 +118,22 @@ export function initLayout() {
   document.body.prepend(buildHeader());
   document.body.append(buildFooter());
 
-  loadPartyMeta()
-    .then((meta) => applyPartyCssVars(meta))
+  ensureAccess()
+    .then((isProtected) => {
+      if (isProtected) addLockButton();
+    })
     .catch(() => {
-      /* Farben bleiben auf den CSS-Fallbackwerten. */
-    });
+      /* Fehler werden von den Tools beim Datenladen sichtbar gemacht. */
+    })
+    .finally(() => {
+      loadPartyMeta()
+        .then((meta) => applyPartyCssVars(meta))
+        .catch(() => {
+          /* Farben bleiben auf den CSS-Fallbackwerten. */
+        });
 
-  fillDataStatus();
+      fillDataStatus();
+    });
 }
 
 initLayout();

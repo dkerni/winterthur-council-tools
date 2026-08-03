@@ -7,7 +7,7 @@
  * aus `data/party-meta.json`.
  */
 
-import { siteUrl } from './paths.js';
+import { fetchJson } from './access.js';
 import { loadPartyMeta, findParty, partiesInOrder, councilNote } from './parties.js';
 import { escapeHtml } from './layout.js';
 
@@ -322,12 +322,11 @@ function bindToolbar() {
 async function init() {
   const statusEl = document.getElementById('seating-error');
   try {
-    const [seatingRes, partyMeta] = await Promise.all([
-      fetch(siteUrl('data/seating.json')),
+    const [seating, partyMeta] = await Promise.all([
+      fetchJson('data/seating.json'),
       loadPartyMeta(),
     ]);
-    if (!seatingRes.ok) throw new Error(`seating.json: HTTP ${seatingRes.status}`);
-    config = await seatingRes.json();
+    config = seating;
     meta = partyMeta;
 
     initState();
