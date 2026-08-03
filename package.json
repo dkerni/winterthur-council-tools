@@ -12,6 +12,6 @@
     "scrape": "node scripts/scrape-members.mjs",
     "scrape:dry": "node scripts/scrape-members.mjs --dry-run",
     "validate": "node scripts/validate-members.mjs",
-    "test": "node --test scripts/test/"
+    "test": "node --test \"scripts/test/**/*.test.mjs\""
   }
 }
