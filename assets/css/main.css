@@ -634,3 +634,15 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .fact-list { list-style: none; font-size: 0.85rem; display: grid; gap: 0.35rem; color: #444; }
 .fact-list li { padding-left: 0.9rem; position: relative; }
 .fact-list li::before { content: '›'; position: absolute; left: 0; color: var(--clr-faint); }
+
+/* --- Mitgliederliste ----------------------------------------------------- */
+.members-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+.members-table th, .members-table td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--clr-border-soft); text-align: left; }
+.members-table th { cursor: pointer; user-select: none; white-space: nowrap; font-size: 0.78rem; color: var(--clr-muted); }
+.members-table th:hover { color: #000; }
+.members-table th.num, .members-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.members-table tbody tr { cursor: pointer; }
+.members-table tbody tr:hover { background: #f7f7f2; }
+.members-table tbody tr.is-selected { background: #eef2f7; box-shadow: inset 3px 0 0 var(--clr-accent); }
+.members-table tbody tr:focus-visible { outline: 2px solid #06c; outline-offset: -2px; }
+.chip-list { display: flex; flex-wrap: wrap; gap: 0.25rem; }

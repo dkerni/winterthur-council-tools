@@ -34,7 +34,7 @@ const OUTCOME_CLASS = {
 /**
  * Erzeugt einen Mehrheitsrechner im angegebenen Container.
  * @param {HTMLElement} container
- * @param {{compact?: boolean, permalink?: boolean}} [options]
+ * @param {{compact?: boolean, permalink?: boolean, mode?: 'party'|'fraction'}} [options]
  */
 export async function createMajorityCalculator(container, options = {}) {
   const compact = Boolean(options.compact);
@@ -49,7 +49,7 @@ export async function createMajorityCalculator(container, options = {}) {
   }
 
   const state = {
-    mode: 'party',
+    mode: options.mode === 'fraction' ? 'fraction' : 'party',
     majorityType: 'simple',
     abstentionsCount: false,
     votes: {},
