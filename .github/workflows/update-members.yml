@@ -1,0 +1,67 @@
+name: Mitgliederdaten aktualisieren
+
+on:
+  schedule:
+    # Jeden Montag um 04:17 UTC (ausserhalb der Stosszeiten der Quelle).
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-members
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Mitgliederdaten abrufen
+        run: npm run scrape
+
+      - name: Daten validieren
+        run: node scripts/validate-members.mjs --strict --expect-members=60
+
+      - name: Tests ausführen
+        run: npm test
+
+      - name: Änderungen prüfen
+        id: diff
+        run: |
+          if git diff --quiet -- data/members.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Keine inhaltlichen Änderungen an data/members.json."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --stat -- data/members.json
+          fi
+
+      - name: Pull Request öffnen
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: data/mitglieder-${{ github.run_id }}
+          BASE_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -b "$BRANCH"
+          git add data/members.json
+          git commit -m 'Mitgliederdaten aktualisieren'
+          git push origin "$BRANCH"
+          gh pr create \
+            --title 'Mitgliederdaten aktualisieren' \
+            --body 'Automatisch erzeugt von `scripts/scrape-members.mjs`. Bitte die Änderungen an `data/members.json` prüfen, bevor der Pull Request gemergt wird — insbesondere Ein- und Austritte sowie Fraktionswechsel.' \
+            --base "$BASE_BRANCH" \
+            --head "$BRANCH"

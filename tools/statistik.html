@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistik — Stadtparlament Winterthur Tools</title>
+  <meta name="description" content="Statistiken zum Stadtparlament Winterthur: Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise und Berufe der Mitglieder." />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="icon" href="../media/Wappen_Winterthur.svg.webp" />
+  <script
+    id="chartjs"
+    defer
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.js"
+    integrity="sha384-hfkuqrKeWFmnTMWN31VWyoe8xgdTADD11kgxmdpx2uyE6j5Az5uZq6u6AKYYmAOw"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+  <script type="module" src="../assets/js/layout.js"></script>
+  <script type="module">
+    import { createStatistics } from '../assets/js/stats-ui.js';
+    createStatistics(document.getElementById('statistics'));
+  </script>
+</head>
+<body data-page="statistik">
+
+<main>
+  <h1 class="page-title">Statistik</h1>
+  <p class="page-lead">
+    Auswertungen zur Zusammensetzung des Stadtparlaments: Sitzverteilung, Alter, Geschlecht,
+    Amtsdauer, Wohnort und Beruf. Die Auswertung lässt sich gesamthaft oder je Partei
+    beziehungsweise Fraktion anzeigen. Alle Zahlen beruhen ausschliesslich auf den öffentlich
+    publizierten Angaben des Parlamentsdienstes; fehlende Angaben werden als solche ausgewiesen.
+  </p>
+
+  <div id="statistics">
+    <p class="loading">Daten werden geladen …</p>
+  </div>
+</main>
+
+</body>
+</html>

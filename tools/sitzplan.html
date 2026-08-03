@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sitzplan Parlamentssaal — Stadtparlament Winterthur Tools</title>
+  <meta name="description" content="Interaktiver Sitzplan des Parlamentssaals Winterthur mit Drag &amp; Drop, Export und Import." />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/seating.css" />
+  <link rel="icon" href="../media/Wappen_Winterthur.svg.webp" />
+  <script type="module" src="../assets/js/layout.js"></script>
+  <script type="module" src="../assets/js/seating.js"></script>
+</head>
+<body data-page="sitzplan">
+
+<main>
+  <h1 class="page-title">Sitzplan Parlamentssaal</h1>
+  <p class="page-lead">
+    Stand: 1. Juli 2026 · Die 60 Ratssitze können per Drag &amp; Drop neu angeordnet werden.
+    Die vorderen Reihen (Büro, Fraktionssitze) sind nicht verschiebbar. Eine Anordnung lässt
+    sich als JSON exportieren und später wieder importieren.
+  </p>
+
+  <div class="card">
+    <p class="notice error" id="seating-error" hidden></p>
+
+    <div class="toolbar">
+      <button class="primary" id="btn-reset">Zurücksetzen</button>
+      <button id="btn-export">Exportieren (JSON)</button>
+      <button id="btn-import">Importieren (JSON)</button>
+      <input type="file" id="file-import" accept=".json" style="display:none" />
+      <span class="status-msg" id="status-msg"></span>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="hemicycle-stage" id="hemicycle-stage">
+      <svg class="hemicycle-svg" id="hemicycle-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="seats-layer" id="seats-layer"></div>
+    </div>
+
+    <div class="publikum-label">— Publikum —</div>
+  </div>
+</main>
+
+</body>
+</html>

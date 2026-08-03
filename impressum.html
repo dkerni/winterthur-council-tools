@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Impressum — Stadtparlament Winterthur Tools</title>
+  <meta name="description" content="Impressum, Datenquellen und Haftungsausschluss der Werkzeuge zum Stadtparlament Winterthur." />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="icon" href="media/Wappen_Winterthur.svg.webp" />
+  <script type="module" src="assets/js/layout.js"></script>
+</head>
+<body data-page="impressum">
+
+<main>
+  <h1 class="page-title">Impressum</h1>
+  <p class="page-lead">
+    Diese Website ist ein privates, nicht kommerzielles Angebot. Sie steht in keiner Verbindung
+    zur Stadt Winterthur, zum Stadtparlament oder zum Parlamentsdienst und wird von diesen
+    weder betrieben noch geprüft.
+  </p>
+
+  <section class="card">
+    <h2>Betreiber</h2>
+    <p>
+      Dominik Kern —
+      <a href="https://dominik-kern.ch/" rel="noopener noreferrer" target="_blank">dominik-kern.ch</a><br />
+      Winterthur, Schweiz
+    </p>
+    <h3>Kontakt</h3>
+    <p>
+      Anfragen, Korrekturen und Fehlermeldungen bitte über die
+      <a href="https://github.com/dkerni/winterthur-council-tools/issues" rel="noopener noreferrer" target="_blank">Issues
+      im GitHub-Repository</a> oder über das Kontaktformular auf
+      <a href="https://dominik-kern.ch/" rel="noopener noreferrer" target="_blank">dominik-kern.ch</a>.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Datenquellen</h2>
+    <p class="subtitle">
+      Sämtliche angezeigten Angaben stammen aus öffentlich zugänglichen Publikationen der Stadt
+      Winterthur beziehungsweise ihres Parlamentsdienstes.
+    </p>
+    <ul class="fact-list">
+      <li>
+        Mitgliederverzeichnis:
+        <a href="https://parlament.winterthur.ch/stadtparlament/27428" rel="noopener noreferrer" target="_blank">parlament.winterthur.ch/stadtparlament/27428</a>
+      </li>
+      <li>
+        Fraktionen:
+        <a href="https://parlament.winterthur.ch/fraktionen" rel="noopener noreferrer" target="_blank">parlament.winterthur.ch/fraktionen</a>
+        · Kommissionen:
+        <a href="https://parlament.winterthur.ch/kommissionen" rel="noopener noreferrer" target="_blank">parlament.winterthur.ch/kommissionen</a>
+      </li>
+      <li>
+        Personenseiten inklusive Kommissionen und Vorstössen
+        (<code>parlament.winterthur.ch/behoerdenmitglieder/&lt;id&gt;</code>, verlinkt aus der
+        Mitgliederliste)
+      </li>
+      <li>
+        Sitzordnung: offizieller Sitzplan des Stadtparlaments (PDF, im Repository unter
+        <code>media/</code> abgelegt)
+      </li>
+      <li>
+        Wappen der Stadt Winterthur: Wikimedia Commons, gemeinfrei
+      </li>
+    </ul>
+    <h3>Aktualisierung</h3>
+    <p>
+      Die Mitgliederdaten werden automatisiert wöchentlich abgerufen und nach manueller Prüfung
+      als Pull Request in dieses Repository übernommen. Der jeweils angezeigte Datenstand steht
+      im Fussbereich jeder Seite. Zwischen zwei Läufen können Rücktritte, Nachrückende oder
+      Fraktionswechsel noch nicht abgebildet sein.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Personendaten</h2>
+    <p>
+      Die Website zeigt ausschliesslich Angaben, die der Parlamentsdienst im Rahmen der
+      öffentlichen Amtstätigkeit der Ratsmitglieder selbst veröffentlicht (Name, Partei,
+      Fraktion, Kommissionen, Vorstösse und die dort publizierten Kontaktangaben). Es werden
+      keine zusätzlichen Daten erhoben, angereichert oder mit anderen Quellen verknüpft.
+    </p>
+    <p>
+      Eine Ausnahme bildet das Merkmal <strong>Geschlecht</strong>: Es wird von der Quelle nicht
+      publiziert und dient hier ausschliesslich der statistischen Auswertung. Es wird in einer
+      manuell gepflegten Liste (<code>data/gender-overrides.json</code>) geführt und ist dort,
+      wo keine belastbare Angabe vorliegt, als «unbekannt» erfasst. Betroffene Personen können
+      jederzeit eine Korrektur oder die Entfernung des Eintrags verlangen.
+    </p>
+    <p>
+      Korrektur- und Löschanfragen zu einzelnen Angaben werden über die oben genannten
+      Kontaktwege entgegengenommen und zeitnah umgesetzt. Da die Daten automatisiert aus der
+      Quelle übernommen werden, ist eine dauerhafte Korrektur nur möglich, wenn auch die Quelle
+      angepasst wird; andernfalls wird der Eintrag über eine Ausnahmeliste dauerhaft überschrieben.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Haftungsausschluss</h2>
+    <p>
+      Alle Angaben erfolgen ohne Gewähr. Trotz sorgfältiger Aufbereitung kann für die
+      Richtigkeit, Vollständigkeit und Aktualität der Inhalte keine Haftung übernommen werden.
+      Verbindlich sind ausschliesslich die offiziellen Publikationen der Stadt Winterthur.
+      Die Werkzeuge dieser Website — insbesondere der Mehrheitsrechner — sind Hilfsmittel für
+      Szenarien und keine Prognose oder Abbildung tatsächlicher Abstimmungsergebnisse.
+    </p>
+    <p>
+      Für Inhalte externer Websites, auf die verlinkt wird, sind ausschliesslich deren
+      Betreiber verantwortlich.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Technisches</h2>
+    <p>
+      Die Website ist eine statische Seite ohne Server-Logik. Es werden keine Cookies gesetzt,
+      keine Nutzerkonten geführt und keine Analyse- oder Tracking-Dienste eingebunden.
+      Einstellungen (z.B. eine angepasste Sitzordnung) verbleiben im Browser. Für Diagramme
+      wird die Bibliothek Chart.js von einem öffentlichen CDN (jsDelivr) nachgeladen; dabei
+      wird die IP-Adresse an den CDN-Betreiber übermittelt. Ist das CDN nicht erreichbar,
+      werden die Werte stattdessen als Tabelle dargestellt.
+    </p>
+    <p>
+      Der vollständige Quellcode inklusive aller Daten steht unter
+      <a href="https://github.com/dkerni/winterthur-council-tools" rel="noopener noreferrer" target="_blank">github.com/dkerni/winterthur-council-tools</a>
+      zur Verfügung.
+    </p>
+  </section>
+</main>
+
+</body>
+</html>

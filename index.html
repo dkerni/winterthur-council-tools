@@ -4,747 +4,103 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stadtparlament Winterthur Tools</title>
-  <style>
-    /* ─── Reset & Base ─────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --clr-sp:        #e8001a;
-      --clr-svp:       #3d7c3d;
-      --clr-fdp:       #1565c0;
-      --clr-glp:       #8fae00;
-      --clr-grune:     #1e9e1e;
-      --clr-al:        #d95b0e;
-      --clr-evp:       #e6a400;
-      --clr-edu:       #444;
-      --clr-mitte:     #e06400;
-      --clr-bg:        #f5f5f0;
-      --clr-card:      #fff;
-      --clr-border:    #c8c8c8;
-      --radius:        6px;
-    }
-
-    body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background: var(--clr-bg);
-      color: #222;
-    }
-
-    /* ─── Header ───────────────────────────────────────────────────── */
-    header {
-      background: #fff;
-      border-bottom: 3px solid #c00;
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      height: 80px;
-    }
-
-    .logo {
-      height: 56px;
-      width: auto;
-      flex-shrink: 0;
-    }
-
-    header h1 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: #1a1a1a;
-    }
-
-    header h1 span {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 400;
-      color: #666;
-    }
-
-    /* ─── Main ─────────────────────────────────────────────────────── */
-    main {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    .intro {
-      background: #fff;
-      border-radius: var(--radius);
-      border: 1px solid var(--clr-border);
-      padding: 1.2rem 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .intro h2 { font-size: 1.1rem; margin-bottom: 0.4rem; }
-    .intro p  { font-size: 0.9rem; color: #555; line-height: 1.55; }
-
-    /* ─── Seating App ──────────────────────────────────────────────── */
-    .seating-app {
-      background: #fff;
-      border-radius: var(--radius);
-      border: 1px solid var(--clr-border);
-      padding: 1.2rem 1.5rem 1.5rem;
-    }
-
-    .seating-app h2 {
-      font-size: 1.05rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .seating-app .subtitle {
-      font-size: 0.82rem;
-      color: #666;
-      margin-bottom: 1rem;
-    }
-
-    /* toolbar */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .toolbar button {
-      padding: 0.35rem 0.85rem;
-      border-radius: 4px;
-      border: 1px solid #bbb;
-      background: #f0f0f0;
-      cursor: pointer;
-      font-size: 0.82rem;
-    }
-
-    .toolbar button:hover { background: #e0e0e0; }
-
-    .toolbar button.primary {
-      background: #c00;
-      border-color: #a00;
-      color: #fff;
-    }
-    .toolbar button.primary:hover { background: #a00; }
-
-    .status-msg {
-      font-size: 0.82rem;
-      color: #555;
-      margin-left: auto;
-    }
-
-    /* Legend */
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem 0.8rem;
-      margin-bottom: 1rem;
-      font-size: 0.75rem;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    .legend-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-
-    /* Hemicycle stage */
-    .hemicycle-stage {
-      position: relative;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    .hemicycle-svg {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-
-    /* Seats container – absolute, overlaid on the SVG */
-    .seats-layer {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Individual seat */
-    .seat {
-      position: absolute;
-      width: 5.4%;   /* responsive: ~54px at 1000px stage width */
-      aspect-ratio: 1.25 / 1;
-      border-radius: 4px;
-      border: 2px solid rgba(0,0,0,.32);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: default;
-      transition: transform .12s, box-shadow .12s, opacity .12s;
-      user-select: none;
-      transform: translate(-50%, -50%);  /* centre on the coordinate */
-      overflow: visible;
-    }
-
-    .seat .party-badge {
-      font-size: clamp(6px, 0.85vw, 9px);
-      font-weight: 700;
-      color: #fff;
-      line-height: 1;
-      text-shadow: 0 1px 2px rgba(0,0,0,.5);
-      pointer-events: none;
-    }
-
-    .seat .faction-star {
-      font-size: clamp(6px, 0.75vw, 8px);
-      color: #fff;
-      line-height: 1;
-      opacity: .9;
-      pointer-events: none;
-    }
-
-    /* draggable seats */
-    .seat.draggable {
-      cursor: grab;
-    }
-
-    .seat.draggable:active { cursor: grabbing; }
-
-    .seat.draggable:hover {
-      transform: translate(-50%, -50%) scale(1.15);
-      box-shadow: 0 3px 10px rgba(0,0,0,.35);
-      z-index: 20;
-    }
-
-    /* drag states */
-    .seat.dragging {
-      opacity: 0.45;
-      z-index: 10;
-    }
-
-    .seat.drag-over {
-      transform: translate(-50%, -50%) scale(1.18);
-      box-shadow: 0 0 0 3px #fff, 0 0 0 5px #111;
-      z-index: 20;
-    }
-
-    /* Tooltip */
-    .seat-tooltip {
-      position: absolute;
-      background: rgba(10,10,10,.9);
-      color: #fff;
-      border-radius: 5px;
-      padding: 5px 8px;
-      font-size: 11px;
-      white-space: nowrap;
-      pointer-events: none;
-      z-index: 100;
-      display: none;
-      bottom: calc(100% + 6px);
-      left: 50%;
-      transform: translateX(-50%);
-      box-shadow: 0 2px 8px rgba(0,0,0,.35);
-    }
-
-    /* Arrow */
-    .seat-tooltip::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 5px solid transparent;
-      border-top-color: rgba(10,10,10,.9);
-    }
-
-    .seat:hover .seat-tooltip { display: block; }
-
-    /* Front rows – static */
-    .seat.static-seat {
-      cursor: default;
-      opacity: 0.72;
-      border-style: dashed;
-    }
-
-    .seat.static-seat:hover {
-      transform: translate(-50%, -50%);
-      box-shadow: none;
-    }
-
-    /* Publikum bar */
-    .publikum-label {
-      text-align: center;
-      font-size: 0.8rem;
-      color: #888;
-      margin-top: 0.6rem;
-      letter-spacing: .05em;
-    }
-  </style>
+  <meta name="description" content="Werkzeuge rund um das Stadtparlament Winterthur: interaktiver Sitzplan, Mehrheitsrechner, Statistiken und Mitgliederdatenbank." />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="icon" href="media/Wappen_Winterthur.svg.webp" />
+  <script type="module" src="assets/js/layout.js"></script>
+  <script type="module">
+    import { createMajorityCalculator } from './assets/js/majority-ui.js';
+    createMajorityCalculator(document.getElementById('majority-widget'), {
+      compact: true,
+      mode: 'fraction',
+    });
+  </script>
 </head>
-<body>
+<body data-page="start">
 
-<!-- ═══════════════════════════════════════════════════════ HEADER -->
-<header>
-  <img class="logo" src="media/Wappen_Winterthur.svg.webp" alt="Wappen Winterthur" />
-  <h1>
-    Stadtparlament Winterthur Tools
-    <span>Werkzeuge für das Stadtparlament Winterthur</span>
-  </h1>
-</header>
-
-<!-- ═══════════════════════════════════════════════════════ MAIN -->
 <main>
-
-  <div class="intro">
-    <h2>Willkommen</h2>
-    <p>
-      Diese Plattform stellt verschiedene digitale Werkzeuge für das Stadtparlament
-      Winterthur zur Verfügung. Das erste Werkzeug ermöglicht die interaktive
-      Planung von Sitzanordnungen im Parlamentssaal.
+  <section class="intro">
+    <h1 class="page-title">Werkzeuge zum Stadtparlament Winterthur</h1>
+    <p class="page-lead">
+      Eine private Sammlung von Werkzeugen rund um das Winterthurer Stadtparlament: der
+      interaktive Sitzplan für die Sitzungsvorbereitung, ein Mehrheitsrechner für
+      Abstimmungsszenarien, Statistiken zur Zusammensetzung des Rats sowie eine durchsuchbare
+      Mitgliederliste. Alle Daten stammen aus den öffentlich zugänglichen Angaben des
+      Parlamentsdienstes und werden regelmässig automatisch aktualisiert.
     </p>
-  </div>
+  </section>
 
-  <div class="seating-app">
-    <h2>Sitzplan Parlamentssaal</h2>
+  <section aria-labelledby="tools-heading">
+    <h2 id="tools-heading" class="visually-hidden">Verfügbare Werkzeuge</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="tools/sitzplan.html">
+        <span class="tile-icon" aria-hidden="true">🪑</span>
+        <h3>Sitzplan</h3>
+        <p>
+          Sitzordnung des Rats interaktiv anpassen: Personen per Drag &amp; Drop verschieben,
+          Fraktionspräsidien markieren, Anordnung exportieren und wieder einlesen.
+        </p>
+      </a>
+      <a class="tool-tile" href="tools/mehrheitsrechner.html">
+        <span class="tile-icon" aria-hidden="true">⚖️</span>
+        <h3>Mehrheitsrechner</h3>
+        <p>
+          Abstimmungsszenarien durchspielen: Stimmverhalten je Partei oder Fraktion setzen,
+          Absenzen berücksichtigen, minimale Gewinn-Koalitionen anzeigen und teilen.
+        </p>
+      </a>
+      <a class="tool-tile" href="tools/statistik.html">
+        <span class="tile-icon" aria-hidden="true">📊</span>
+        <h3>Statistik</h3>
+        <p>
+          Zusammensetzung des Rats in Zahlen: Sitzverteilung, Alter, Geschlecht, Amtsdauer,
+          Stadtkreise und Berufe — gesamthaft oder je Partei und Fraktion.
+        </p>
+      </a>
+      <a class="tool-tile" href="tools/mitglieder.html">
+        <span class="tile-icon" aria-hidden="true">👥</span>
+        <h3>Mitglieder</h3>
+        <p>
+          Alle 60 Ratsmitglieder mit Partei, Fraktion, Kommissionen und Vorstössen —
+          durchsuchbar, sortierbar und als CSV exportierbar.
+        </p>
+      </a>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="widget-heading">
+    <h2 id="widget-heading">Mehrheit schnell prüfen</h2>
     <p class="subtitle">
-      Stand: 1. Juli 2026 · Die 60 Ratssitze können per Drag&amp;Drop neu angeordnet werden.
-      Die vorderen Reihen (Büro, Fraktionssitze) sind nicht verschiebbar.
+      Stimmverhalten der Fraktionen setzen — das Ergebnis erscheint sofort. Für Absenzen,
+      Enthaltungen, weitere Mehrheitsarten und teilbare Links geht es zum vollständigen Rechner.
     </p>
-
-    <div class="toolbar">
-      <button class="primary" id="btn-reset">Zurücksetzen</button>
-      <button id="btn-export">Exportieren (JSON)</button>
-      <button id="btn-import">Importieren (JSON)</button>
-      <input type="file" id="file-import" accept=".json" style="display:none">
-      <span class="status-msg" id="status-msg"></span>
+    <div id="majority-widget">
+      <p class="loading">Daten werden geladen …</p>
     </div>
+  </section>
 
-    <!-- Legend -->
-    <div class="legend" id="legend"></div>
-
-    <!-- Hemicycle -->
-    <div class="hemicycle-stage" id="hemicycle-stage">
-      <!-- SVG background drawn by JS -->
-      <svg class="hemicycle-svg" id="hemicycle-svg" xmlns="http://www.w3.org/2000/svg"></svg>
-      <!-- Seat elements injected by JS -->
-      <div class="seats-layer" id="seats-layer"></div>
+  <section class="card" aria-labelledby="outlook-heading">
+    <h2 id="outlook-heading">In Arbeit</h2>
+    <p class="subtitle">Diese Werkzeuge sind für die nächsten Ausbauschritte vorgesehen.</p>
+    <div class="tool-grid">
+      <div class="tool-tile planned">
+        <span class="tile-icon" aria-hidden="true">🗳️</span>
+        <h3>Abstimmungsverhalten</h3>
+        <p>Namentliche Abstimmungen auswerten und Stimmverhalten über die Zeit vergleichen.</p>
+      </div>
+      <div class="tool-tile planned">
+        <span class="tile-icon" aria-hidden="true">📄</span>
+        <h3>Geschäfte &amp; Vorstösse</h3>
+        <p>Vorstösse durchsuchen, nach Themen filtern und ihren Bearbeitungsstand verfolgen.</p>
+      </div>
+      <div class="tool-tile planned">
+        <span class="tile-icon" aria-hidden="true">🗓️</span>
+        <h3>Traktanden</h3>
+        <p>Traktandenlisten kommender Sitzungen aufbereitet und mit den Geschäften verknüpft.</p>
+      </div>
     </div>
-
-    <div class="publikum-label">— Publikum —</div>
-
-  </div>
+  </section>
 </main>
 
-<script>
-// ═══════════════════════════════════════════════════════════════════
-// DATA
-// ═══════════════════════════════════════════════════════════════════
-
-const PARTY_COLORS = {
-  'SP':        '#e8001a',
-  'SVP':       '#3d7c3d',
-  'FDP':       '#1565c0',
-  'GLP':       '#8fae00',
-  'Grüne':     '#1e9e1e',
-  'AL':        '#d95b0e',
-  'EVP':       '#e6a400',
-  'EDU':       '#555',
-  'Die Mitte': '#e06400',
-};
-
-// Portrait PDF coords → display(x,y): dx = 842 - py,  dy = px
-// Seat: { id, name, party, px, py, isFp, draggable }
-// px/py = portrait coords from PDF
-const INITIAL_SEATS = [
-  // ── SP (17) – right arm ─────────────────────────────────────────
-  { id:'sp01',  name:'Gabriela Stritt',            party:'SP',  px:170.5, py:175.1, isFp:false },
-  { id:'sp02',  name:'Livia Merz',                 party:'SP',  px:209.3, py:175.6, isFp:false },
-  { id:'sp03',  name:'Markus Steiner',             party:'SP',  px:248.0, py:177.7, isFp:false },
-  { id:'sp04',  name:'Beatrice Helbling-Wehrli',   party:'SP',  px:286.6, py:181.1, isFp:true  },
-  { id:'sp05',  name:'Maria Sorgo',                party:'SP',  px:326.4, py:186.0, isFp:true  },
-  { id:'sp06',  name:'Franziska Tschirky Feratovic',party:'SP', px:364.6, py:192.6, isFp:false },
-  { id:'sp07',  name:'Philippe Weber',             party:'SP',  px:402.5, py:200.4, isFp:false },
-  { id:'sp08',  name:'Fredy Künzler',              party:'SP',  px:161.2, py:242.1, isFp:false },
-  { id:'sp09',  name:'Katja Hager',                party:'SP',  px:197.0, py:242.2, isFp:false },
-  { id:'sp10',  name:'Marilena Gnesa',             party:'SP',  px:232.7, py:243.7, isFp:false },
-  { id:'sp11',  name:'Benjamin Kuratli',           party:'SP',  px:268.4, py:246.7, isFp:false },
-  { id:'sp12',  name:'Cristina Brunel',            party:'SP',  px:303.8, py:250.7, isFp:false },
-  { id:'sp13',  name:'Martina Pfirter',            party:'SP',  px:338.4, py:256.2, isFp:false },
-  { id:'sp14',  name:'Thomi Gschwind',             party:'SP',  px:158.0, py:309.0, isFp:false },
-  { id:'sp15',  name:'Tobija Fischer',             party:'SP',  px:193.7, py:309.2, isFp:false },
-  { id:'sp16',  name:'Valeria Muster',             party:'SP',  px:229.6, py:310.5, isFp:false },
-  { id:'sp17',  name:'Lea Jacot-Descombes',        party:'SP',  px:265.0, py:313.4, isFp:false },
-  // ── SVP (10) – left arm ─────────────────────────────────────────
-  { id:'svp01', name:'Gabriella Gisler',           party:'SVP', px:223.7, py:665.7, isFp:false },
-  { id:'svp02', name:'Marco Graf',                 party:'SVP', px:265.7, py:662.9, isFp:false },
-  { id:'svp03', name:'Christian Hartmann',         party:'SVP', px:303.4, py:659.0, isFp:true  },
-  { id:'svp04', name:'Michael Gross',              party:'SVP', px:345.0, py:652.7, isFp:false },
-  { id:'svp05', name:'Stefan Gubler',              party:'SVP', px:215.1, py:600.1, isFp:false },
-  { id:'svp06', name:'Marc Wäckerlin',             party:'SVP', px:251.0, py:597.3, isFp:false },
-  { id:'svp07', name:'Christian Della Sega',       party:'SVP', px:286.9, py:594.2, isFp:false },
-  { id:'svp08', name:'Tim Kramer',                 party:'SVP', px:247.8, py:530.2, isFp:false },
-  { id:'svp09', name:'Jan Ehrbar',                 party:'SVP', px:284.3, py:526.3, isFp:true  },
-  { id:'svp10', name:'Philipp Angele (VP)',        party:'SVP', px:211.1, py:533.0, isFp:false },
-  // ── FDP (8) – left inner arc + bottom ──────────────────────────
-  { id:'fdp01', name:'Jan Fehr',                   party:'FDP', px:493.6, py:605.9, isFp:false },
-  { id:'fdp02', name:'Daniel Zwahlen',             party:'FDP', px:493.6, py:573.1, isFp:false },
-  { id:'fdp03', name:'Raphael Tobler',             party:'FDP', px:493.6, py:538.6, isFp:false },
-  { id:'fdp04', name:'Raphael Perroulaz',          party:'FDP', px:461.5, py:626.3, isFp:false },
-  { id:'fdp05', name:'Dani Romay Ogando',          party:'FDP', px:423.8, py:637.1, isFp:true  },
-  { id:'fdp06', name:'Felix Helg',                 party:'FDP', px:384.4, py:645.7, isFp:false },
-  { id:'fdp07', name:'Christian Maier',            party:'FDP', px:322.1, py:589.2, isFp:false },
-  { id:'fdp08', name:'Cristina Mancuso Cabello',   party:'FDP', px:357.2, py:582.7, isFp:false },
-  // ── GLP (7) ─────────────────────────────────────────────────────
-  { id:'glp01', name:'Nora Ernst',                 party:'GLP', px:493.6, py:504.0, isFp:false },
-  { id:'glp02', name:'Annetta Steiner',            party:'GLP', px:493.6, py:469.5, isFp:false },
-  { id:'glp03', name:'Samuel Kocher (Pärs.)',      party:'GLP', px:493.6, py:391.8, isFp:false },
-  { id:'glp04', name:'Nicole Holderegger',         party:'GLP', px:422.4, py:388.6, isFp:false },
-  { id:'glp05', name:'Jan Guddal',                 party:'GLP', px:422.4, py:347.6, isFp:false },
-  { id:'glp06', name:'Markus Nater',               party:'GLP', px:422.4, py:472.7, isFp:true  },
-  { id:'glp07', name:'Benedikt Oeschger',          party:'GLP', px:422.4, py:513.7, isFp:false },
-  // ── Grüne (6) ───────────────────────────────────────────────────
-  { id:'gru01', name:'Katharina Frei Glowatz',     party:'Grüne', px:493.2, py:359.6, isFp:false },
-  { id:'gru02', name:'Corinne Hertli-Wanner',      party:'Grüne', px:493.2, py:325.0, isFp:false },
-  { id:'gru03', name:'Julius Praetorius',          party:'Grüne', px:493.2, py:290.5, isFp:false },
-  { id:'gru04', name:'Andreas Büeler',             party:'Grüne', px:421.8, py:309.8, isFp:true  },
-  { id:'gru05', name:'Michael Zundel',             party:'Grüne', px:413.0, py:273.4, isFp:false },
-  { id:'gru06', name:'Maria Lischer',              party:'Grüne', px:379.4, py:264.5, isFp:false },
-  // ── AL (3) ──────────────────────────────────────────────────────
-  { id:'al01',  name:'Roman Hugentobler',          party:'AL',  px:438.6, py:210.1, isFp:false },
-  { id:'al02',  name:'Rona Jung',                  party:'AL',  px:475.4, py:219.8, isFp:false },
-  { id:'al03',  name:'Miguel P. Bachmann',         party:'AL',  px:493.2, py:250.4, isFp:false },
-  // ── EVP (3) ─────────────────────────────────────────────────────
-  { id:'evp01', name:'Daniela Roth-Nater',         party:'EVP', px:302.7, py:318.1, isFp:true  },
-  { id:'evp02', name:'Franziska Kramer-Schwob',    party:'EVP', px:336.6, py:322.9, isFp:false },
-  { id:'evp03', name:'Alexander Würzer',           party:'EVP', px:351.2, py:357.4, isFp:false },
-  // ── EDU (1) ─────────────────────────────────────────────────────
-  { id:'edu01', name:'Simon Gonçalves',            party:'EDU', px:351.1, py:392.3, isFp:false },
-  // ── Die Mitte (5) ───────────────────────────────────────────────
-  { id:'mit01', name:'Simon Bründler',             party:'Die Mitte', px:315.7, py:521.1, isFp:false },
-  { id:'mit02', name:'André Zuraikat',             party:'Die Mitte', px:349.9, py:508.8, isFp:false },
-  { id:'mit03', name:'Dominik Kern',               party:'Die Mitte', px:350.4, py:474.7, isFp:false },
-  { id:'mit04', name:'Iris Kuster',                party:'Die Mitte', px:386.6, py:576.1, isFp:true  },
-  { id:'mit05', name:'Kaspar Vogel',               party:'Die Mitte', px:422.4, py:559.3, isFp:false },
-];
-
-// Front/bureau rows – static display only (not draggable, not part of 60)
-const FRONT_SEATS = [
-  // Top-left block: 3 seats
-  { id:'f01', name:'Kaspar Bopp',      party:'SP',        px: 95.0, py:661.1 },
-  { id:'f02', name:'Christa Meier',    party:'SP',        px: 91.1, py:623.5 },
-  { id:'f03', name:'Stefan Fritschi',  party:'FDP',       px: 88.3, py:589.0 },
-  // Left side block: 4 seats
-  { id:'f04', name:'Martina Blum',     party:'Grüne',     px:161.9, py:666.8 },
-  { id:'f05', name:'Nicolas Galladé',  party:'SP',        px:158.4, py:623.0 },
-  { id:'f06', name:'Andreas Geering',  party:'Die Mitte', px:155.1, py:592.7 },
-  { id:'f07', name:'Romana Heuberger', party:'FDP',       px:152.6, py:548.8 },
-];
-
-// ═══════════════════════════════════════════════════════════════════
-// COORDINATE MAPPING
-// ═══════════════════════════════════════════════════════════════════
-// Portrait PDF → display:  dx = 842 - py,  dy = px
-// We map display → stage (percentage) for responsiveness.
-
-// Observed display ranges (with a small margin):
-const DX_MIN = 60,  DX_MAX = 700;   // display x range
-const DY_MIN = 75,  DY_MAX = 520;   // display y range
-
-const STAGE_W = 1000;  // virtual stage width (SVG viewBox)
-const STAGE_H = 580;   // virtual stage height
-
-function toStage(px, py) {
-  const dx = 842 - py;
-  const dy = px;
-  const sx = ((dx - DX_MIN) / (DX_MAX - DX_MIN)) * STAGE_W;
-  const sy = ((dy - DY_MIN) / (DY_MAX - DY_MIN)) * STAGE_H;
-  return { sx, sy };
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// SVG BACKGROUND
-// ═══════════════════════════════════════════════════════════════════
-function buildSvgBackground() {
-  const svg = document.getElementById('hemicycle-svg');
-  svg.setAttribute('viewBox', `0 0 ${STAGE_W} ${STAGE_H}`);
-  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-
-  // Build a horseshoe/hemicycle arc path as background guide.
-  // The hemicycle opens downward (high sy = bottom = audience).
-  // Center roughly in the display space:
-  // centre display: dx≈380, dy≈-50 (above the stage, so arc opens downward)
-  const CX = ((380 - DX_MIN) / (DX_MAX - DX_MIN)) * STAGE_W;
-  const CY = -30; // virtual centre above the stage
-
-  // Draw concentric arc guides (thin dashed rings)
-  const rings = [
-    { r: 570 }, { r: 530 }, { r: 490 }, { r: 450 },
-    { r: 410 }, { r: 370 }, { r: 330 },
-  ];
-
-  let svgHtml = `
-    <defs>
-      <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#f8f8f2"/>
-        <stop offset="100%" stop-color="#ededde"/>
-      </linearGradient>
-    </defs>
-    <!-- floor -->
-    <rect width="${STAGE_W}" height="${STAGE_H}" fill="url(#floorGrad)" rx="4"/>
-  `;
-
-  rings.forEach(({ r }) => {
-    // Arc from left side to right side opening at bottom
-    // Angle: the arc spans from ~210° to ~330° (measured from positive-x CCW)
-    // which in SVG arc terms (y-axis down) means start at angle 210° and go 120°
-    const startAngle = 205 * Math.PI / 180;
-    const endAngle   = 335 * Math.PI / 180;
-    const x1 = CX + r * Math.cos(startAngle);
-    const y1 = CY + r * Math.sin(startAngle);
-    const x2 = CX + r * Math.cos(endAngle);
-    const y2 = CY + r * Math.sin(endAngle);
-    svgHtml += `<path d="M${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2}"
-                  fill="none" stroke="#d0d0c0" stroke-width="1" stroke-dasharray="4,6"/>`;
-  });
-
-  // A subtle podium area at top center
-  const podX = CX - 70, podW = 140, podY = 8, podH = 30;
-  svgHtml += `
-    <rect x="${podX}" y="${podY}" width="${podW}" height="${podH}"
-          rx="4" fill="#e8e8d8" stroke="#b0b0a0" stroke-width="1"/>
-    <text x="${CX}" y="${podY + 19}" text-anchor="middle"
-          font-size="11" fill="#888" font-family="Arial, sans-serif">Büro</text>
-  `;
-
-  svg.innerHTML = svgHtml;
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// SEAT STATE & RENDERING
-// ═══════════════════════════════════════════════════════════════════
-
-// seats[id] = { ...INITIAL_SEATS fields, occupant: { name, party, isFp } }
-// seatPositions[id] = { px, py } (position is fixed, only occupant moves)
-
-let seatPositions = {};   // id → { px, py }
-let seatOccupants = {};   // id → { name, party, isFp }
-const initialOccupants = {};
-
-function initState() {
-  INITIAL_SEATS.forEach(s => {
-    seatPositions[s.id] = { px: s.px, py: s.py };
-    seatOccupants[s.id] = { name: s.name, party: s.party, isFp: s.isFp };
-    initialOccupants[s.id] = { name: s.name, party: s.party, isFp: s.isFp };
-  });
-}
-
-function renderSeats() {
-  const layer = document.getElementById('seats-layer');
-  layer.innerHTML = '';
-
-  // Render front (static) seats
-  FRONT_SEATS.forEach(fs => {
-    const { sx, sy } = toStage(fs.px, fs.py);
-    const el = createSeatEl(fs.id, fs.name, fs.party, false, false, sx, sy);
-    el.classList.add('static-seat');
-    layer.appendChild(el);
-  });
-
-  // Render regular (draggable) seats
-  INITIAL_SEATS.forEach(s => {
-    const { sx, sy } = toStage(s.px, s.py);
-    const occ = seatOccupants[s.id];
-    const el = createSeatEl(s.id, occ.name, occ.party, occ.isFp, true, sx, sy);
-    layer.appendChild(el);
-  });
-}
-
-function createSeatEl(id, name, party, isFp, draggable, sx, sy) {
-  const el = document.createElement('div');
-  el.className = 'seat' + (draggable ? ' draggable' : '');
-  el.dataset.id = id;
-  el.draggable = draggable;
-
-  // Position as % of the SVG viewBox size (the layer is 100% of the stage)
-  el.style.left = (sx / STAGE_W * 100) + '%';
-  el.style.top  = (sy / STAGE_H * 100) + '%';
-
-  const color = PARTY_COLORS[party] || '#666';
-  el.style.background = color;
-
-  const shortParty = party === 'Die Mitte' ? 'Mitte' : party;
-  el.innerHTML = `
-    <span class="party-badge">${shortParty}</span>
-    ${isFp ? '<span class="faction-star">★</span>' : ''}
-    <div class="seat-tooltip">${escHtml(name)}<br><em>${escHtml(party)}</em>${isFp ? ' · Fraktionspräs.' : ''}</div>
-  `;
-
-  if (draggable) {
-    el.addEventListener('dragstart', onDragStart);
-    el.addEventListener('dragend',   onDragEnd);
-    el.addEventListener('dragover',  onDragOver);
-    el.addEventListener('dragleave', onDragLeave);
-    el.addEventListener('drop',      onDrop);
-  }
-
-  return el;
-}
-
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// DRAG & DROP
-// ═══════════════════════════════════════════════════════════════════
-let dragSourceId = null;
-
-function onDragStart(e) {
-  dragSourceId = e.currentTarget.dataset.id;
-  e.currentTarget.classList.add('dragging');
-  e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/plain', dragSourceId);
-  setStatus('Sitz wird verschoben…');
-}
-
-function onDragEnd(e) {
-  e.currentTarget.classList.remove('dragging');
-  document.querySelectorAll('.seat.drag-over').forEach(el => el.classList.remove('drag-over'));
-  dragSourceId = null;
-}
-
-function onDragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  const target = e.currentTarget;
-  if (target.dataset.id !== dragSourceId && target.classList.contains('draggable')) {
-    target.classList.add('drag-over');
-  }
-}
-
-function onDragLeave(e) {
-  e.currentTarget.classList.remove('drag-over');
-}
-
-function onDrop(e) {
-  e.preventDefault();
-  const targetId = e.currentTarget.dataset.id;
-  e.currentTarget.classList.remove('drag-over');
-
-  if (!dragSourceId || dragSourceId === targetId) return;
-  if (!seatOccupants[dragSourceId] || !seatOccupants[targetId]) return;
-
-  // Swap occupants
-  const tmp = seatOccupants[dragSourceId];
-  seatOccupants[dragSourceId] = seatOccupants[targetId];
-  seatOccupants[targetId] = tmp;
-
-  renderSeats();
-  setStatus('Sitzplan aktualisiert.');
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// LEGEND
-// ═══════════════════════════════════════════════════════════════════
-function buildLegend() {
-  const legendEl = document.getElementById('legend');
-  const parties = Object.keys(PARTY_COLORS);
-  legendEl.innerHTML = parties.map(p => {
-    const shortP = p === 'Die Mitte' ? 'Mitte' : p;
-    const count = INITIAL_SEATS.filter(s => s.party === p).length;
-    return `<div class="legend-item">
-      <div class="legend-dot" style="background:${PARTY_COLORS[p]}"></div>
-      <span>${p} <span style="color:#999">(${count})</span></span>
-    </div>`;
-  }).join('') + `<div class="legend-item">
-    <span style="color:#888">★ = Fraktionspräsident/in</span>
-  </div>`;
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// TOOLBAR ACTIONS
-// ═══════════════════════════════════════════════════════════════════
-function setStatus(msg, duration = 3000) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  if (duration > 0) setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, duration);
-}
-
-document.getElementById('btn-reset').addEventListener('click', () => {
-  Object.keys(initialOccupants).forEach(id => {
-    seatOccupants[id] = { ...initialOccupants[id] };
-  });
-  renderSeats();
-  setStatus('Sitzplan zurückgesetzt.');
-});
-
-document.getElementById('btn-export').addEventListener('click', () => {
-  const data = INITIAL_SEATS.map(s => {
-    const occ = seatOccupants[s.id];
-    const pos = seatPositions[s.id];
-    return { seatId: s.id, occupant: occ.name, party: occ.party, positionPx: pos.px, positionPy: pos.py };
-  });
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `sitzplan_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  setStatus('JSON exportiert.');
-});
-
-document.getElementById('btn-import').addEventListener('click', () => {
-  document.getElementById('file-import').value = '';
-  document.getElementById('file-import').click();
-});
-
-document.getElementById('file-import').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      if (!Array.isArray(data)) throw new Error('Array von Sitzplatz-Einträgen erwartet');
-      let updated = 0, skipped = 0;
-      data.forEach(entry => {
-        if (!entry || typeof entry.seatId !== 'string' ||
-            typeof entry.occupant !== 'string' || typeof entry.party !== 'string') {
-          skipped++;
-          return;
-        }
-        if (!seatOccupants[entry.seatId]) { skipped++; return; }
-        const original = INITIAL_SEATS.find(s => s.name === entry.occupant);
-        seatOccupants[entry.seatId] = {
-          name:  entry.occupant,
-          party: entry.party,
-          isFp:  original ? original.isFp : false
-        };
-        updated++;
-      });
-      renderSeats();
-      const msg = `JSON importiert (${updated} Sitze aktualisiert${skipped ? ', ' + skipped + ' übersprungen' : ''}).`;
-      setStatus(msg);
-    } catch (err) {
-      setStatus('Fehler beim Import: ' + err.message);
-    }
-  };
-  reader.readAsText(file);
-});
-
-// ═══════════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════════
-initState();
-buildSvgBackground();
-buildLegend();
-renderSeats();
-</script>
 </body>
 </html>
