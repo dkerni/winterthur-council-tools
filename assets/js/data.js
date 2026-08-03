@@ -7,16 +7,10 @@
  * die Website liest sie nur.
  */
 
-import { siteUrl } from './paths.js';
+import { fetchJson } from './access.js';
 import { loadPartyMeta, councilOf } from './parties.js';
 
 let dbPromise = null;
-
-async function fetchJson(relPath) {
-  const res = await fetch(siteUrl(relPath));
-  if (!res.ok) throw new Error(`${relPath}: HTTP ${res.status}`);
-  return res.json();
-}
 
 /**
  * Lädt die Mitgliederdatenbank (einmalig, Promise-Cache).

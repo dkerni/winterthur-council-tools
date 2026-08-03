@@ -6,7 +6,7 @@
  * gespiegelt, damit auch reines CSS damit arbeiten kann.
  */
 
-import { siteUrl } from './paths.js';
+import { fetchJson } from './access.js';
 
 let metaPromise = null;
 
@@ -16,15 +16,10 @@ let metaPromise = null;
  */
 export function loadPartyMeta() {
   if (!metaPromise) {
-    metaPromise = fetch(siteUrl('data/party-meta.json'))
-      .then((res) => {
-        if (!res.ok) throw new Error(`party-meta.json: HTTP ${res.status}`);
-        return res.json();
-      })
-      .catch((err) => {
-        metaPromise = null;
-        throw err;
-      });
+    metaPromise = fetchJson('data/party-meta.json').catch((err) => {
+      metaPromise = null;
+      throw err;
+    });
   }
   return metaPromise;
 }
