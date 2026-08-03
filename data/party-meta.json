@@ -1,6 +1,22 @@
 {
   "schemaVersion": 1,
   "description": "Manuell gepflegte Stammdaten zu Parteien und Fraktionen. Reihenfolge 'order' entspricht der Sitzordnung von rechts (1) nach links (9). Wird vom Scraper zum Normalisieren der Quelltexte und von der Website für Farben, Kurznamen und Sortierung verwendet.",
+  "council": {
+    "legislature": "2026–2030",
+    "seats": 60,
+    "namesAsOf": "2026-08-01",
+    "seatsNote": "Die Sitze je Partei und Fraktion bleiben über die ganze Legislatur konstant; einzelne Namen können durch Rücktritte und Nachrückende wechseln.",
+    "nonVoting": [
+      {
+        "memberId": "kocher-samuel",
+        "name": "Samuel Kocher",
+        "partyId": "glp",
+        "fractionId": "glp",
+        "role": "Ratspräsidium",
+        "note": "Das Ratspräsidium stimmt nicht mit und hat bei Stimmengleichheit den Stichentscheid."
+      }
+    ]
+  },
   "parties": [
     {
       "id": "svp",

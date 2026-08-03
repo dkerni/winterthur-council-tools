@@ -10,7 +10,6 @@ import { siteUrl } from './paths.js';
 import { loadPartyMeta, applyPartyCssVars } from './parties.js';
 import { loadDatabase, formatDate } from './data.js';
 
-const REPO_URL = 'https://github.com/dkerni/winterthur-council-tools';
 const SOURCE_URL = 'https://parlament.winterthur.ch';
 const AUTHOR_URL = 'https://dominik-kern.ch/';
 
@@ -71,8 +70,7 @@ function buildFooter() {
         Weitere Angaben im <a href="${siteUrl('impressum.html')}">Impressum</a>.
       </p>
       <p class="footer-meta">
-        Datenstand: <span data-generated-at>wird geladen …</span><br />
-        <a href="${REPO_URL}" rel="noopener noreferrer" target="_blank">Quellcode auf GitHub</a>
+        Datenstand: <span data-generated-at>wird geladen …</span>
       </p>
     </div>`;
   return footer;

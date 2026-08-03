@@ -3,6 +3,7 @@
  */
 
 import { loadDatabase, dataErrorMessage, ageOf, tenureYears, formatDate, formatDateTime } from './data.js';
+import { councilNote } from './parties.js';
 import { GENDER_LABELS } from './stats.js';
 import { toCsv, downloadCsv, datedFilename } from './csv.js';
 import { escapeHtml } from './layout.js';
@@ -168,6 +169,7 @@ function skeleton(db) {
   const option = (value, label) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`;
 
   return `
+    <p class="hint" id="member-council">${escapeHtml(councilNote(db.meta))}</p>
     <div class="filter-bar">
       <label>Suche
         <input type="search" id="member-search" placeholder="Name, Beruf, Kommission …" />

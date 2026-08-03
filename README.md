@@ -13,7 +13,7 @@ Publikationen des Parlamentsdienstes und liegen als JSON im Repository.
 | --- | --- |
 | `index.html` | Startseite mit Tool-Kacheln, kompaktem Mehrheitsrechner und Datenstand |
 | `tools/sitzplan.html` | Interaktive Sitzordnung (Drag & Drop, Fraktionspräsidien, Export/Import) |
-| `tools/mehrheitsrechner.html` | Mehrheiten je Partei/Fraktion, Absenzen, minimale Gewinn-Koalitionen, teilbarer Link |
+| `tools/mehrheitsrechner.html` | Mehrheiten je Partei/Fraktion, Szenario-Vorlagen, Absenzen, mögliche Allianzen, teilbarer Link |
 | `tools/statistik.html` | Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise, Berufe (gesamt/Partei/Fraktion) |
 | `tools/mitglieder.html` | Durchsuchbare, sortierbare Mitgliederliste mit Detailbereich und CSV-Export |
 | `impressum.html` | Betreiber, Datenquellen, Umgang mit Personendaten, Haftungsausschluss |
@@ -135,15 +135,18 @@ Ergänzend:
   die Zuordnung der Schreibweisen aus der Quelle.
 * `data/gender-overrides.json` — das Merkmal Geschlecht wird von der Quelle **nicht**
   publiziert. Es wird ausschliesslich für Statistiken verwendet, manuell gepflegt und bei
-  fehlender Grundlage als `unbekannt` geführt. Korrekturen sind über Issues willkommen.
+  fehlender Grundlage als `unbekannt` geführt. Korrekturen sind über die im Impressum
+  genannten Kontaktwege willkommen.
 * `data/seating.json` — Sitzordnung inkl. Koordinatenabbildung aus dem Sitzplan-PDF.
+  Einzelne Koordinaten sind gegenüber dem PDF minimal verschoben, damit sich die
+  Sitzsymbole in der Darstellung nicht überlappen.
 
 ## Umsetzungsstand der Ideenliste
 
 | Idee | Stand |
 | --- | --- |
 | Sitzordnung | umgesetzt (`tools/sitzplan.html`) |
-| Mehrheitsrechner | umgesetzt (`tools/mehrheitsrechner.html`), inkl. minimaler Gewinn-Koalitionen |
+| Mehrheitsrechner | umgesetzt (`tools/mehrheitsrechner.html`), inkl. möglicher Allianzen |
 | Statistik zur aktuellen Zusammensetzung | umgesetzt (`tools/statistik.html`); Alter, Beruf, Stadtkreis und Amtsdauer erscheinen, sobald der Scraper gelaufen ist |
 | Historische Statistik (Vorstösse) | Grundlage gelegt: Vorstösse werden je Person strukturiert gespeichert; eigene Auswertung folgt |
 | Zusammenfassung der nächsten Sitzung | offen (nächste Ausbaustufe) |
@@ -152,12 +155,18 @@ Ergänzend:
 ## Rahmenbedingungen des Rats
 
 * 60 Mitglieder, Sitzungen in der Regel am Montagabend.
+* Die Sitzverteilung gilt für die **Legislatur 2026–2030** und bleibt über die ganze
+  Legislatur konstant; einzelne Namen können durch Rücktritte und Nachrückende wechseln
+  (Namensstand der Tools: **1. August 2026**).
+* Das **Ratspräsidium stimmt nicht mit** (Legislatur 2026–2030: Samuel Kocher, GLP) und hat
+  bei Stimmengleichheit den Stichentscheid. Der Mehrheitsrechner rechnet deshalb mit
+  **59 stimmberechtigten Sitzen**; die GLP hat dort einen Sitz weniger als im Rat.
 * Parteien von rechts nach links: SVP, FDP, Mitte, GLP, EDU, EVP, SP, Grüne, AL.
 * Parteien mit weniger als vier Sitzen bilden gemeinsame Fraktionen: EVP + EDU sowie
   Grüne + AL. Es gibt daher **7 Fraktionen bei 9 Parteien** — Mehrheiten lassen sich in
   beiden Sichten berechnen.
-* Absolutes Mehr: 31 von 60 Sitzen. Das einfache Mehr bezieht sich auf die abgegebenen
-  Stimmen, nicht auf die Ratsgrösse.
+* Absolutes Mehr: 30 von 59 stimmberechtigten Sitzen. Das einfache Mehr bezieht sich auf die
+  abgegebenen Stimmen, nicht auf die Ratsgrösse.
 
 ## Abweichungen vom ursprünglichen Vorschlag
 

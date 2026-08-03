@@ -276,6 +276,55 @@ function checkSeating(seating, meta) {
   }
 }
 
+function checkCouncil(meta, db) {
+  const council = meta.council;
+  if (!council) {
+    error('party-meta: Block «council» fehlt (Legislatur, Sitze, Namens-Stichtag, Ratspräsidium)');
+    return;
+  }
+
+  if (typeof council.seats !== 'number' || council.seats <= 0) {
+    error('party-meta: council.seats fehlt oder ist keine positive Zahl');
+  }
+  if (!council.legislature) error('party-meta: council.legislature fehlt');
+  if (!ISO_DATE.test(council.namesAsOf || '')) {
+    error(`party-meta: council.namesAsOf ist kein ISO-Datum («${council.namesAsOf}»)`);
+  }
+
+  const nonVoting = council.nonVoting || [];
+  if (!Array.isArray(nonVoting)) {
+    error('party-meta: council.nonVoting ist kein Array');
+    return;
+  }
+
+  const members = Array.isArray(db.members) ? db.members : [];
+  for (const entry of nonVoting) {
+    if (!entry.partyId || !meta.parties.some((p) => p.id === entry.partyId)) {
+      error(`party-meta: council.nonVoting verweist auf unbekannte Partei «${entry.partyId}»`);
+    }
+    if (!entry.fractionId || !meta.fractions.some((f) => f.id === entry.fractionId)) {
+      error(`party-meta: council.nonVoting verweist auf unbekannte Fraktion «${entry.fractionId}»`);
+    }
+    if (!members.length) continue;
+
+    const match =
+      members.find((m) => m.id === entry.memberId) ||
+      members.find((m) => (m.displayName || '').toLowerCase() === (entry.name || '').toLowerCase());
+    if (!match) {
+      warn(`party-meta: nicht stimmberechtigte Person «${entry.name}» fehlt in members.json`);
+    } else if (match.partyId !== entry.partyId) {
+      error(
+        `party-meta: «${entry.name}» ist in council.nonVoting als «${entry.partyId}» geführt, ` +
+          `in members.json aber als «${match.partyId}»`,
+      );
+    }
+  }
+
+  if (members.length && typeof council.seats === 'number' && members.length !== council.seats) {
+    warn(`members.json enthält ${members.length} Mitglieder, council.seats sagt ${council.seats}`);
+  }
+}
+
 async function main() {
   const meta = await readJson('data/party-meta.json');
   const db = await readJson('data/members.json');
@@ -283,6 +332,7 @@ async function main() {
   const seating = await readJson('data/seating.json');
 
   checkPartyMeta(meta);
+  checkCouncil(meta, db);
   checkMembers(db, meta);
   checkGenderOverrides(overrides, db);
   checkSeating(seating, meta);

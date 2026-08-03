@@ -9,10 +9,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  ALLIANCES,
+  DEFAULT_VOTE,
   MAJORITY_TYPES,
+  VOTE_OPTIONS,
+  allianceResults,
   computeResult,
   minimalWinningCoalitions,
   outcomeLabel,
+  presetVotes,
   requiredMajority,
 } from '../../assets/js/majority.js';
 
@@ -207,4 +212,158 @@ test('Koalitionen berücksichtigen Absenzen', () => {
   assert.ok(coalitions.every((c) => !c.groupIds.includes('sp')));
   // 43 anwesende Stimmen ⇒ erforderliches Mehr 22
   assert.ok(coalitions.every((c) => c.votes >= 22));
+});
+
+/* ---------------------------------------------------------------------- *
+ * Stimmberechtigte Sitze, Szenario-Vorlagen und mögliche Allianzen
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Stimmberechtigte Sitze der Legislatur 2026–2030: Das Ratspräsidium (GLP)
+ * stimmt nicht mit, deshalb 59 statt 60 Stimmen und GLP mit 6 statt 7.
+ */
+const VOTING_PARTIES = PARTIES.map((p) => (p.id === 'glp' ? { ...p, seats: 6 } : p));
+
+/** Fraktionen mit stimmberechtigten Sitzen. */
+const VOTING_FRACTIONS = [
+  { id: 'svp', name: 'SVP', seats: 10, partyIds: ['svp'] },
+  { id: 'fdp', name: 'FDP', seats: 8, partyIds: ['fdp'] },
+  { id: 'mitte', name: 'Die Mitte', seats: 5, partyIds: ['mitte'] },
+  { id: 'glp', name: 'GLP', seats: 6, partyIds: ['glp'] },
+  { id: 'evp-edu', name: 'EVP/EDU', seats: 4, partyIds: ['evp', 'edu'] },
+  { id: 'sp', name: 'SP', seats: 17, partyIds: ['sp'] },
+  { id: 'gruene-al', name: 'Grüne/AL', seats: 9, partyIds: ['gruene', 'al'] },
+];
+
+test('59 stimmberechtigte Sitze, absolutes Mehr 30', () => {
+  assert.equal(
+    VOTING_PARTIES.reduce((sum, p) => sum + p.seats, 0),
+    59,
+  );
+  assert.equal(
+    VOTING_FRACTIONS.reduce((sum, f) => sum + f.seats, 0),
+    59,
+  );
+  assert.equal(requiredMajority('absolute', 59, 59), 30);
+  // Absenzen ändern das absolute Mehr nicht.
+  assert.equal(requiredMajority('absolute', 40, 59), 30);
+});
+
+test('DEFAULT_VOTE ist die Enthaltung und «frei» wird nicht mehr angeboten', () => {
+  assert.equal(DEFAULT_VOTE, 'abstain');
+  assert.ok(!VOTE_OPTIONS.some((option) => option.id === 'free'));
+  assert.deepEqual(
+    VOTE_OPTIONS.map((option) => option.id),
+    ['yes', 'no', 'abstain'],
+  );
+});
+
+test('Szenario «Rechtes Anliegen»: SVP/FDP Ja, SP/Grüne-AL Nein, Rest Enthaltung', () => {
+  const votes = presetVotes(VOTING_FRACTIONS, 'right');
+  assert.equal(votes.svp, 'yes');
+  assert.equal(votes.fdp, 'yes');
+  assert.equal(votes.sp, 'no');
+  assert.equal(votes['gruene-al'], 'no');
+  assert.equal(votes.mitte, 'abstain');
+  assert.equal(votes.glp, 'abstain');
+  assert.equal(votes['evp-edu'], 'abstain');
+
+  const result = computeResult({ groups: VOTING_FRACTIONS, votes });
+  assert.equal(result.yes, 18);
+  assert.equal(result.no, 26);
+  assert.equal(result.outcome, 'rejected');
+});
+
+test('Szenario «Linkes Anliegen» dreht Ja und Nein', () => {
+  const votes = presetVotes(VOTING_FRACTIONS, 'left');
+  assert.equal(votes.svp, 'no');
+  assert.equal(votes.fdp, 'no');
+  assert.equal(votes.sp, 'yes');
+  assert.equal(votes['gruene-al'], 'yes');
+  assert.equal(votes.mitte, 'abstain');
+
+  const result = computeResult({ groups: VOTING_FRACTIONS, votes });
+  assert.equal(result.yes, 26);
+  assert.equal(result.no, 18);
+  assert.equal(result.outcome, 'accepted');
+});
+
+test('Szenario auf Parteien angewendet ergibt dieselben Stimmenzahlen', () => {
+  const votes = presetVotes(VOTING_PARTIES, 'right');
+  assert.equal(votes.gruene, 'no');
+  assert.equal(votes.al, 'no');
+  assert.equal(votes.evp, 'abstain');
+  const result = computeResult({ groups: VOTING_PARTIES, votes });
+  assert.equal(result.yes, 18);
+  assert.equal(result.no, 26);
+});
+
+test('Unbekanntes Szenario setzt alle Gruppen auf Enthaltung', () => {
+  const votes = presetVotes(VOTING_FRACTIONS, 'gibt-es-nicht');
+  assert.ok(Object.values(votes).every((vote) => vote === DEFAULT_VOTE));
+});
+
+test('Allianzen: alle Kombinationen sind bekannte Fraktionen', () => {
+  const known = new Set(VOTING_FRACTIONS.map((f) => f.id));
+  assert.ok(ALLIANCES.length > 0);
+  for (const alliance of ALLIANCES) {
+    assert.ok(alliance.name, 'Allianz ohne Namen');
+    assert.match(alliance.color, /^#[0-9a-f]{6}$/i);
+    assert.ok(alliance.fractionIds.length > 0);
+    for (const id of alliance.fractionIds) {
+      assert.ok(known.has(id), `Unbekannte Fraktion «${id}» in «${alliance.name}»`);
+    }
+  }
+});
+
+test('Allianzen: Stimmen und Mehrheit werden korrekt berechnet', () => {
+  const results = allianceResults({ groups: VOTING_FRACTIONS });
+  const byId = new Map(results.map((entry) => [entry.alliance.id, entry]));
+
+  assert.equal(results.length, ALLIANCES.length);
+  assert.equal(byId.get('svp-solo').votes, 10);
+  assert.equal(byId.get('svp-solo').winning, false);
+  assert.equal(byId.get('rechte').votes, 18);
+  assert.equal(byId.get('rechte').winning, false);
+  assert.equal(byId.get('buergerliche').votes, 23);
+  assert.equal(byId.get('rot-gruen').votes, 26);
+  assert.equal(byId.get('progressive').votes, 36);
+  assert.equal(byId.get('progressive').winning, true);
+  assert.equal(byId.get('alle-ausser-links').votes, 33);
+  assert.equal(byId.get('alle-ausser-links').winning, true);
+  assert.equal(byId.get('unheilig').votes, 36);
+  assert.equal(byId.get('unheilig').winning, true);
+
+  for (const entry of results) {
+    // Ohne Absenzen gilt das einfache Mehr der 59 anwesenden Stimmen.
+    assert.equal(entry.required, 30);
+    assert.equal(entry.winning, entry.votes >= entry.required);
+    assert.equal(entry.margin, entry.votes - entry.required);
+  }
+});
+
+test('Allianzen berücksichtigen Absenzen', () => {
+  const results = allianceResults({ groups: VOTING_FRACTIONS, absences: { sp: 17 } });
+  const byId = new Map(results.map((entry) => [entry.alliance.id, entry]));
+  assert.equal(byId.get('rot-gruen').votes, 9);
+  // 42 anwesende Stimmen ⇒ erforderliches Mehr 22 (einfaches Mehr).
+  assert.equal(byId.get('rot-gruen').required, 22);
+  assert.equal(byId.get('rechte').votes, 18);
+  assert.equal(byId.get('rechte').winning, false);
+  assert.equal(byId.get('buergerliche').votes, 23);
+  assert.equal(byId.get('buergerliche').winning, true);
+});
+
+test('Allianzen mit unbekannten Fraktionen werden übersprungen', () => {
+  const results = allianceResults({
+    groups: VOTING_FRACTIONS,
+    alliances: [
+      { id: 'ok', name: 'SVP', fractionIds: ['svp'], color: '#000000' },
+      { id: 'nope', name: 'Phantom', fractionIds: ['svp', 'phantom'], color: '#000000' },
+    ],
+  });
+  assert.deepEqual(
+    results.map((entry) => entry.alliance.id),
+    ['ok'],
+  );
 });

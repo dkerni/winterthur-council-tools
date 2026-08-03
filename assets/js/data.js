@@ -8,7 +8,7 @@
  */
 
 import { siteUrl } from './paths.js';
-import { loadPartyMeta } from './parties.js';
+import { loadPartyMeta, councilOf } from './parties.js';
 
 let dbPromise = null;
 
@@ -42,12 +42,24 @@ async function build() {
   const rawParties = new Map((raw.parties || []).map((p) => [p.id, p]));
   const rawFractions = new Map((raw.fractions || []).map((f) => [f.id, f]));
 
-  const members = raw.members.map((m) => ({
-    ...m,
-    commissions: m.commissions || [],
-    inquiries: m.inquiries || [],
-    inquiryCounts: m.inquiryCounts || { total: (m.inquiries || []).length, first: 0, co: 0 },
-  }));
+  const council = councilOf(meta);
+  const nonVotingById = new Map(council.nonVoting.map((entry) => [entry.memberId, entry]));
+  const nonVotingByName = new Map(
+    council.nonVoting.filter((entry) => entry.name).map((entry) => [entry.name.toLowerCase(), entry]),
+  );
+
+  const members = raw.members.map((m) => {
+    const nonVoting =
+      nonVotingById.get(m.id) || nonVotingByName.get(String(m.displayName || '').toLowerCase()) || null;
+    return {
+      ...m,
+      commissions: m.commissions || [],
+      inquiries: m.inquiries || [],
+      inquiryCounts: m.inquiryCounts || { total: (m.inquiries || []).length, first: 0, co: 0 },
+      canVote: !nonVoting,
+      ...(nonVoting ? { nonVotingRole: nonVoting.role || 'ohne Stimmrecht' } : {}),
+    };
+  });
 
   // Parteien: Reihenfolge/Farbe/Kurzname aus party-meta.json (verbindlich),
   // Sitze aus den tatsächlichen Mitgliederdaten.
@@ -116,7 +128,9 @@ async function build() {
     dataQuality: raw.dataQuality || { complete: true },
     source: raw.source || 'https://parlament.winterthur.ch',
     sources: raw.sources || {},
-    legislature: raw.legislature || null,
+    legislature: raw.legislature || council.legislature || null,
+    council,
+    meta,
     parties: parties.sort((a, b) => a.order - b.order),
     fractions: fractions.sort((a, b) => a.order - b.order),
     commissions,
@@ -143,11 +157,17 @@ export function fractionOf(db, member) {
 
 /**
  * Gruppen für Mehrheits- und Statistikberechnungen.
+ *
+ * `seats` ist die Zahl der Ratssitze, `votingSeats` die Zahl der
+ * **stimmberechtigten** Sitze (das Ratspräsidium stimmt nicht mit).
+ *
  * @param {object} db
  * @param {'party'|'fraction'} mode
- * @returns {Array<{id,name,shortName,color,order,seats,members}>}
+ * @returns {Array<{id,name,shortName,color,order,seats,votingSeats,partyIds,members}>}
  */
 export function groupsFor(db, mode) {
+  const votingSeats = (members) => members.filter((m) => m.canVote !== false).length;
+
   if (mode === 'fraction') {
     return db.fractions
       .map((f) => {
@@ -163,6 +183,8 @@ export function groupsFor(db, mode) {
           color: leadParty ? leadParty.color : '#666',
           order: f.order,
           seats: members.length,
+          votingSeats: votingSeats(members),
+          partyIds: f.partyIds,
           members,
         };
       })
@@ -180,11 +202,25 @@ export function groupsFor(db, mode) {
         color: p.color,
         order: p.order,
         seats: members.length,
+        votingSeats: votingSeats(members),
+        partyIds: [p.id],
         members,
       };
     })
     .filter((g) => g.seats > 0)
     .sort((a, b) => a.order - b.order);
+}
+
+/**
+ * Gruppen für den Mehrheitsrechner: `seats` entspricht hier den
+ * **stimmberechtigten** Sitzen, `councilSeats` den effektiven Ratssitzen.
+ * @param {object} db
+ * @param {'party'|'fraction'} mode
+ */
+export function votingGroupsFor(db, mode) {
+  return groupsFor(db, mode)
+    .map((group) => ({ ...group, councilSeats: group.seats, seats: group.votingSeats }))
+    .filter((group) => group.seats > 0);
 }
 
 /** Mitglieder gruppiert nach Partei-ID. */
