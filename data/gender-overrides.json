@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "description": "Das Geschlecht ist auf parlament.winterthur.ch nicht erfasst. Diese Datei wird manuell gepflegt und vom Scraper in data/members.json eingemischt. Nicht aufgeführte Personen erhalten gender = \"unbekannt\". Zuordnung erfolgt über die Personen-ID (falls bekannt), sonst über den normalisierten Namen.",
   "values": ["m", "w", "d", "unbekannt"],
-  "correctionContact": "https://github.com/dkerni/winterthur-council-tools/issues",
+  "correctionContact": "https://dominik-kern.ch/",
   "overrides": [
     { "name": "Gabriela Stritt", "gender": "w" },
     { "name": "Livia Merz", "gender": "w" },

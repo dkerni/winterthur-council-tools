@@ -87,3 +87,39 @@ export function partiesInOrder(meta) {
 export function fractionsInOrder(meta) {
   return [...meta.fractions].sort((a, b) => a.order - b.order);
 }
+
+/** Fallback, falls `party-meta.json` (noch) keinen `council`-Block enthält. */
+const COUNCIL_FALLBACK = { legislature: null, seats: null, namesAsOf: null, seatsNote: '', nonVoting: [] };
+
+/**
+ * Rahmendaten des Rats (Legislatur, Namens-Stichtag, nicht stimmberechtigte
+ * Mitglieder) aus `data/party-meta.json`.
+ */
+export function councilOf(meta) {
+  const council = (meta && meta.council) || {};
+  return { ...COUNCIL_FALLBACK, ...council, nonVoting: council.nonVoting || [] };
+}
+
+/** `YYYY-MM-DD` → `TT.MM.JJJJ` (leer bei fehlendem Wert). */
+function formatDay(iso) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso ?? ''));
+  return match ? `${match[3]}.${match[2]}.${match[1]}` : '';
+}
+
+/**
+ * Hinweis zur Gültigkeit der Sitzverteilung (Legislatur) und zum Stichtag der
+ * Namen. `options.names` blendet den Namens-Stichtag ein, `options.seats` die
+ * Sitzverteilung.
+ * @returns {string} Klartext ohne HTML
+ */
+export function councilNote(meta, { seats = true, names = true } = {}) {
+  const council = councilOf(meta);
+  const parts = [];
+  if (seats && council.legislature) {
+    parts.push(`Sitzverteilung: Legislatur ${council.legislature}${council.seatsNote ? ` — ${council.seatsNote}` : ''}`);
+  }
+  if (names && council.namesAsOf) {
+    parts.push(`Namen: Stichtag ${formatDay(council.namesAsOf)}`);
+  }
+  return parts.join(' · ');
+}

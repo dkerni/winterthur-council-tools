@@ -3,22 +3,28 @@
  *
  * Eingabe ist das Stimmverhalten je Gruppe (Partei oder Fraktion) plus die
  * Anzahl Absenzen je Gruppe. Ausgabe sind die Stimmenzahlen, das erforderliche
- * Mehr und das Ergebnis. Zusätzlich lassen sich alle **minimalen
- * Gewinn-Koalitionen** berechnen.
+ * Mehr und das Ergebnis. Zusätzlich lassen sich benannte **Allianzen** sowie
+ * alle **minimalen Gewinn-Koalitionen** berechnen.
+ *
+ * Gerechnet wird durchwegs mit den **stimmberechtigten** Sitzen: Das
+ * Ratspräsidium stimmt nicht mit, deshalb sind es 59 statt 60 Stimmen.
  */
 
 /** Mögliche Stimmabgaben einer Gruppe. */
 export const VOTE_YES = 'yes';
 export const VOTE_NO = 'no';
 export const VOTE_ABSTAIN = 'abstain';
+/** @deprecated Wird in der Oberfläche nicht mehr angeboten; Standard ist die Enthaltung. */
 export const VOTE_FREE = 'free';
 
 export const VOTE_OPTIONS = [
   { id: VOTE_YES, label: 'Ja' },
   { id: VOTE_NO, label: 'Nein' },
   { id: VOTE_ABSTAIN, label: 'Enthaltung' },
-  { id: VOTE_FREE, label: 'frei' },
 ];
+
+/** Standardstimme einer Gruppe, solange nichts anderes gewählt ist. */
+export const DEFAULT_VOTE = VOTE_ABSTAIN;
 
 /** Mehrheitsarten. */
 export const MAJORITY_TYPES = [
@@ -30,7 +36,7 @@ export const MAJORITY_TYPES = [
   {
     id: 'absolute',
     label: 'Absolutes Mehr',
-    description: 'Mehr als die Hälfte aller 60 Ratssitze (31 Stimmen), unabhängig von Absenzen.',
+    description: 'Mehr als die Hälfte aller stimmberechtigten Sitze, unabhängig von Absenzen.',
   },
   {
     id: 'two-thirds',
@@ -40,7 +46,129 @@ export const MAJORITY_TYPES = [
 ];
 
 /**
- * @typedef {{id: string, name: string, shortName?: string, color?: string, seats: number}} Group
+ * Beschreibung einer Mehrheitsart, beim absoluten Mehr ergänzt um die
+ * konkreten Zahlen der aktuellen Sitzverteilung.
+ * @param {string} majorityType
+ * @param {number} totalSeats stimmberechtigte Sitze
+ */
+export function majorityDescription(majorityType, totalSeats) {
+  const type = MAJORITY_TYPES.find((entry) => entry.id === majorityType);
+  if (!type) return '';
+  if (type.id === 'absolute' && totalSeats > 0) {
+    return `${type.description} Aktuell ${requiredMajority('absolute', 0, totalSeats)} von ${totalSeats} Stimmen.`;
+  }
+  return type.description;
+}
+
+/**
+ * Vorgefertigte Abstimmungsszenarien. Angegeben sind jeweils die Parteien;
+ * Fraktionen erben das Verhalten ihrer Parteien.
+ */
+export const SCENARIO_PRESETS = [
+  {
+    id: 'right',
+    label: 'Rechtes Anliegen',
+    description: 'Ja: SVP, FDP · Nein: SP, Grüne/AL · Enthaltung: übrige',
+    yesParties: ['svp', 'fdp'],
+    noParties: ['sp', 'gruene', 'al'],
+  },
+  {
+    id: 'left',
+    label: 'Linkes Anliegen',
+    description: 'Ja: SP, Grüne/AL · Nein: SVP, FDP · Enthaltung: übrige',
+    yesParties: ['sp', 'gruene', 'al'],
+    noParties: ['svp', 'fdp'],
+  },
+];
+
+/**
+ * Stimmverhalten eines Szenarios auf die übergebenen Gruppen abbilden.
+ * Eine Gruppe stimmt nur dann Ja bzw. Nein, wenn **alle** ihre Parteien im
+ * Szenario so stimmen; sonst enthält sie sich.
+ *
+ * @param {Group[]} groups
+ * @param {string|{yesParties: string[], noParties: string[]}} preset Szenario oder dessen ID
+ * @returns {Record<string, string>} Gruppen-ID → Stimmverhalten
+ */
+export function presetVotes(groups, preset) {
+  const scenario =
+    typeof preset === 'string' ? SCENARIO_PRESETS.find((entry) => entry.id === preset) : preset;
+  const votes = {};
+  for (const group of groups) {
+    const partyIds = group.partyIds && group.partyIds.length ? group.partyIds : [group.id];
+    if (scenario && partyIds.every((id) => scenario.yesParties.includes(id))) {
+      votes[group.id] = VOTE_YES;
+    } else if (scenario && partyIds.every((id) => scenario.noParties.includes(id))) {
+      votes[group.id] = VOTE_NO;
+    } else {
+      votes[group.id] = DEFAULT_VOTE;
+    }
+  }
+  return votes;
+}
+
+/**
+ * Benannte Allianzen — fraktionsweise Bündnisse, die im Rat realistisch
+ * vorkommen. Reihenfolge und Namen sind bewusst redaktionell gesetzt.
+ */
+export const ALLIANCES = [
+  { id: 'svp-solo', name: 'SVP im Alleingang', fractionIds: ['svp'], color: '#3d7c3d' },
+  { id: 'rechte', name: 'Die Rechten', fractionIds: ['svp', 'fdp'], color: '#2f6d84' },
+  { id: 'buergerliche', name: 'Die Bürgerlichen', fractionIds: ['svp', 'fdp', 'mitte'], color: '#1565c0' },
+  {
+    id: 'christlich-buergerliche',
+    name: 'Die christlichen Bürgerlichen',
+    fractionIds: ['svp', 'fdp', 'mitte', 'evp-edu'],
+    color: '#b8860b',
+  },
+  {
+    id: 'gruen-buergerliche',
+    name: 'Die etwas grünen Bürgerlichen',
+    fractionIds: ['svp', 'fdp', 'mitte', 'glp'],
+    color: '#6b8f2e',
+  },
+  {
+    id: 'alle-ausser-links',
+    name: 'Einfach alle ausser die Linken',
+    fractionIds: ['svp', 'fdp', 'mitte', 'glp', 'evp-edu'],
+    color: '#8a6d3b',
+  },
+  { id: 'rot-gruen', name: 'Rot-grün', fractionIds: ['sp', 'gruene-al'], color: '#c0392b' },
+  {
+    id: 'rot-gruen-liberal',
+    name: 'Rot-grün & etwas liberal',
+    fractionIds: ['sp', 'gruene-al', 'glp'],
+    color: '#a8574a',
+  },
+  {
+    id: 'rot-gruen-christlich',
+    name: 'Rot-grün & etwas christlich',
+    fractionIds: ['sp', 'gruene-al', 'evp-edu'],
+    color: '#cf7a1f',
+  },
+  {
+    id: 'progressive',
+    name: 'Die progressive Allianz',
+    fractionIds: ['sp', 'gruene-al', 'glp', 'evp-edu'],
+    color: '#a3195b',
+  },
+  { id: 'zentrum', name: 'Das Zentrum', fractionIds: ['mitte', 'evp-edu', 'glp'], color: '#e06400' },
+  {
+    id: 'liberales-zentrum',
+    name: 'Das liberale Zentrum',
+    fractionIds: ['fdp', 'mitte', 'evp-edu', 'glp'],
+    color: '#2f80b8',
+  },
+  {
+    id: 'unheilig',
+    name: 'Unheilige Allianz :(',
+    fractionIds: ['svp', 'sp', 'gruene-al'],
+    color: '#6d4c41',
+  },
+];
+
+/**
+ * @typedef {{id: string, name: string, shortName?: string, color?: string, seats: number, partyIds?: string[]}} Group
  */
 
 function clampAbsences(seats, absences) {
@@ -137,6 +265,49 @@ export function outcomeLabel(outcome) {
     default:
       return 'noch keine Stimmen verteilt';
   }
+}
+
+/**
+ * Benannte Allianzen auswerten.
+ *
+ * Für jede Allianz wird geprüft, ob ihre anwesenden Mitglieder das
+ * erforderliche Mehr erreichen (angenommen, alle übrigen Anwesenden stimmen
+ * dagegen). Allianzen, deren Fraktionen nicht alle vorhanden sind, entfallen.
+ *
+ * @param {object} input
+ * @param {Group[]} input.groups Fraktionen mit stimmberechtigten Sitzen
+ * @param {Record<string, number>} [input.absences] Fraktions-ID → Absenzen
+ * @param {string} [input.majorityType]
+ * @param {Array} [input.alliances] Default: {@link ALLIANCES}
+ * @returns {Array<{alliance: object, groups: Group[], votes: number, required: number, winning: boolean, margin: number}>}
+ */
+export function allianceResults({
+  groups,
+  absences = {},
+  majorityType = 'simple',
+  alliances = ALLIANCES,
+}) {
+  const byId = new Map(groups.map((group) => [group.id, group]));
+  const presentOf = (group) => group.seats - clampAbsences(group.seats, absences[group.id]);
+
+  const totalSeats = groups.reduce((total, group) => total + group.seats, 0);
+  const presentTotal = groups.reduce((total, group) => total + presentOf(group), 0);
+  const required = requiredMajority(majorityType, presentTotal, totalSeats);
+
+  return alliances
+    .filter((alliance) => alliance.fractionIds.every((id) => byId.has(id)))
+    .map((alliance) => {
+      const members = alliance.fractionIds.map((id) => byId.get(id));
+      const votes = members.reduce((total, group) => total + presentOf(group), 0);
+      return {
+        alliance,
+        groups: members,
+        votes,
+        required,
+        winning: votes >= required,
+        margin: votes - required,
+      };
+    });
 }
 
 /**

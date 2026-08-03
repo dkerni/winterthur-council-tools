@@ -3,6 +3,7 @@
  */
 
 import { loadDatabase, dataErrorMessage, formatDateTime } from './data.js';
+import { councilNote } from './parties.js';
 import { computeStats, statsRows, GENDER_LABELS } from './stats.js';
 import { renderChart } from './charts.js';
 import { toCsv, downloadCsv, datedFilename } from './csv.js';
@@ -52,6 +53,7 @@ export async function createStatistics(container) {
   });
 
   renderQualityNote(noteHost, db);
+  container.querySelector('#stats-council').textContent = councilNote(db.meta);
 
   function render() {
     const groupMode = mode === 'total' ? 'party' : mode;
@@ -76,6 +78,7 @@ function skeleton() {
       </div>
       <button type="button" class="btn" id="stats-csv">Rohdaten als CSV</button>
     </div>
+    <p class="hint" id="stats-council"></p>
     <div id="stats-note"></div>
     <div class="kpi-grid" id="stats-kpi"></div>
     <div id="stats-extremes"></div>
@@ -104,9 +107,6 @@ function renderQualityNote(host, db) {
     `Das Geschlecht wird nicht offiziell publiziert. Es stammt aus einer manuell gepflegten Liste; ` +
       `${unknownGender} Person(en) sind als «unbekannt» erfasst${guessen(guessed)}. Korrekturhinweise sind willkommen.`,
   );
-  if (db.dataQuality && db.dataQuality.complete === false && db.dataQuality.note) {
-    parts.unshift(escapeHtml(db.dataQuality.note));
-  }
 
   host.innerHTML = `<div class="notice stats-note">${parts.join(' ')}${
     db.generatedAt ? ` <span class="hint">Datenstand: ${escapeHtml(formatDateTime(db.generatedAt))}.</span>` : ''

@@ -8,7 +8,7 @@
  */
 
 import { siteUrl } from './paths.js';
-import { loadPartyMeta, findParty, partiesInOrder } from './parties.js';
+import { loadPartyMeta, findParty, partiesInOrder, councilNote } from './parties.js';
 import { escapeHtml } from './layout.js';
 
 let config = null; // Inhalt von data/seating.json
@@ -18,6 +18,9 @@ let seatPositions = {}; // id → { px, py }
 let seatOccupants = {}; // id → { name, party, isFp }
 let initialOccupants = {}; // id → { name, party, isFp }
 let dragSourceId = null;
+
+/** Anteil der Bühnenhöhe, unterhalb dessen der Tooltip nach unten klappt. */
+const TOOLTIP_BELOW_RATIO = 0.25;
 
 /* ─── Koordinaten-Mapping ─────────────────────────────────────────────
    Hochformat-PDF → Anzeige:  dx = pdfHeight - py,  dy = px
@@ -65,15 +68,15 @@ function buildSvgBackground() {
                   fill="none" stroke="#d0d0c0" stroke-width="1" stroke-dasharray="4,6"/>`;
   }
 
-  const podX = CX - 70;
-  const podW = 140;
+  const podX = CX - 91;
+  const podW = 182;
   const podY = 8;
   const podH = 30;
   svgHtml += `
     <rect x="${podX}" y="${podY}" width="${podW}" height="${podH}"
           rx="4" fill="#e8e8d8" stroke="#b0b0a0" stroke-width="1"/>
     <text x="${CX}" y="${podY + 19}" text-anchor="middle"
-          font-size="11" fill="#888" font-family="Arial, sans-serif">Büro</text>
+          font-size="11" fill="#888" font-family="Arial, sans-serif">Präsidium/Büro</text>
   `;
 
   svg.innerHTML = svgHtml;
@@ -130,6 +133,10 @@ function createSeatEl(id, name, party, isFp, draggable, sx, sy) {
   el.style.left = (sx / m.stageWidth) * 100 + '%';
   el.style.top = (sy / m.stageHeight) * 100 + '%';
   el.style.background = colorFor(party);
+
+  // Sitze am oberen Bühnenrand bekommen den Tooltip unterhalb,
+  // sonst würde er ausserhalb des Diagramms abgeschnitten.
+  if (sy < m.stageHeight * TOOLTIP_BELOW_RATIO) el.classList.add('tip-below');
 
   el.innerHTML = `
     <span class="party-badge">${escapeHtml(abbrFor(party))}</span>
@@ -211,6 +218,12 @@ function buildLegend() {
   legendEl.innerHTML =
     items +
     `<div class="legend-item"><span style="color:#888">★ = Fraktionspräsident/in</span></div>`;
+}
+
+/** Hinweis zu Legislatur und Namens-Stichtag. */
+function buildCouncilNote() {
+  const el = document.getElementById('council-note');
+  if (el) el.textContent = councilNote(meta);
 }
 
 /* ─── Toolbar ─────────────────────────────────────────────────────── */
@@ -320,6 +333,7 @@ async function init() {
     initState();
     buildSvgBackground();
     buildLegend();
+    buildCouncilNote();
     renderSeats();
     bindToolbar();
   } catch (err) {

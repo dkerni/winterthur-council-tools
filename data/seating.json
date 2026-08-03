@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "Sitzkoordinaten des Parlamentssaals. px/py sind die Koordinaten aus dem Original-PDF (Hochformat); die Umrechnung auf die Bühne erfolgt über coordinateMapping.",
+  "description": "Sitzkoordinaten des Parlamentssaals. px/py sind die Koordinaten aus dem Original-PDF (Hochformat); die Umrechnung auf die Bühne erfolgt über coordinateMapping. Einzelne Koordinaten sind gegenüber dem PDF minimal verschoben, damit sich die Sitzsymbole in der Darstellung nicht überlappen.",
   "source": "media/Sitzplan_Parlamentssaal_Stand_01.07.2026.pdf",
   "asOf": "2026-07-01",
   "coordinateMapping": {
@@ -291,7 +291,7 @@
       "name": "Cristina Mancuso Cabello",
       "party": "FDP",
       "px": 357.2,
-      "py": 582.7,
+      "py": 598.7,
       "isFp": false
     },
     {
@@ -312,7 +312,7 @@
     },
     {
       "id": "glp03",
-      "name": "Samuel Kocher (Pärs.)",
+      "name": "Samuel Kocher (Präs.)",
       "party": "GLP",
       "px": 493.6,
       "py": 391.8,
@@ -483,7 +483,7 @@
       "name": "Iris Kuster",
       "party": "Die Mitte",
       "px": 386.6,
-      "py": 576.1,
+      "py": 560.1,
       "isFp": true
     },
     {
@@ -500,21 +500,21 @@
       "id": "f01",
       "name": "Kaspar Bopp",
       "party": "SP",
-      "px": 95,
+      "px": 122.0,
       "py": 661.1
     },
     {
       "id": "f02",
       "name": "Christa Meier",
       "party": "SP",
-      "px": 91.1,
+      "px": 118.1,
       "py": 623.5
     },
     {
       "id": "f03",
       "name": "Stefan Fritschi",
       "party": "FDP",
-      "px": 88.3,
+      "px": 115.3,
       "py": 589
     },
     {
@@ -529,14 +529,14 @@
       "name": "Nicolas Galladé",
       "party": "SP",
       "px": 158.4,
-      "py": 623
+      "py": 626.2
     },
     {
       "id": "f06",
       "name": "Andreas Geering",
       "party": "Die Mitte",
       "px": 155.1,
-      "py": 592.7
+      "py": 589.5
     },
     {
       "id": "f07",
