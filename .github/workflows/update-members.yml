@@ -51,6 +51,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: data/mitglieder-${{ github.run_id }}
+          BASE_BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -62,5 +63,5 @@ jobs:
           gh pr create \
             --title 'Mitgliederdaten aktualisieren' \
             --body 'Automatisch erzeugt von `scripts/scrape-members.mjs`. Bitte die Änderungen an `data/members.json` prüfen, bevor der Pull Request gemergt wird — insbesondere Ein- und Austritte sowie Fraktionswechsel.' \
-            --base "${{ github.ref_name }}" \
+            --base "$BASE_BRANCH" \
             --head "$BRANCH"
