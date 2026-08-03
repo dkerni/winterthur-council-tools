@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "description": "Das Geschlecht ist auf parlament.winterthur.ch nicht erfasst. Diese Datei wird manuell gepflegt und vom Scraper in data/members.json eingemischt. Nicht aufgeführte Personen erhalten gender = \"unbekannt\". Zuordnung erfolgt über die Personen-ID (falls bekannt), sonst über den normalisierten Namen.",
-  "values": ["m", "w", "d", "unbekannt"],
+  "description": "Das Geschlecht ist auf parlament.winterthur.ch nicht erfasst. Diese Datei wird manuell gepflegt und vom Scraper in data/members.json eingemischt. Nicht aufgeführte Personen erhalten gender = \"d\". Zuordnung erfolgt über die Personen-ID (falls bekannt), sonst über den normalisierten Namen.",
+  "values": ["m", "w", "d"],
   "correctionContact": "https://dominik-kern.ch/",
   "overrides": [
     { "name": "Gabriela Stritt", "gender": "w" },
@@ -18,7 +18,7 @@
     { "name": "Cristina Brunel", "gender": "w" },
     { "name": "Martina Pfirter", "gender": "w" },
     { "name": "Thomi Gschwind", "gender": "m" },
-    { "name": "Tobija Fischer", "gender": "unbekannt" },
+    { "name": "Tobija Fischer", "gender": "m" },
     { "name": "Valeria Muster", "gender": "w" },
     { "name": "Lea Jacot-Descombes", "gender": "w" },
     { "name": "Gabriella Gisler", "gender": "w" },
@@ -35,7 +35,7 @@
     { "name": "Daniel Zwahlen", "gender": "m" },
     { "name": "Raphael Tobler", "gender": "m" },
     { "name": "Raphael Perroulaz", "gender": "m" },
-    { "name": "Dani Romay Ogando", "gender": "unbekannt" },
+    { "name": "Dani Romay Ogando", "gender": "m" },
     { "name": "Felix Helg", "gender": "m" },
     { "name": "Christian Maier", "gender": "m" },
     { "name": "Cristina Mancuso Cabello", "gender": "w" },
