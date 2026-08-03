@@ -1,0 +1,17 @@
+{
+  "name": "winterthur-council-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Werkzeuge rund um das Stadtparlament Winterthur (statische Website + Scraper)",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "scrape": "node scripts/scrape-members.mjs",
+    "scrape:dry": "node scripts/scrape-members.mjs --dry-run",
+    "validate": "node scripts/validate-members.mjs",
+    "test": "node --test scripts/test/"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "description": "Manuell gepflegte Stammdaten zu Parteien und Fraktionen. Reihenfolge 'order' entspricht der Sitzordnung von rechts (1) nach links (9). Wird vom Scraper zum Normalisieren der Quelltexte und von der Website für Farben, Kurznamen und Sortierung verwendet.",
+  "parties": [
+    {
+      "id": "svp",
+      "abbr": "SVP",
+      "name": "Schweizerische Volkspartei",
+      "color": "#3d7c3d",
+      "order": 1,
+      "fractionId": "svp",
+      "aliases": ["SVP", "Schweizerische Volkspartei", "Schweizerische Volkspartei (SVP)"]
+    },
+    {
+      "id": "fdp",
+      "abbr": "FDP",
+      "name": "FDP.Die Liberalen",
+      "color": "#1565c0",
+      "order": 2,
+      "fractionId": "fdp",
+      "aliases": ["FDP", "FDP.Die Liberalen", "FDP. Die Liberalen", "FDP.Die Liberalen (FDP)", "Freisinnig-Demokratische Partei"]
+    },
+    {
+      "id": "mitte",
+      "abbr": "Mitte",
+      "name": "Die Mitte",
+      "color": "#e06400",
+      "order": 3,
+      "fractionId": "mitte",
+      "aliases": ["Die Mitte", "Mitte", "Die Mitte (Mitte)", "CVP", "Die Mitte Winterthur"]
+    },
+    {
+      "id": "glp",
+      "abbr": "GLP",
+      "name": "Grünliberale Partei",
+      "color": "#8fae00",
+      "order": 4,
+      "fractionId": "glp",
+      "aliases": ["GLP", "glp", "Grünliberale Partei", "Grünliberale Partei (GLP)", "Grünliberale"]
+    },
+    {
+      "id": "edu",
+      "abbr": "EDU",
+      "name": "Eidgenössisch-Demokratische Union",
+      "color": "#555555",
+      "order": 5,
+      "fractionId": "evp-edu",
+      "aliases": ["EDU", "Eidgenössisch-Demokratische Union", "Eidgenössisch-Demokratische Union (EDU)"]
+    },
+    {
+      "id": "evp",
+      "abbr": "EVP",
+      "name": "Evangelische Volkspartei",
+      "color": "#e6a400",
+      "order": 6,
+      "fractionId": "evp-edu",
+      "aliases": ["EVP", "Evangelische Volkspartei", "Evangelische Volkspartei (EVP)"]
+    },
+    {
+      "id": "sp",
+      "abbr": "SP",
+      "name": "Sozialdemokratische Partei",
+      "color": "#e8001a",
+      "order": 7,
+      "fractionId": "sp",
+      "aliases": ["SP", "Sozialdemokratische Partei", "Sozialdemokratische Partei (SP)"]
+    },
+    {
+      "id": "gruene",
+      "abbr": "Grüne",
+      "name": "Grüne",
+      "color": "#1e9e1e",
+      "order": 8,
+      "fractionId": "gruene-al",
+      "aliases": ["Grüne", "Gruene", "Grüne Winterthur", "Grüne (Grüne)"]
+    },
+    {
+      "id": "al",
+      "abbr": "AL",
+      "name": "Alternative Liste",
+      "color": "#d95b0e",
+      "order": 9,
+      "fractionId": "gruene-al",
+      "aliases": ["AL", "Alternative Liste", "Alternative Liste (AL)"]
+    }
+  ],
+  "fractions": [
+    {
+      "id": "svp",
+      "name": "SVP-Fraktion",
+      "shortName": "SVP",
+      "partyIds": ["svp"],
+      "order": 1,
+      "aliases": ["SVP", "SVP-Fraktion", "Fraktion SVP"]
+    },
+    {
+      "id": "fdp",
+      "name": "FDP-Fraktion",
+      "shortName": "FDP",
+      "partyIds": ["fdp"],
+      "order": 2,
+      "aliases": ["FDP", "FDP-Fraktion", "Fraktion FDP", "FDP.Die Liberalen"]
+    },
+    {
+      "id": "mitte",
+      "name": "Die Mitte-Fraktion",
+      "shortName": "Mitte",
+      "partyIds": ["mitte"],
+      "order": 3,
+      "aliases": ["Die Mitte", "Mitte", "Die Mitte-Fraktion", "Fraktion Die Mitte"]
+    },
+    {
+      "id": "glp",
+      "name": "GLP-Fraktion",
+      "shortName": "GLP",
+      "partyIds": ["glp"],
+      "order": 4,
+      "aliases": ["GLP", "GLP-Fraktion", "Fraktion GLP", "Grünliberale Partei"]
+    },
+    {
+      "id": "evp-edu",
+      "name": "EVP/EDU-Fraktion",
+      "shortName": "EVP/EDU",
+      "partyIds": ["evp", "edu"],
+      "order": 5,
+      "aliases": ["EVP/EDU", "EVP/EDU-Fraktion", "EDU/EVP", "EDU/EVP-Fraktion", "Fraktion EVP/EDU"]
+    },
+    {
+      "id": "sp",
+      "name": "SP-Fraktion",
+      "shortName": "SP",
+      "partyIds": ["sp"],
+      "order": 6,
+      "aliases": ["SP", "SP-Fraktion", "Fraktion SP", "Sozialdemokratische Partei"]
+    },
+    {
+      "id": "gruene-al",
+      "name": "Grüne/AL-Fraktion",
+      "shortName": "Grüne/AL",
+      "partyIds": ["gruene", "al"],
+      "order": 7,
+      "aliases": ["Grüne/AL", "Grüne/AL-Fraktion", "AL/Grüne", "Fraktion Grüne/AL", "Grüne und AL"]
+    }
+  ]
+}
