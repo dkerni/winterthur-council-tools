@@ -290,8 +290,8 @@
       "id": "fdp08",
       "name": "Cristina Mancuso Cabello",
       "party": "FDP",
-      "px": 357.2,
-      "py": 598.7,
+      "px": 356,
+      "py": 580,
       "isFp": false
     },
     {
@@ -482,8 +482,8 @@
       "id": "mit04",
       "name": "Iris Kuster",
       "party": "Die Mitte",
-      "px": 386.6,
-      "py": 560.1,
+      "px": 390,
+      "py": 570,
       "isFp": true
     },
     {
@@ -491,7 +491,7 @@
       "name": "Kaspar Vogel",
       "party": "Die Mitte",
       "px": 422.4,
-      "py": 559.3,
+      "py": 553,
       "isFp": false
     }
   ],

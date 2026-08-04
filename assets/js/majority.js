@@ -112,7 +112,6 @@ export function presetVotes(groups, preset) {
  * vorkommen. Reihenfolge und Namen sind bewusst redaktionell gesetzt.
  */
 export const ALLIANCES = [
-  { id: 'svp-solo', name: 'SVP im Alleingang', fractionIds: ['svp'], color: '#3d7c3d' },
   { id: 'rechte', name: 'Die Rechten', fractionIds: ['svp', 'fdp'], color: '#2f6d84' },
   { id: 'buergerliche', name: 'Die Bürgerlichen', fractionIds: ['svp', 'fdp', 'mitte'], color: '#1565c0' },
   {
@@ -152,7 +151,6 @@ export const ALLIANCES = [
     fractionIds: ['sp', 'gruene-al', 'glp', 'evp-edu'],
     color: '#a3195b',
   },
-  { id: 'zentrum', name: 'Das Zentrum', fractionIds: ['mitte', 'evp-edu', 'glp'], color: '#e06400' },
   {
     id: 'liberales-zentrum',
     name: 'Das liberale Zentrum',
