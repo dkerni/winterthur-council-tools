@@ -6,7 +6,7 @@
  * gespiegelt, damit auch reines CSS damit arbeiten kann.
  */
 
-import { fetchJson } from './access.js';
+import { fetchJson } from './paths.js';
 
 let metaPromise = null;
 

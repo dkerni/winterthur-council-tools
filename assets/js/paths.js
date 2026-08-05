@@ -19,3 +19,14 @@ export const SITE_BASE = new URL('../../', import.meta.url);
 export function siteUrl(relPath) {
   return new URL(relPath, SITE_BASE).href;
 }
+
+/**
+ * Lädt eine JSON-Datei relativ zur Website-Basis.
+ * @param {string} relPath z.B. 'data/members.json'
+ * @returns {Promise<object>}
+ */
+export async function fetchJson(relPath) {
+  const res = await fetch(siteUrl(relPath));
+  if (!res.ok) throw new Error(`${relPath}: HTTP ${res.status}`);
+  return res.json();
+}

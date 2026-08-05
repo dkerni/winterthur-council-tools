@@ -41,16 +41,11 @@ jobs:
           cp index.html impressum.html .nojekyll _site/
           cp -r assets data media tools _site/
 
-      - name: Zugangsschutz anwenden
-        env:
-          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
-        run: node scripts/protect-site.mjs --dir=_site
-
       - name: Pages konfigurieren
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Artefakt hochladen
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
@@ -63,4 +58,4 @@ jobs:
     steps:
       - name: Auf GitHub Pages veröffentlichen
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
