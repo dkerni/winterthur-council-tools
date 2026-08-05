@@ -3,8 +3,8 @@
 Werkzeuge rund um das **Stadtparlament Winterthur** — eine statische Website ohne Backend
 und ohne Tracking. Alle Daten stammen aus den öffentlich zugänglichen
 Publikationen des Parlamentsdienstes und liegen als JSON im Repository.
-Veröffentlicht wird die Seite über **GitHub Pages**, geschützt durch ein gemeinsames
-Passwort (siehe [Veröffentlichung und Zugangsschutz](#veröffentlichung-und-zugangsschutz)).
+Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pages**
+(siehe [Veröffentlichung](#veröffentlichung)).
 
 > Privates Projekt ohne Verbindung zur Stadt Winterthur. Alle Angaben ohne Gewähr.
 > Details im [Impressum](impressum.html).
@@ -30,8 +30,7 @@ Passwort (siehe [Veröffentlichung und Zugangsschutz](#veröffentlichung-und-zug
 │   ├── css/main.css        Design-Tokens, Layout, Komponenten
 │   ├── css/seating.css     nur für den Sitzplan
 │   └── js/
-│       ├── paths.js        Basis-URL aus import.meta.url (funktioniert im Unterpfad)
-│       ├── access.js       Zugangsschutz: Passwort-Dialog + Entschlüsselung der Daten
+│       ├── paths.js        Basis-URL aus import.meta.url (funktioniert im Unterpfad) + fetchJson
 │       ├── layout.js       Header, Navigation, Footer, Disclaimer
 │       ├── parties.js      Parteien-/Fraktionsmetadaten
 │       ├── data.js         Datenzugriff (Promise-Cache) und Selektoren
@@ -64,61 +63,35 @@ npx serve .          # oder: python3 -m http.server 8080
 
 Danach `http://localhost:3000` bzw. `http://localhost:8080` aufrufen. Ein Build-Schritt
 ist nicht nötig — die Seite besteht aus reinen ES-Modulen und wird so ausgeliefert, wie sie
-im Repository liegt. Lokal ist die Seite **nicht** passwortgeschützt: der Schutz entsteht
-erst beim Deployment (siehe unten), lokal fehlt `data/access.json` und die Daten werden als
-Klartext geladen.
+im Repository liegt.
 
-## Veröffentlichung und Zugangsschutz
+## Veröffentlichung
 
 Die Seite wird von `.github/workflows/deploy-pages.yml` bei jedem Push auf `main` (oder
 manuell über *Actions → GitHub Pages veröffentlichen → Run workflow*) auf GitHub Pages
-veröffentlicht: Tests → Datenvalidierung → `_site` zusammenstellen → verschlüsseln →
-Deployment. Nur `index.html`, `impressum.html`, `tools/`, `assets/`, `data/`, `media/` und
-`.nojekyll` gelangen ins Deployment; Skripte, Workflows und Dokumentation bleiben aussen vor.
+veröffentlicht: Tests → Datenvalidierung → `_site` zusammenstellen → Upload des
+Pages-Artefakts → Deployment. Nur `index.html`, `impressum.html`, `tools/`, `assets/`,
+`data/`, `media/` und `.nojekyll` gelangen ins Deployment; Skripte, Workflows und
+Dokumentation bleiben aussen vor.
 
 ### Einmalige Einrichtung
 
-1. **Passwort hinterlegen** — *Settings → Secrets and variables → Actions → New repository
-   secret*, Name `SITE_PASSWORD`, Wert = das gemeinsame Passwort (mindestens 8 Zeichen).
-   Ohne dieses Secret bricht der Workflow ab; es wird nie ungeschützt veröffentlicht.
-2. **Pages aktivieren** — *Settings → Pages → Build and deployment → Source: **GitHub
-   Actions***.
-3. Workflow laufen lassen. Die Seite erscheint unter
+1. **Pages aktivieren** — *Settings → Pages → Build and deployment → Source: **GitHub
+   Actions***. Damit veröffentlicht der Workflow direkt aus Actions; es braucht weder einen
+   `gh-pages`-Branch noch weitere Konfiguration.
+2. Workflow laufen lassen (Push auf `main` oder *Run workflow*). Die Seite erscheint unter
    `https://<benutzer>.github.io/winterthur-council-tools/`.
 
-Passwortwechsel = Secret ändern und den Workflow erneut ausführen. Alle Besucherinnen und
-Besucher teilen sich dasselbe Passwort; einzelne Konten gibt es nicht.
-
-### Wie der Schutz funktioniert
-
-GitHub Pages ist reines Static Hosting — **HTTP-Basic-Auth ist dort nicht möglich**, weil
-kein Server konfiguriert werden kann. Ein reiner Passwort-Dialog im JavaScript wäre zudem
-wirkungslos: die Daten liessen sich weiterhin direkt abrufen. Deshalb werden die Daten beim
-Deployment verschlüsselt:
-
-* `scripts/protect-site.mjs` leitet aus `SITE_PASSWORD` per **PBKDF2-SHA-256** (310 000
-  Runden, zufälliges Salt) einen Schlüssel ab und verschlüsselt jede Datei in `_site/data/`
-  mit **AES-256-GCM** zu `<name>.json.enc`. Der Klartext wird aus dem Artefakt entfernt.
-* `_site/data/access.json` enthält nur Salt, Rundenzahl und einen verschlüsselten Prüfwert —
-  daraus lässt sich das Passwort nicht zurückrechnen.
-* `assets/js/access.js` fragt im Browser nach dem Passwort, leitet denselben Schlüssel über
-  die Web-Crypto-API ab und entschlüsselt die Daten zur Laufzeit. Der Schlüssel bleibt im
-  `sessionStorage` des Tabs (Knopf «Sperren» im Footer entfernt ihn wieder).
-
-**Grenzen:** Der Schutz ist so stark wie das Passwort und dessen Verbreitung — wer es kennt,
-kann die entschlüsselten Daten weitergeben. Ein Passwortwechsel wirkt erst nach dem nächsten
-Deployment. Die HTML-Gerüste (Überschriften, Beschreibungstexte) sind unverschlüsselt, weil
-GitHub Pages sie direkt ausliefert; ohne Passwort bleiben sie jedoch leer, da alle Inhalte
-aus den verschlüsselten Daten stammen. Ist das Repository öffentlich, sind die Daten
-ohnehin im Repository einsehbar — für echten Schutz muss das **Repository privat** sein
-(GitHub Pages funktioniert für private Repositories in bezahlten Plänen).
+Das Repository ist **öffentlich**, GitHub Pages ist damit ohne kostenpflichtigen Plan
+verfügbar. Die Seite ist frei zugänglich; einen Passwortschutz gibt es nicht — die Daten
+stammen ohnehin aus öffentlichen Publikationen des Parlamentsdienstes und liegen offen im
+Repository.
 
 ### Deployment lokal nachstellen
 
 ```bash
 mkdir -p _site && cp index.html impressum.html .nojekyll _site/ && cp -r assets data media tools _site/
-SITE_PASSWORD='mein-passwort' node scripts/protect-site.mjs --dir=_site
-npx serve _site      # Passwortdialog erscheint beim Aufruf
+npx serve _site
 ```
 
 ## Daten aktualisieren
@@ -232,9 +205,8 @@ Ergänzend:
 * **`package.json` trotz „kein Build-Tool“** — es werden keine Abhängigkeiten installiert
   und nichts gebündelt. Die Datei dient nur den npm-Skripten und `"type": "module"`,
   damit `node --test` die Browser-Module direkt importieren kann.
-* **Zusätzliche Module** `paths.js` (Basis-URL für den GitHub-Pages-Unterpfad),
-  `csv.js` (gemeinsamer CSV-Export von Statistik und Mitgliederliste) und `access.js`
-  (Passwortschutz des Deployments).
+* **Zusätzliche Module** `paths.js` (Basis-URL für den GitHub-Pages-Unterpfad samt
+  `fetchJson`) und `csv.js` (gemeinsamer CSV-Export von Statistik und Mitgliederliste).
 * **Vorläufige `data/members.json`** — die Datei wurde aus `data/seating.json` und
   `data/gender-overrides.json` erzeugt (`scripts/bootstrap-members.mjs`), weil die
   Entwicklungsumgebung keinen Netzwerkzugriff auf `parlament.winterthur.ch` hat. Sie

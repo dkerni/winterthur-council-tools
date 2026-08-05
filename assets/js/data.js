@@ -7,7 +7,7 @@
  * die Website liest sie nur.
  */
 
-import { fetchJson } from './access.js';
+import { fetchJson } from './paths.js';
 import { loadPartyMeta, councilOf } from './parties.js';
 
 let dbPromise = null;

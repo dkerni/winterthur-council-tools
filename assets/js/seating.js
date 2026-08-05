@@ -7,7 +7,7 @@
  * aus `data/party-meta.json`.
  */
 
-import { fetchJson } from './access.js';
+import { fetchJson } from './paths.js';
 import { loadPartyMeta, findParty, partiesInOrder, councilNote } from './parties.js';
 import { escapeHtml } from './layout.js';
 
