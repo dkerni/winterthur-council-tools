@@ -13,7 +13,6 @@ import { councilNote } from './parties.js';
 import {
   DEFAULT_VOTE,
   MAJORITY_TYPES,
-  SCENARIO_PRESETS,
   VOTE_ABSTAIN,
   VOTE_NO,
   VOTE_OPTIONS,
@@ -22,7 +21,6 @@ import {
   computeResult,
   majorityDescription,
   outcomeLabel,
-  presetVotes,
 } from './majority.js';
 
 const VOTE_CODES = { [VOTE_YES]: 'j', [VOTE_NO]: 'n', [VOTE_ABSTAIN]: 'e' };
@@ -53,21 +51,17 @@ export async function createMajorityCalculator(container, options = {}) {
   }
 
   const state = {
-    mode: options.mode === 'fraction' ? 'fraction' : 'party',
+    mode: options.mode === 'party' ? 'party' : 'fraction',
     majorityType: 'simple',
-    abstentionsCount: false,
-    preset: compact ? SCENARIO_PRESETS[0].id : null,
     votes: {},
     absences: {},
   };
 
-  const hasUrlVotes = usePermalink && new URLSearchParams(window.location.search).has('stimmen');
   if (usePermalink) readStateFromUrl(state);
 
   container.innerHTML = compact ? compactSkeleton() : fullSkeleton();
   const refs = {
     controls: container.querySelector('[data-controls]'),
-    presets: container.querySelector('[data-presets]'),
     groups: container.querySelector('[data-groups]'),
     result: container.querySelector('[data-result]'),
     alliances: container.querySelector('[data-alliances]'),
@@ -97,12 +91,6 @@ export async function createMajorityCalculator(container, options = {}) {
     return mapped;
   }
 
-  function applyPreset(presetId) {
-    const preset = SCENARIO_PRESETS.find((entry) => entry.id === presetId);
-    state.preset = preset ? preset.id : null;
-    if (preset) state.votes = presetVotes(currentGroups(), preset);
-  }
-
   function ensureVotes() {
     const ids = new Set(currentGroups().map((group) => group.id));
     for (const id of Object.keys(state.votes)) if (!ids.has(id)) delete state.votes[id];
@@ -110,32 +98,6 @@ export async function createMajorityCalculator(container, options = {}) {
     for (const group of currentGroups()) {
       if (!state.votes[group.id]) state.votes[group.id] = DEFAULT_VOTE;
     }
-  }
-
-  if (state.preset && !hasUrlVotes) applyPreset(state.preset);
-
-  function renderPresets() {
-    if (!refs.presets) return;
-    refs.presets.innerHTML = `
-      <span class="segmented" role="group" aria-label="Szenario">
-        ${SCENARIO_PRESETS.map(
-          (preset) =>
-            `<button type="button" data-preset="${escapeHtml(preset.id)}"
-                     title="${escapeHtml(preset.description)}"
-                     aria-pressed="${state.preset === preset.id}">${escapeHtml(preset.label)}</button>`,
-        ).join('')}
-      </span>
-      <span class="hint preset-hint">${escapeHtml(
-        SCENARIO_PRESETS.find((preset) => preset.id === state.preset)?.description ||
-          'Eigenes Szenario — Stimmverhalten je Gruppe frei setzen.',
-      )}</span>`;
-
-    refs.presets.querySelectorAll('[data-preset]').forEach((button) => {
-      button.addEventListener('click', () => {
-        applyPreset(button.dataset.preset);
-        renderAll();
-      });
-    });
   }
 
   function renderNote() {
@@ -158,8 +120,8 @@ export async function createMajorityCalculator(container, options = {}) {
     refs.controls.innerHTML = `
       <div class="toolbar">
         <span class="segmented" role="group" aria-label="Gruppierung">
-          <button type="button" data-mode="party" aria-pressed="${state.mode === 'party'}">Nach Partei</button>
           <button type="button" data-mode="fraction" aria-pressed="${state.mode === 'fraction'}">Nach Fraktion</button>
+          <button type="button" data-mode="party" aria-pressed="${state.mode === 'party'}">Nach Partei</button>
         </span>
 
         <label>Mehrheitsart
@@ -171,11 +133,6 @@ export async function createMajorityCalculator(container, options = {}) {
                 )}</option>`,
             ).join('')}
           </select>
-        </label>
-
-        <label>
-          <input type="checkbox" data-abstentions ${state.abstentionsCount ? 'checked' : ''} />
-          Enthaltungen zählen zur Basis
         </label>
 
         <button type="button" data-reset>Zurücksetzen</button>
@@ -192,7 +149,6 @@ export async function createMajorityCalculator(container, options = {}) {
         state.mode = button.dataset.mode;
         state.votes = {};
         state.absences = {};
-        if (state.preset) applyPreset(state.preset);
         renderAll();
       });
     });
@@ -202,17 +158,10 @@ export async function createMajorityCalculator(container, options = {}) {
       renderAll();
     });
 
-    refs.controls.querySelector('[data-abstentions]').addEventListener('change', (event) => {
-      state.abstentionsCount = event.target.checked;
-      renderAll();
-    });
-
     refs.controls.querySelector('[data-reset]').addEventListener('click', () => {
       state.votes = {};
       state.absences = {};
       state.majorityType = 'simple';
-      state.abstentionsCount = false;
-      state.preset = null;
       renderAll();
     });
 
@@ -283,8 +232,6 @@ export async function createMajorityCalculator(container, options = {}) {
       input.addEventListener('change', (event) => {
         const groupId = event.target.closest('[data-group]').dataset.group;
         state.votes[groupId] = event.target.value;
-        state.preset = null;
-        renderPresets();
         renderResult();
         syncUrl();
       });
@@ -310,7 +257,6 @@ export async function createMajorityCalculator(container, options = {}) {
       votes: state.votes,
       absences: state.absences,
       majorityType: state.majorityType,
-      abstentionsCount: state.abstentionsCount,
     });
 
     const segments = [
@@ -409,7 +355,6 @@ export async function createMajorityCalculator(container, options = {}) {
     const params = new URLSearchParams();
     params.set('modus', state.mode === 'fraction' ? 'fraktion' : 'partei');
     if (state.majorityType !== 'simple') params.set('mehr', state.majorityType);
-    if (state.abstentionsCount) params.set('enthaltungen', '1');
 
     const votes = Object.entries(state.votes)
       .filter(([, vote]) => vote && vote !== DEFAULT_VOTE)
@@ -429,7 +374,6 @@ export async function createMajorityCalculator(container, options = {}) {
     ensureVotes();
     renderNote();
     renderControls();
-    renderPresets();
     renderGroups();
     renderResult();
     syncUrl();
@@ -442,12 +386,11 @@ function readStateFromUrl(state) {
   const params = new URLSearchParams(window.location.search);
 
   const mode = params.get('modus');
-  if (mode === 'fraktion') state.mode = 'fraction';
+  if (mode === 'partei') state.mode = 'party';
+  else if (mode === 'fraktion') state.mode = 'fraction';
 
   const majorityType = params.get('mehr');
   if (MAJORITY_TYPES.some((type) => type.id === majorityType)) state.majorityType = majorityType;
-
-  state.abstentionsCount = params.get('enthaltungen') === '1';
 
   for (const entry of (params.get('stimmen') || '').split(',')) {
     const [id, code] = entry.split(':');
@@ -464,7 +407,6 @@ function readStateFromUrl(state) {
 function fullSkeleton() {
   return `
     <div data-council-note></div>
-    <div class="preset-bar" data-presets></div>
     <div data-controls></div>
     <div class="majority-layout">
       <div class="majority-groups" data-groups></div>
@@ -478,7 +420,6 @@ function fullSkeleton() {
 
 function compactSkeleton() {
   return `
-    <div class="preset-bar" data-presets></div>
     <div class="majority-groups compact" data-groups></div>
     <div class="majority-result compact" data-result></div>
     <p class="widget-link">

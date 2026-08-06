@@ -112,7 +112,6 @@ export function presetVotes(groups, preset) {
  * vorkommen. Reihenfolge und Namen sind bewusst redaktionell gesetzt.
  */
 export const ALLIANCES = [
-  { id: 'rechte', name: 'Die Rechten', fractionIds: ['svp', 'fdp'], color: '#2f6d84' },
   { id: 'buergerliche', name: 'Die Bürgerlichen', fractionIds: ['svp', 'fdp', 'mitte'], color: '#1565c0' },
   {
     id: 'christlich-buergerliche',

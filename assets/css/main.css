@@ -550,17 +550,6 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 
 .result-summary { font-size: 0.82rem; line-height: 1.55; color: #444; }
 
-/* Szenario-Schalter */
-.preset-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.8rem;
-  margin-bottom: 0.8rem;
-}
-
-.preset-bar .preset-hint { margin: 0; }
-
 /* Mögliche Allianzen */
 .alliance-list {
   list-style: none;
