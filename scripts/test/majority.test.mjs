@@ -321,11 +321,8 @@ test('Allianzen: Stimmen und Mehrheit werden korrekt berechnet', () => {
   const byId = new Map(results.map((entry) => [entry.alliance.id, entry]));
 
   assert.equal(results.length, ALLIANCES.length);
-  assert.equal(byId.get('svp-solo').votes, 10);
-  assert.equal(byId.get('svp-solo').winning, false);
-  assert.equal(byId.get('rechte').votes, 18);
-  assert.equal(byId.get('rechte').winning, false);
   assert.equal(byId.get('buergerliche').votes, 23);
+  assert.equal(byId.get('buergerliche').winning, false);
   assert.equal(byId.get('rot-gruen').votes, 26);
   assert.equal(byId.get('progressive').votes, 36);
   assert.equal(byId.get('progressive').winning, true);
@@ -348,8 +345,6 @@ test('Allianzen berücksichtigen Absenzen', () => {
   assert.equal(byId.get('rot-gruen').votes, 9);
   // 42 anwesende Stimmen ⇒ erforderliches Mehr 22 (einfaches Mehr).
   assert.equal(byId.get('rot-gruen').required, 22);
-  assert.equal(byId.get('rechte').votes, 18);
-  assert.equal(byId.get('rechte').winning, false);
   assert.equal(byId.get('buergerliche').votes, 23);
   assert.equal(byId.get('buergerliche').winning, true);
 });

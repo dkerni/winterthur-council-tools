@@ -15,7 +15,7 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 | --- | --- |
 | `index.html` | Startseite mit Tool-Kacheln, kompaktem Mehrheitsrechner und Datenstand |
 | `tools/sitzplan.html` | Interaktive Sitzordnung (Drag & Drop, Fraktionspräsidien, Export/Import) |
-| `tools/mehrheitsrechner.html` | Mehrheiten je Partei/Fraktion, Szenario-Vorlagen, Absenzen, mögliche Allianzen, teilbarer Link |
+| `tools/mehrheitsrechner.html` | Mehrheiten je Fraktion/Partei, Absenzen, mögliche Allianzen, teilbarer Link |
 | `tools/statistik.html` | Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise, Berufe (gesamt/Partei/Fraktion) |
 | `tools/mitglieder.html` | Durchsuchbare, sortierbare Mitgliederliste mit Detailbereich und CSV-Export |
 | `impressum.html` | Betreiber, Datenquellen, Umgang mit Personendaten, Haftungsausschluss |
@@ -80,7 +80,7 @@ Dokumentation bleiben aussen vor.
    Actions***. Damit veröffentlicht der Workflow direkt aus Actions; es braucht weder einen
    `gh-pages`-Branch noch weitere Konfiguration.
 2. Workflow laufen lassen (Push auf `main` oder *Run workflow*). Die Seite erscheint unter
-   `https://<benutzer>.github.io/winterthur-council-tools/`.
+   `https://dkerni.github.io/winterthur-council-tools/`.
 
 Das Repository ist **öffentlich**, GitHub Pages ist damit ohne kostenpflichtigen Plan
 verfügbar. Die Seite ist frei zugänglich; einen Passwortschutz gibt es nicht — die Daten
