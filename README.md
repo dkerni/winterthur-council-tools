@@ -119,8 +119,11 @@ Der Scraper ruft die Quelle sequenziell mit Pause zwischen den Anfragen ab (rund
 * Kommissionen — `https://parlament.winterthur.ch/kommissionen`
 
 Automatisiert läuft das Ganze wöchentlich über den Workflow «Update member data»
-(`.github/workflows/update-members.yml`): Scraper → Validierung → Tests → **Pull
-Request** (kein direkter Push auf `main`), damit jede Datenänderung sichtbar geprüft wird.
+(`.github/workflows/update-members.yml`): Scraper → Validierung → Tests → **Commit auf
+`main`** und anschliessend ein Pages-Deployment. Ein Pull Request wäre zur Prüfung
+angenehmer, doch GitHub Actions darf in diesem Repository keine Pull Requests erstellen
+(«GitHub Actions is not permitted to create or approve pull requests»); die Änderung
+wird deshalb direkt committet und allein durch Validierung und Tests abgesichert.
 Warnungen der Validierung (z.B. eine auf der Quelle fehlende Berufsangabe) werden
 ausgegeben, brechen den Lauf aber nicht ab — nur Schema- und Konsistenzfehler tun das.
 `.github/workflows/validate.yml` prüft Tests und Daten bei jedem Push und Pull Request,
@@ -262,7 +265,7 @@ Ergänzend:
   i-web-CMS (JSON in `data-entities`, doppelt escaped) ist nach bestem Wissen umgesetzt,
   inklusive Browser-User-Agent, mehrerer Erkennungsstrategien und Warnungen bei
   unerwarteter Struktur. **Der erste Lauf der GitHub Action muss daher kontrolliert
-  werden**; der erzeugte Pull Request macht die Änderungen sichtbar.
+  werden**; der Commit des Workflows macht die Änderungen sichtbar.
 * **Amtsdauer** = Jahre seit dem ersten Eintritt ins Parlament; Unterbrüche werden nicht
   abgezogen, weil die Quelle nur Eintrittsdaten publiziert.
 * **Alter** ist auf ±1 Jahr genau, da die Quelle nur das Geburtsjahr nennt.
