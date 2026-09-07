@@ -220,6 +220,14 @@ button.primary, .btn.primary {
 
 button.primary:hover, .btn.primary:hover { background: var(--clr-accent-dark); color: #fff; }
 
+button:disabled, .btn:disabled,
+button:disabled:hover, .btn:disabled:hover {
+  background: #ececec;
+  border-color: #d5d5d5;
+  color: var(--clr-faint);
+  cursor: not-allowed;
+}
+
 button:focus-visible, .btn:focus-visible, a:focus-visible,
 input:focus-visible, select:focus-visible {
   outline: 2px solid #06c;
@@ -365,6 +373,21 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
   position: absolute; width: 1px; height: 1px; margin: -1px;
   padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+
+/* ─── Traktanden-Download ──────────────────────────────────────────── */
+.agenda-download {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+/* Eigene Abstände (u.a. der negative von `.hint`) würden hier mit dem
+   Button überlappen — der Abstand kommt allein vom `gap`. */
+.agenda-download > * { margin: 0; }
+.agenda-download .agenda-summary { font-size: 0.85rem; line-height: 1.5; }
+.agenda-download .hint { max-width: 70ch; }
+.agenda-download .loading { padding: 0; }
 
 /* ─── Diagramme ────────────────────────────────────────────────────── */
 .chart-grid {

@@ -29,7 +29,7 @@ function describeSession(session) {
 function renderUnavailable(container, message) {
   container.innerHTML = `
     <p class="notice info">${escapeHtml(message)}</p>
-    <p><button type="button" class="btn" disabled>Traktandenliste als Excel</button></p>`;
+    <p><button type="button" class="btn" disabled aria-disabled="true">Traktandenliste als Excel</button></p>`;
 }
 
 function renderDownload(container, agenda) {
@@ -60,9 +60,10 @@ function renderDownload(container, agenda) {
  */
 export async function createAgendaDownload(container) {
   if (!container) return;
+  container.classList.add('agenda-download');
   try {
     const agenda = await fetchJson('data/agenda.json');
-    if (agenda?.status === 'ok' && agenda.file) {
+    if (agenda?.status === 'ok' && agenda.file && (agenda.session?.itemCount ?? 0) > 0) {
       renderDownload(container, agenda);
     } else {
       renderUnavailable(container, agenda?.message || NO_AGENDA_TEXT);

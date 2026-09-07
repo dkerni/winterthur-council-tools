@@ -209,6 +209,53 @@ test('parseAgendaItems überspringt Dokumenten- und Kontakttabellen', () => {
   assert.ok(!items.some((item) => item.business === 'PDF' || item.label === 'Parlamentsdienst'));
 });
 
+/** Dokumentenliste, wie sie die Quelle in die Zelle «Bezeichnung» hängt. */
+function documentsTable(...documents) {
+  return (
+    '<table class="table icms-dt-documents"><tbody>' +
+    documents
+      .map(
+        (name) =>
+          `<tr><td><a href="/_rte/dokument/${name.length}">${name} (PDF, 93 kB)</a>` +
+          '<br>Dokumentdatum:<br>Kategorie: Antrag Stadtrat</td>' +
+          `<td><a href="/_rte/dokument/${name.length}">Download</a></td></tr>`,
+      )
+      .join('') +
+    '</tbody></table>'
+  );
+}
+
+// Traktanden mit Dokumenten enthalten in der Zelle «Bezeichnung» eine weitere
+// Tabelle. Wird die Verschachtelung nicht beachtet, endet die Zeile beim ersten
+// `</tr>` der Dokumententabelle: Ab diesem Traktandum landen die Werte in den
+// falschen Spalten und die folgenden Traktanden fehlen ganz.
+const SESSION_DETAIL_NESTED_HTML = `
+<div class="icms-partial-wrapper"><h2>Traktanden</h2><table class="table icms-dt" id="icmsTable-1210141554">
+<thead><tr><th scope="col">Nr.</th><th class="dtScopeRow">Bezeichnung</th><th scope="col">Geschäftsart</th><th scope="col">Geschäft</th></tr></thead>
+<tbody>
+<tr id="traktanden_88649"><td>4</td><td><div class="icms-wysiwyg">Wahl einer Präsidentin</div></td><td>Wahlen</td><td><a href="/_rte/information/1388420">2026.91</a></td></tr>
+<tr id="traktanden_88650"><td>5</td><td><div class="icms-wysiwyg">Einf&uuml;hrung einer zentralen Digitalisierungsl&ouml;sung:<br>Neuerlass einer Verordnung</div>
+${documentsTable('2026.27W', '2026.27W - Beilage 1', '2026.27W - Beilage 2')}</td><td>Antrag Stadtrat</td><td><a href="/_rte/information/1388425">2026.27</a></td></tr>
+<tr id="traktanden_88651"><td>6</td><td><div class="icms-wysiwyg">Budget 2027</div></td><td>Weisung</td><td><a href="/_rte/information/1388426">2026.92</a></td></tr>
+</tbody></table></div>`;
+
+test('parseAgendaItems zerlegt Traktanden mit Dokumententabelle spaltentreu', () => {
+  const items = parseAgendaItems(SESSION_DETAIL_NESTED_HTML);
+  assert.deepEqual(
+    items.map((item) => item.number),
+    ['4', '5', '6'],
+  );
+  assert.deepEqual(items[1], {
+    number: '5',
+    business: '2026.27',
+    businessUrl: 'https://parlament.winterthur.ch/_rte/information/1388425',
+    type: 'Antrag Stadtrat',
+    label: 'Einführung einer zentralen Digitalisierungslösung: Neuerlass einer Verordnung',
+  });
+  // Zeilen der Dokumententabelle sind keine Traktanden.
+  assert.ok(!items.some((item) => /Download|PDF, 93 kB/.test([item.number, item.business, item.label].join(' '))));
+});
+
 const AGENDA_TABLE_HTML = `
 <table>
   <tr><th>Nr.</th><th>Geschäft</th><th>Geschäftsart</th><th>Bezeichnung</th></tr>
