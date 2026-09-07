@@ -51,7 +51,7 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 │   ├── agenda.json         Stand der Traktandenliste (vom Traktanden-Workflow erzeugt)
 │   └── traktandenliste.xlsx  Traktanden der nächsten Sitzung (Download der Startseite)
 ├── scripts/                Node-Skripte (Scraper, Validierung, Tests)
-├── media/                  Wappen, Sitzplan-PDF
+├── media/                  Logos, Wappen, Sitzplan-PDF
 └── docs/PHASE-1-PLAN.md    Umsetzungsplan dieser Ausbaustufe
 ```
 
@@ -159,14 +159,26 @@ Spalten der Arbeitsmappe: **Nr.**, **Geschäft** (verlinkt), **Geschäftart** un
 Fraktionsarbeit gedacht. Die Datei entsteht ohne zusätzliche Abhängigkeiten
 (`scripts/lib/xlsx.mjs` schreibt das XLSX-Paket direkt).
 
+Aufbau des Blattes:
+
+* **Kopfbereich** (Zeilen 1–3): Titel der Sitzung, Datum und Ort, darunter der Link auf
+  die Sitzungsseite; rechts steht das Logo der Mitte-Fraktion (`media/Logo Mitte
+  Fraktion.png`, als Bild in die Mappe eingebettet). Den Ort führt erst die Sitzungsseite
+  als Label/Wert-Paar («Ort: …»); fehlt er, bleibt die Angabe weg.
+* **Kopfzeile der Tabelle** (Zeile 5): weisse Schrift auf dem Dunkelblau des Logos, mit
+  Autofilter und fixiert, damit sie beim Blättern stehen bleibt.
+* **Datenzeilen**: klassische Tabellenoptik mit Zellrahmen und abwechselnd weissem und
+  hellblauem Hintergrund.
+
 `data/agenda.json` hält den Stand fest:
 
 ```jsonc
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "status": "ok",                       // ok = Datei vorhanden, none = keine Traktanden
   "session": { "id": "7603498", "title": "…", "url": "…",
                "date": "2026-09-21", "dates": ["2026-09-21", "2026-10-05"],
+               "location": "Grosser Rathaussaal",  // null, wenn die Quelle keinen Ort nennt
                "itemCount": 42 },
   "file": "data/traktandenliste.xlsx",  // null, wenn keine Traktanden publiziert sind
   "fileName": "traktandenliste_2026-09-21.xlsx",
@@ -175,9 +187,11 @@ Fraktionsarbeit gedacht. Die Datei entsteht ohne zusätzliche Abhängigkeiten
 ```
 
 Ist die gefundene Sitzung bereits gespeichert und inhaltlich unverändert, schreibt das
-Skript nichts. Ist keine künftige Sitzung publiziert, steht `status: "none"` in
-`data/agenda.json` — die Startseite weist dann darauf hin, dass noch keine
-Sitzungstraktanden verfügbar sind, und der Download-Knopf bleibt deaktiviert.
+Skript nichts. Eine erhöhte `schemaVersion` — etwa nach einer Änderung an der
+Formatierung — baut die Arbeitsmappe beim nächsten Lauf trotzdem neu auf. Ist keine
+künftige Sitzung publiziert, steht `status: "none"` in `data/agenda.json` — die
+Startseite weist dann darauf hin, dass noch keine Sitzungstraktanden verfügbar sind, und
+der Download-Knopf bleibt deaktiviert.
 
 Automatisiert läuft das über `.github/workflows/update-agenda.yml`: täglich um 08:00
 Ortszeit (06:00 und 07:00 UTC, für Sommer- und Winterzeit), danach Tests, Commit auf den
