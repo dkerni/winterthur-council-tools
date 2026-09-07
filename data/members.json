@@ -396,8 +396,8 @@
     {
       "id": "280943",
       "firstName": "Gabriella",
-      "lastName": "Gisler-Burri",
-      "displayName": "Gabriella Gisler-Burri",
+      "lastName": "Gisler",
+      "displayName": "Gabriella Gisler",
       "email": "servicedesk@win.ch",
       "address": {
         "street": "Pionierstrasse 7",
@@ -412,8 +412,8 @@
       "currentMandateStart": "2013-03-06",
       "mandateEnd": null,
       "district": "Oberwinterthur",
-      "gender": "unbekannt",
-      "genderSource": "unknown",
+      "gender": "w",
+      "genderSource": "override",
       "commissions": [
         {
           "id": "41921",
@@ -916,8 +916,8 @@
       "currentMandateStart": "2024-04-17",
       "mandateEnd": null,
       "district": "Winterthur-Stadt",
-      "gender": "unbekannt",
-      "genderSource": "unknown",
+      "gender": "m",
+      "genderSource": "override",
       "commissions": [
         {
           "id": "27476",
