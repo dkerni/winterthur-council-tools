@@ -26,6 +26,7 @@ import { fileURLToPath } from 'node:url';
 import {
   AGENDA_COLUMNS,
   SESSION_LIST_PATH,
+  agendaFileName,
   agendaTitleLines,
   dedupeAgendaItems,
   findPaginationLinks,
@@ -39,10 +40,10 @@ import {
 import { BASE_URL, fetchPage } from './lib/icms.mjs';
 import { createWorkbook } from './lib/xlsx.mjs';
 
-// Version 3: Kopfbereich mit zwei Zeilen (Titel sowie Datum/Ort), beide direkt
-// mit der Sitzungsseite verknüpft. Eine Erhöhung baut die Datei neu auf,
-// auch wenn sich die Traktanden nicht geändert haben.
-const SCHEMA_VERSION = 3;
+// Version 4: Download-Dateiname nach dem Muster «2026 08 18 Traktandenliste 8 9».
+// Eine Erhöhung baut die Datei neu auf, auch wenn sich die Traktanden nicht
+// geändert haben.
+const SCHEMA_VERSION = 4;
 const AGENDA_JSON = 'data/agenda.json';
 const WORKBOOK_FILE = 'data/traktandenliste.xlsx';
 const LOGO_FILE = 'media/Logo Mitte Fraktion.png';
@@ -85,12 +86,6 @@ function contentHash(session, items) {
       }),
     )
     .digest('hex');
-}
-
-/** Dateiname für den Download, z.B. `traktandenliste_2026-09-21.xlsx`. */
-function downloadName(session) {
-  const date = session?.date;
-  return date ? `traktandenliste_${date}.xlsx` : 'traktandenliste.xlsx';
 }
 
 /** Traktanden einer Seite inkl. allfälliger Folgeseiten. */
@@ -294,7 +289,7 @@ async function main() {
         itemCount: items.length,
       },
       file: WORKBOOK_FILE,
-      fileName: downloadName(session),
+      fileName: agendaFileName(session),
       contentHash: hash,
     },
     workbook,

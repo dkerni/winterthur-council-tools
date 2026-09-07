@@ -176,14 +176,14 @@ Aufbau des Blattes:
 
 ```jsonc
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "status": "ok",                       // ok = Datei vorhanden, none = keine Traktanden
   "session": { "id": "7603498", "title": "…", "url": "…",
                "date": "2026-09-21", "dates": ["2026-09-21", "2026-10-05"],
                "location": "Grosser Rathaussaal",  // null, wenn die Quelle keinen Ort nennt
                "itemCount": 42 },
   "file": "data/traktandenliste.xlsx",  // null, wenn keine Traktanden publiziert sind
-  "fileName": "traktandenliste_2026-09-21.xlsx",
+  "fileName": "2026 09 21 Traktandenliste 10 11.xlsx",  // Datum, Titelzusatz, Sitzungsnummern
   "contentHash": "…"                    // erkennt unveränderte Sitzungen
 }
 ```

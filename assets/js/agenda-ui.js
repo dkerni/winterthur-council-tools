@@ -44,7 +44,7 @@ function renderDownload(container, agenda) {
     </p>
     <p>
       <a class="btn primary" href="${escapeHtml(siteUrl(agenda.file))}" download="${escapeHtml(
-        agenda.fileName || 'traktandenliste.xlsx',
+        agenda.fileName || 'Traktandenliste.xlsx',
       )}">Traktandenliste als Excel</a>
     </p>
     <p class="hint">
