@@ -637,28 +637,6 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .filter-bar label { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: #444; }
 .filter-bar input[type='search'] { min-width: 220px; }
 
-.members-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
-  gap: 1rem;
-  align-items: start;
-}
-
-.members-layout > * { min-width: 0; }
-
-.member-detail { position: sticky; top: 0.5rem; margin-bottom: 0; }
-.member-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 0.8rem; font-size: 0.82rem; }
-.member-detail dt { color: var(--clr-muted); }
-.member-detail dd { word-break: break-word; }
-.member-detail h3 { font-size: 1.05rem; margin-bottom: 0.15rem; }
-.member-detail .detail-section { margin-top: 0.9rem; }
-.member-detail .detail-section h4 { font-size: 0.85rem; margin-bottom: 0.3rem; }
-
-@media (max-width: 850px) {
-  .members-layout { grid-template-columns: minmax(0, 1fr); }
-  .member-detail { position: static; }
-}
-
 /* --- Statistik: Auffälligkeiten ------------------------------------------ */
 .fact-list { list-style: none; font-size: 0.85rem; display: grid; gap: 0.35rem; color: #444; }
 .fact-list li { padding-left: 0.9rem; position: relative; }
@@ -670,8 +648,10 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .members-table th { cursor: pointer; user-select: none; white-space: nowrap; font-size: 0.78rem; color: var(--clr-muted); }
 .members-table th:hover { color: #000; }
 .members-table th.num, .members-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
-.members-table tbody tr { cursor: pointer; }
+.members-table td.tenure { white-space: nowrap; }
+.members-table tbody tr[data-profile] { cursor: pointer; }
 .members-table tbody tr:hover { background: #f7f7f2; }
-.members-table tbody tr.is-selected { background: #eef2f7; box-shadow: inset 3px 0 0 var(--clr-accent); }
-.members-table tbody tr:focus-visible { outline: 2px solid #06c; outline-offset: -2px; }
+.members-table tbody tr:focus-within { background: #eef2f7; }
+.member-link { color: inherit; text-decoration: none; font-weight: 600; }
+.member-link:hover, .member-link:focus-visible { color: var(--clr-accent); text-decoration: underline; }
 .chip-list { display: flex; flex-wrap: wrap; gap: 0.25rem; }
