@@ -11,6 +11,8 @@
   "scripts": {
     "scrape": "node scripts/scrape-members.mjs",
     "scrape:dry": "node scripts/scrape-members.mjs --dry-run",
+    "scrape:agenda": "node scripts/scrape-agenda.mjs",
+    "scrape:agenda:dry": "node scripts/scrape-agenda.mjs --dry-run --verbose",
     "validate": "node scripts/validate-members.mjs",
     "test": "node --test scripts/test/*.test.mjs"
   }

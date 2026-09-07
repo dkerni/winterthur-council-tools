@@ -10,10 +10,12 @@
   <script type="module" src="assets/js/layout.js"></script>
   <script type="module">
     import { createMajorityCalculator } from './assets/js/majority-ui.js';
+    import { createAgendaDownload } from './assets/js/agenda-ui.js';
     createMajorityCalculator(document.getElementById('majority-widget'), {
       compact: true,
       mode: 'fraction',
     });
+    createAgendaDownload(document.getElementById('agenda-download'));
   </script>
 </head>
 <body data-page="start">
@@ -80,6 +82,18 @@
     </div>
   </section>
 
+  <section class="card" aria-labelledby="agenda-heading">
+    <h2 id="agenda-heading">Traktandenliste der nächsten Sitzung</h2>
+    <p class="subtitle">
+      Die Traktanden der nächsten Sitzung (meist einer Doppelsitzung) als Excel-Datei — mit
+      leeren Spalten für Zuständigkeit, Kommissionsresultat, Fraktionsentscheid, Votum und
+      Bemerkungen. Die Datei wird täglich automatisch aktualisiert.
+    </p>
+    <div id="agenda-download">
+      <p class="loading">Traktanden werden geladen …</p>
+    </div>
+  </section>
+
   <section class="card" aria-labelledby="outlook-heading">
     <h2 id="outlook-heading">In Arbeit</h2>
     <p class="subtitle">Diese Werkzeuge sind für die nächsten Ausbauschritte vorgesehen.</p>
@@ -93,11 +107,6 @@
         <span class="tile-icon" aria-hidden="true">📄</span>
         <h3>Geschäfte &amp; Vorstösse</h3>
         <p>Vorstösse durchsuchen, nach Themen filtern und ihren Bearbeitungsstand verfolgen.</p>
-      </div>
-      <div class="tool-tile planned">
-        <span class="tile-icon" aria-hidden="true">🗓️</span>
-        <h3>Traktanden</h3>
-        <p>Traktandenlisten kommender Sitzungen aufbereitet und mit den Geschäften verknüpft.</p>
       </div>
     </div>
   </section>

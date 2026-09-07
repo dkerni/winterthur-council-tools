@@ -41,12 +41,15 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 │       ├── stats-ui.js     Statistik-Oberfläche
 │       ├── charts.js       Chart.js-Wrapper mit Tabellen-Fallback
 │       ├── members-ui.js   Mitgliederliste
+│       ├── agenda-ui.js    Download der Traktandenliste (Startseite)
 │       └── csv.js          CSV-Export
 ├── data/
 │   ├── members.json        Mitgliederdatenbank (vom Scraper erzeugt)
 │   ├── party-meta.json     Parteien, Farben, Reihenfolge, Fraktionszuordnung
 │   ├── gender-overrides.json  manuell gepflegtes Merkmal Geschlecht
-│   └── seating.json        Sitzordnung aus dem offiziellen Sitzplan-PDF
+│   ├── seating.json        Sitzordnung aus dem offiziellen Sitzplan-PDF
+│   ├── agenda.json         Stand der Traktandenliste (vom Traktanden-Workflow erzeugt)
+│   └── traktandenliste.xlsx  Traktanden der nächsten Sitzung (Download der Startseite)
 ├── scripts/                Node-Skripte (Scraper, Validierung, Tests)
 ├── media/                  Wappen, Sitzplan-PDF
 └── docs/PHASE-1-PLAN.md    Umsetzungsplan dieser Ausbaustufe
@@ -99,8 +102,9 @@ npx serve _site
 ```bash
 npm run scrape          # Mitgliederdaten abrufen und data/members.json schreiben
 npm run scrape:dry      # nur abrufen und Ergebnis anzeigen, nichts schreiben
+npm run scrape:agenda   # Traktanden der nächsten Sitzung als Excel speichern
 npm run validate        # data/*.json prüfen
-npm test                # Unit-Tests der Mehrheitslogik
+npm test                # Unit-Tests der Mehrheits- und Traktandenlogik
 ```
 
 Nützliche Flags: `--limit=N` (nur die ersten N Personen), `--verbose` (jede abgerufene URL),
@@ -119,6 +123,45 @@ Automatisiert läuft das Ganze wöchentlich über
 Request** (kein direkter Push auf `main`), damit jede Datenänderung sichtbar geprüft wird.
 `.github/workflows/validate.yml` prüft Tests und Daten bei jedem Push und Pull Request,
 `.github/workflows/deploy-pages.yml` veröffentlicht `main` auf GitHub Pages.
+
+## Traktandenliste der nächsten Sitzung
+
+`scripts/scrape-agenda.mjs` liest die Sitzungsübersicht
+(`https://parlament.winterthur.ch/sitzung`), bestimmt die nächste Sitzung — meist eine
+Doppelsitzung mit zwei Daten —, holt deren Traktanden (auch über mehrere Seiten hinweg,
+z.B. `https://parlament.winterthur.ch/sitzung/7603498`) und schreibt sie nach
+`data/traktandenliste.xlsx`. Die Startseite bietet die Datei zum Download an.
+
+Spalten der Arbeitsmappe: **Nr.**, **Geschäft** (verlinkt), **Geschäftart** und
+**Bezeichnung** stammen aus der Quelle; **Zuständig Fraktion**, **Resultat Kommission**,
+**Entscheid Fraktion**, **Votum** und **Bemerkungen** bleiben leer und sind für die
+Fraktionsarbeit gedacht. Die Datei entsteht ohne zusätzliche Abhängigkeiten
+(`scripts/lib/xlsx.mjs` schreibt das XLSX-Paket direkt).
+
+`data/agenda.json` hält den Stand fest:
+
+```jsonc
+{
+  "schemaVersion": 1,
+  "status": "ok",                       // ok = Datei vorhanden, none = keine Traktanden
+  "session": { "id": "7603498", "title": "…", "url": "…",
+               "date": "2026-09-21", "dates": ["2026-09-21", "2026-10-05"],
+               "itemCount": 42 },
+  "file": "data/traktandenliste.xlsx",  // null, wenn keine Traktanden publiziert sind
+  "fileName": "traktandenliste_2026-09-21.xlsx",
+  "contentHash": "…"                    // erkennt unveränderte Sitzungen
+}
+```
+
+Ist die gefundene Sitzung bereits gespeichert und inhaltlich unverändert, schreibt das
+Skript nichts. Ist keine künftige Sitzung publiziert, steht `status: "none"` in
+`data/agenda.json` — der Download-Knopf zeigt dann an, dass noch keine Sitzungstraktanden
+verfügbar sind.
+
+Automatisiert läuft das über `.github/workflows/update-agenda.yml`: täglich um 08:00
+Ortszeit (06:00 und 07:00 UTC, für Sommer- und Winterzeit), danach Tests, Commit auf den
+Branch und ein angestossenes Pages-Deployment. Der Lauf zur jeweils anderen Uhrzeit findet
+nichts Neues und schreibt deshalb nichts.
 
 ## Datenschema
 
@@ -182,7 +225,7 @@ Ergänzend:
 | Statistik zur aktuellen Zusammensetzung | umgesetzt (`tools/statistik.html`); Alter, Beruf, Stadtkreis und Amtsdauer erscheinen, sobald der Scraper gelaufen ist |
 | Historische Statistik (Vorstösse) | Grundlage gelegt: Vorstösse werden je Person strukturiert gespeichert; eigene Auswertung folgt |
 | Zusammenfassung der nächsten Sitzung | offen (nächste Ausbaustufe) |
-| Traktandenliste als Excel/CSV | offen; CSV-Export besteht bereits für Mitglieder und Statistik |
+| Traktandenliste als Excel/CSV | umgesetzt (`scripts/scrape-agenda.mjs`, Download auf der Startseite) |
 
 ## Rahmenbedingungen des Rats
 
