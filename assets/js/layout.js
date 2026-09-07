@@ -37,7 +37,7 @@ function buildHeader() {
   header.className = 'site-header';
   header.innerHTML = `
     <a href="${siteUrl('index.html')}" aria-label="Zur Startseite">
-      <img class="logo" src="${siteUrl('media/Wappen_Winterthur.svg.webp')}" alt="Wappen Winterthur" />
+      <img class="logo" src="${siteUrl('media/Logo.jpg')}" alt="Wappen Winterthur" />
     </a>
     <a class="site-title" href="${siteUrl('index.html')}">
       Stadtparlament Winterthur Tools
