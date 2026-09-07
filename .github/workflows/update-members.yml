@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
+  actions: write
 
 concurrency:
   group: update-members
@@ -48,22 +48,25 @@ jobs:
             git diff --stat -- data/members.json
           fi
 
-      - name: Open pull request
+      # A pull request would be preferable, but GitHub Actions is not permitted
+      # to create pull requests in this repository ("GitHub Actions is not
+      # permitted to create or approve pull requests"). The change is therefore
+      # committed directly — validation and tests above gate it.
+      - name: Commit changes
         if: steps.diff.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: data/members-${{ github.run_id }}
-          BASE_BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git checkout -b "$BRANCH"
           git add data/members.json
           git commit -m 'Update member data'
-          git push origin "$BRANCH"
-          gh pr create \
-            --title 'Update member data' \
-            --body 'Generated automatically by `scripts/scrape-members.mjs`. Please review the changes in `data/members.json` before merging — in particular joiners, leavers and changes of parliamentary group.' \
-            --base "$BASE_BRANCH" \
-            --head "$BRANCH"
+          git push origin HEAD:"${GITHUB_REF_NAME}"
+
+      - name: Redeploy website
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Pushes made with the GITHUB_TOKEN do not trigger workflows, so the
+          # Pages deployment is started explicitly.
+          gh workflow run deploy-pages.yml --ref "${GITHUB_REF_NAME}"

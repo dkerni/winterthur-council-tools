@@ -175,7 +175,7 @@ Zähler, damit die Statistik-Seite nicht rechnen muss.
 │  ├─ lib/icms.mjs                data-entities-Parser, HTML-Helper, Rate-Limiting
 │  └─ validate-members.mjs        Schema-/Plausibilitätsprüfung
 ├─ .github/workflows/
-│  ├─ update-members.yml          workflow_dispatch + schedule, öffnet PR
+│  ├─ update-members.yml          workflow_dispatch + schedule, committet Daten
 │  └─ validate.yml                validiert data/*.json bei PRs
 ├─ media/
 └─ README.md
@@ -222,8 +222,9 @@ Zähler, damit die Statistik-Seite nicht rechnen muss.
     Exit-Code ≠ 0 bei Fehler.
 11. **`github-action-update`** — `.github/workflows/update-members.yml`:
     `workflow_dispatch` + `schedule` (wöchentlich), führt Scraper + Validierung aus und
-    öffnet bei Änderungen einen **Pull Request** (kein direkter Push auf `main`),
-    damit Änderungen sichtbar geprüft werden können.
+    committet Änderungen direkt auf den Branch. Ursprünglich war ein Pull Request
+    vorgesehen; GitHub Actions darf in diesem Repository jedoch keine Pull Requests
+    erstellen, deshalb sichern Validierung und Tests die Änderung ab.
 12. **`data-loader`** — `assets/js/data.js`: lädt `members.json` einmalig (Promise-Cache),
     stellt Selektoren bereit (nach Partei/Fraktion/Kommission gruppieren, Alter berechnen,
     Amtsdauer berechnen). Fehler-/Ladezustände sauber behandeln.
