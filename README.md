@@ -13,7 +13,7 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 
 | Seite | Beschreibung |
 | --- | --- |
-| `index.html` | Startseite mit Tool-Kacheln, kompaktem Mehrheitsrechner und Datenstand |
+| `index.html` | Startseite mit Tool-Kacheln, Traktanden-Download und kompaktem Mehrheitsrechner |
 | `tools/sitzplan.html` | Interaktive Sitzordnung (Drag & Drop, Fraktionspräsidien, Export/Import) |
 | `tools/mehrheitsrechner.html` | Mehrheiten je Fraktion/Partei, Absenzen, mögliche Allianzen, teilbarer Link |
 | `tools/statistik.html` | Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise, Berufe (gesamt/Partei/Fraktion) |
@@ -147,6 +147,11 @@ Zwei Eigenheiten der Quelle sind dabei zu beachten:
 * Die Traktandenliste erscheint im Browser mehrseitig, das Blättern übernimmt aber erst
   das Tabellen-Skript. Der Quelltext enthält alle Traktanden, ein Abruf genügt. Gibt es
   dennoch echte Folgeseiten (Blätter-Parameter in der Adresse), werden sie mitgeladen.
+* Traktanden mit Dokumenten enthalten in der Zelle «Bezeichnung» eine weitere Tabelle
+  (Liste der Dokumente). Der Parser zählt deshalb die Tabellen-Tags, statt sie
+  nicht-gierig zu suchen: Sonst endet die Zeile beim ersten `</tr>` der Dokumentenliste,
+  die Werte rutschen in die falschen Spalten und die folgenden Traktanden fehlen.
+  Verschachtelte Tabellen bleiben aus den Zellwerten draussen.
 
 Spalten der Arbeitsmappe: **Nr.**, **Geschäft** (verlinkt), **Geschäftart** und
 **Bezeichnung** stammen aus der Quelle; **Zuständig Fraktion**, **Resultat Kommission**,
@@ -171,8 +176,8 @@ Fraktionsarbeit gedacht. Die Datei entsteht ohne zusätzliche Abhängigkeiten
 
 Ist die gefundene Sitzung bereits gespeichert und inhaltlich unverändert, schreibt das
 Skript nichts. Ist keine künftige Sitzung publiziert, steht `status: "none"` in
-`data/agenda.json` — der Download-Knopf zeigt dann an, dass noch keine Sitzungstraktanden
-verfügbar sind.
+`data/agenda.json` — die Startseite weist dann darauf hin, dass noch keine
+Sitzungstraktanden verfügbar sind, und der Download-Knopf bleibt deaktiviert.
 
 Automatisiert läuft das über `.github/workflows/update-agenda.yml`: täglich um 08:00
 Ortszeit (06:00 und 07:00 UTC, für Sommer- und Winterzeit), danach Tests, Commit auf den

@@ -253,13 +253,21 @@ function firstLink(html) {
   }
 }
 
+/**
+ * Zellwert für die Tabelle: eine Zeile. Die Quelle bricht Einträge um
+ * (`<br>`, Absätze, Aufzählungen) — im Excel gehört das in eine Zelle.
+ */
+function singleLine(value) {
+  return toText(value).replace(/\s+/g, ' ').trim();
+}
+
 function makeItem(number, businessHtml, type, label) {
   return {
-    number: toText(number),
-    business: toText(businessHtml),
+    number: singleLine(number),
+    business: singleLine(businessHtml),
     businessUrl: firstLink(businessHtml),
-    type: toText(type),
-    label: toText(label),
+    type: singleLine(type),
+    label: singleLine(label),
   };
 }
 
@@ -301,6 +309,151 @@ export function parseAgendaItems(html) {
 const AGENDA_ROW_ID = /<tr\b[^>]*\bid\s*=\s*["']traktanden[_-]/i;
 
 /**
+ * Öffnende und schliessende Tabellen-Tags eines Fragments.
+ * @param {string} html
+ * @returns {Generator<{closing: boolean, name: string, start: number, end: number}>}
+ */
+function* tableTags(html) {
+  for (const match of String(html).matchAll(/<(\/?)\s*(table|tr|td|th)\b[^>]*>/gi)) {
+    yield {
+      closing: match[1] === '/',
+      name: match[2].toLowerCase(),
+      start: match.index,
+      end: match.index + match[0].length,
+    };
+  }
+}
+
+/**
+ * Inhalt aller Tabellen einer Seite — auch der verschachtelten.
+ *
+ * Traktanden führen ihre Dokumente in einer Tabelle innerhalb der Zelle
+ * «Bezeichnung». Eine nicht-gierige Suche (`<table>…</table>`) endet dort am
+ * ersten `</table>` und verliert den Rest der äusseren Tabelle; deshalb werden
+ * die Tags gezählt.
+ *
+ * @param {string} html
+ * @returns {string[]} Inhalte, äussere Tabellen vor ihren inneren
+ */
+function collectTables(html) {
+  const tables = [];
+  let depth = 0;
+  let start = -1;
+
+  for (const tag of tableTags(html)) {
+    if (tag.name !== 'table') continue;
+    if (!tag.closing) {
+      if (depth === 0) start = tag.end;
+      depth++;
+    } else if (depth > 0) {
+      depth--;
+      if (depth === 0 && start >= 0) {
+        const inner = html.slice(start, tag.start);
+        tables.push(inner, ...collectTables(inner));
+        start = -1;
+      }
+    }
+  }
+
+  // Nicht geschlossene Tabelle (abgeschnittenes HTML): Rest mitnehmen.
+  if (depth > 0 && start >= 0) {
+    const inner = html.slice(start);
+    tables.push(inner, ...collectTables(inner));
+  }
+
+  return tables;
+}
+
+/**
+ * Zeilen einer Tabelle. Zeilen verschachtelter Tabellen gehören zur Zelle, in
+ * der sie stehen, und zählen hier nicht.
+ * @param {string} tableHtml Inhalt einer Tabelle
+ * @returns {string[]} Zeilen samt `<tr …>`-Tag
+ */
+function splitRows(tableHtml) {
+  const rows = [];
+  let nested = 0;
+  let start = -1;
+
+  for (const tag of tableTags(tableHtml)) {
+    if (tag.name === 'table') {
+      nested = tag.closing ? Math.max(0, nested - 1) : nested + 1;
+      continue;
+    }
+    if (nested > 0 || tag.name !== 'tr') continue;
+    if (!tag.closing) {
+      // Fehlendes `</tr>` in der Quelle: Zeile endet beim nächsten `<tr>`.
+      if (start >= 0) rows.push(tableHtml.slice(start, tag.start));
+      start = tag.start;
+    } else if (start >= 0) {
+      rows.push(tableHtml.slice(start, tag.end));
+      start = -1;
+    }
+  }
+  if (start >= 0) rows.push(tableHtml.slice(start));
+
+  return rows;
+}
+
+/**
+ * Zellen einer Zeile. Verschachtelte Tabellen bleiben im Inhalt der Zelle, in
+ * der sie stehen — ihre Zellen werden nicht als eigene Spalten gezählt.
+ * @param {string} rowHtml Zeile samt `<tr …>`-Tag
+ * @returns {string[]} Zellinhalte
+ */
+function splitCells(rowHtml) {
+  const cells = [];
+  let nested = 0;
+  let start = -1;
+
+  for (const tag of tableTags(rowHtml)) {
+    if (tag.name === 'table') {
+      nested = tag.closing ? Math.max(0, nested - 1) : nested + 1;
+      continue;
+    }
+    if (nested > 0 || (tag.name !== 'td' && tag.name !== 'th')) continue;
+    if (!tag.closing) {
+      // Fehlendes `</td>`: Zelle endet beim nächsten `<td>`/`<th>`.
+      if (start >= 0) cells.push(rowHtml.slice(start, tag.start));
+      start = tag.end;
+    } else if (start >= 0) {
+      cells.push(rowHtml.slice(start, tag.start));
+      start = -1;
+    }
+  }
+  if (start >= 0) cells.push(rowHtml.slice(start));
+
+  return cells;
+}
+
+/**
+ * Entfernt verschachtelte Tabellen aus einem Zellinhalt. In der Zelle
+ * «Bezeichnung» hängt die Quelle die Dokumentenliste des Geschäfts an; die
+ * gehört weder in den Zelltext noch liefert sie den Geschäftslink.
+ * @param {string} html
+ * @returns {string}
+ */
+function withoutTables(html) {
+  let result = '';
+  let depth = 0;
+  let cursor = 0;
+
+  for (const tag of tableTags(html)) {
+    if (tag.name !== 'table') continue;
+    if (!tag.closing) {
+      if (depth === 0) result += html.slice(cursor, tag.start);
+      depth++;
+    } else if (depth > 0) {
+      depth--;
+      if (depth === 0) cursor = tag.end;
+    }
+  }
+  if (depth === 0) result += html.slice(cursor);
+
+  return result;
+}
+
+/**
  * Fallback: gerenderte Tabellen der Sitzungsseite auswerten.
  *
  * Die Sitzungsseite enthält neben den Traktanden weitere Tabellen (Dokumente,
@@ -309,13 +462,11 @@ const AGENDA_ROW_ID = /<tr\b[^>]*\bid\s*=\s*["']traktanden[_-]/i;
 function parseAgendaTables(html) {
   const items = [];
 
-  const bodies = [...String(html).matchAll(/<table\b[^>]*>([\s\S]*?)<\/table>/gi)].map((table) => table[1]);
-  const agendaBodies = bodies.filter((body) => AGENDA_ROW_ID.test(body));
+  const bodies = collectTables(html).map((body) => ({ body, rows: splitRows(body) }));
+  const agendaBodies = bodies.filter((entry) => entry.rows.some((row) => AGENDA_ROW_ID.test(row)));
 
-  for (const body of agendaBodies.length ? agendaBodies : bodies) {
-    const rows = [...body.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((row) =>
-      [...row[1].matchAll(/<(t[hd])\b[^>]*>([\s\S]*?)<\/\1>/gi)].map((cell) => cell[2]),
-    );
+  for (const entry of agendaBodies.length ? agendaBodies : bodies) {
+    const rows = entry.rows.map((row) => splitCells(row).map(withoutTables));
     if (rows.length < 2) continue;
 
     const header = rows[0].map((cell) => normalizeKey(toText(cell)));
