@@ -172,9 +172,14 @@ test('parseSessionDetails liest den Sitzungsort', () => {
 
   assert.equal(parseSessionDetails('<p>ohne Angaben</p>').location, null);
   assert.equal(parseSessionDetails(null).location, null);
+
+  // Das CMS maskiert einzelne Angaben und löst sie erst im Browser auf — ein
+  // solches Token gehört nicht als Ort in die Arbeitsmappe.
+  const masked = '<dl><dt>Ort</dt><dd>#1513080a9e151508044e3a505c5244363244011501bedc0c</dd></dl>';
+  assert.equal(parseSessionDetails(masked).location, null);
 });
 
-test('agendaTitleLines baut Titel, Datum, Ort und Sitzungslink', () => {
+test('agendaTitleLines baut zwei Kopfzeilen, beide mit dem Sitzungslink', () => {
   const lines = agendaTitleLines({
     title: '10./11. Sitzungen',
     url: 'https://parlament.winterthur.ch/sitzung/7603501',
@@ -182,12 +187,12 @@ test('agendaTitleLines baut Titel, Datum, Ort und Sitzungslink', () => {
     dates: ['2026-09-14', '2026-09-28'],
     location: 'Grosser Rathaussaal',
   });
-  assert.equal(lines.length, 3);
+  assert.equal(lines.length, 2);
   assert.equal(lines[0].text, 'Traktandenliste – 10./11. Sitzungen');
+  assert.equal(lines[0].link, 'https://parlament.winterthur.ch/sitzung/7603501');
   assert.match(lines[1].text, /Sitzung vom 14\.09\.2026 und 28\.09\.2026/);
   assert.match(lines[1].text, /Ort: Grosser Rathaussaal/);
-  assert.equal(lines[2].link, 'https://parlament.winterthur.ch/sitzung/7603501');
-  assert.match(lines[2].text, /parlament\.winterthur\.ch/);
+  assert.equal(lines[1].link, 'https://parlament.winterthur.ch/sitzung/7603501');
 });
 
 test('agendaTitleLines kommt ohne Titel, Ort und Link aus', () => {
@@ -483,15 +488,20 @@ test('createWorkbook setzt Kopfbereich, Logo und alternierende Zeilen', () => {
   });
 
   const sheet = readZipEntry(buffer, 'xl/worksheets/sheet1.xml');
-  // Kopfbereich: drei Textzeilen und eine Leerzeile, die Tabelle beginnt auf Zeile 5.
+  // Kopfbereich: zwei Textzeilen und eine Leerzeile, die Tabelle beginnt auf Zeile 4.
   assert.match(sheet, /<t xml:space="preserve">Traktandenliste – 10\.\/11\. Sitzungen<\/t>/);
   assert.match(sheet, /<mergeCell ref="A1:G1"\/>/);
-  assert.match(sheet, /<autoFilter ref="A5:I7"\/>/);
-  assert.match(sheet, /<pane ySplit="5" topLeftCell="A6"/);
+  assert.match(sheet, /<autoFilter ref="A4:I6"\/>/);
+  assert.match(sheet, /<pane ySplit="4" topLeftCell="A5"/);
+  // Beide Kopfzeilen verweisen auf die Sitzungsseite; der Titel ist als Link erkennbar.
+  assert.match(sheet, /<hyperlink ref="A1"/);
+  assert.match(sheet, /<hyperlink ref="A2"/);
+  assert.match(sheet, /<row r="1"[^>]*><c r="A1" s="9"/);
+  assert.match(sheet, /<row r="2"[^>]*><c r="A2" s="7"/);
   // Kopfzeile im Stil 4 (farbig), Datenzeilen abwechselnd im Stil 0 und 1.
-  assert.match(sheet, /<row r="5"[^>]*><c r="A5" s="4"/);
-  assert.match(sheet, /<row r="6"><c r="A6" s="0"/);
-  assert.match(sheet, /<row r="7"><c r="A7" s="1"/);
+  assert.match(sheet, /<row r="4"[^>]*><c r="A4" s="4"/);
+  assert.match(sheet, /<row r="5"><c r="A5" s="0"/);
+  assert.match(sheet, /<row r="6"><c r="A6" s="1"/);
 
   const styles = readZipEntry(buffer, 'xl/styles.xml');
   assert.match(styles, /fgColor rgb="FF003C69"/, 'farbige Kopfzeile statt Grau');

@@ -192,7 +192,7 @@ export function parseSessionList(html) {
         toText(pickEntityField(entity, ['titel', 'bezeichnung', 'name', 'sitzung', 'gremium'])) || '';
       const dateSource = pickEntityField(entity, ['datum', 'sitzungsdatum', 'beginn', 'von', 'termin']);
       const dates = extractDates(dateSource || values.join(' '));
-      addSession(ref, title, dates, singleLine(pickEntityField(entity, LOCATION_FIELDS)));
+      addSession(ref, title, dates, usableLocation(pickEntityField(entity, LOCATION_FIELDS)));
     }
   }
 
@@ -248,6 +248,23 @@ export function selectNextSession(sessions, now = new Date()) {
 const MAX_LOCATION_LENGTH = 120;
 
 /**
+ * Maskierte Werte der Quelle: Das CMS ersetzt einzelne Angaben durch ein Token
+ * (z.B. `#1513080a…dc0c`), das erst ein Skript im Browser auflöst. Im Quelltext
+ * steht dann statt des Orts eine Zeichenkette ohne Aussage.
+ */
+function isMaskedValue(text) {
+  return /^#\S*$/.test(text) || /^[0-9a-f]{16,}$/i.test(text);
+}
+
+/** Brauchbare Ortsangabe oder `null` (leer, zu lang, maskiert, ohne Buchstaben). */
+function usableLocation(value) {
+  const text = singleLine(value);
+  if (!text || text.length > MAX_LOCATION_LENGTH) return null;
+  if (isMaskedValue(text) || !/\p{L}/u.test(text)) return null;
+  return text;
+}
+
+/**
  * Angaben, die nur die Sitzungsseite selbst führt — zurzeit der Sitzungsort.
  * Die Quelle stellt ihn als Label/Wert-Paar dar («Ort: Grosser Rathaussaal»).
  * @param {string} html Quelltext von `/sitzung/<id>`
@@ -255,8 +272,7 @@ const MAX_LOCATION_LENGTH = 120;
  */
 export function parseSessionDetails(html) {
   const value = pickField(extractLabeledFields(String(html ?? '')), LOCATION_FIELDS) ?? '';
-  const location = singleLine(value);
-  return { location: location && location.length <= MAX_LOCATION_LENGTH ? location : null };
+  return { location: usableLocation(value) };
 }
 
 /* ─── Traktanden ───────────────────────────────────────────────────── */
@@ -644,8 +660,9 @@ function listDates(session) {
 }
 
 /**
- * Kopfzeilen der Arbeitsmappe: Titel, Datum und Ort der Sitzung sowie der Link
- * auf die Sitzungsseite. Fehlende Angaben werden weggelassen.
+ * Kopfzeilen der Arbeitsmappe: Titel der Sitzung sowie Datum und Ort. Beide
+ * Zeilen verweisen direkt auf die Sitzungsseite — eine eigene Linkzeile
+ * braucht es deshalb nicht. Fehlende Angaben werden weggelassen.
  * @param {{title?: string, url?: string, date?: string|null, dates?: string[], location?: string|null}} session
  * @returns {Array<{text: string, link?: string}>}
  */
@@ -655,15 +672,8 @@ export function agendaTitleLines(session) {
     .filter(Boolean)
     .join('   ·   ');
 
-  const lines = [{ text: session?.title ? `Traktandenliste – ${session.title}` : 'Traktandenliste' }, { text: facts }];
-  if (session?.url) {
-    let host = 'parlament.winterthur.ch';
-    try {
-      host = new URL(session.url).host;
-    } catch {
-      // Unbrauchbare Adresse: Standardhost im Text belassen.
-    }
-    lines.push({ text: `Sitzung auf ${host} öffnen`, link: session.url });
-  }
-  return lines;
+  const link = session?.url || null;
+  const line = (text) => (link ? { text, link } : { text });
+
+  return [line(session?.title ? `Traktandenliste – ${session.title}` : 'Traktandenliste'), line(facts)];
 }

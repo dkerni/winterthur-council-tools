@@ -161,7 +161,8 @@ const COLOR_ACCENT = 'FFFF9B00';
 /**
  * Stile der Arbeitsmappe (Reihenfolge = Index in `cellXfs`):
  * 0 Datenzelle, 1 Datenzelle getönt, 2 Link, 3 Link getönt, 4 Kopfzeile,
- * 5 Titel, 6 Kopfbereich-Text, 7 Kopfbereich-Link, 8 Trennlinie.
+ * 5 Titel, 6 Kopfbereich-Text, 7 Kopfbereich-Link, 8 Trennlinie,
+ * 9 verlinkter Titel.
  */
 const STYLE = {
   body: 0,
@@ -173,16 +174,18 @@ const STYLE = {
   meta: 6,
   metaLink: 7,
   accent: 8,
+  titleLink: 9,
 };
 
 const STYLES = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-<fonts count="5">
+<fonts count="6">
 <font><sz val="11"/><name val="Calibri"/></font>
 <font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Calibri"/></font>
 <font><u/><color rgb="FF0563C1"/><sz val="11"/><name val="Calibri"/></font>
 <font><b/><color rgb="${COLOR_HEADER}"/><sz val="14"/><name val="Calibri"/></font>
 <font><color rgb="${COLOR_HEADER}"/><sz val="11"/><name val="Calibri"/></font>
+<font><b/><u/><color rgb="${COLOR_HEADER}"/><sz val="14"/><name val="Calibri"/></font>
 </fonts>
 <fills count="4">
 <fill><patternFill patternType="none"/></fill>
@@ -196,7 +199,7 @@ const STYLES = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <border><left/><right/><top/><bottom style="medium"><color rgb="${COLOR_ACCENT}"/></bottom><diagonal/></border>
 </borders>
 <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
-<cellXfs count="9">
+<cellXfs count="10">
 <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>
 <xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>
 <xf numFmtId="0" fontId="2" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>
@@ -206,6 +209,7 @@ const STYLES = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xf numFmtId="0" fontId="4" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="center"/></xf>
 <xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="center"/></xf>
 <xf numFmtId="0" fontId="0" fillId="0" borderId="2" xfId="0" applyBorder="1"/>
+<xf numFmtId="0" fontId="5" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="center"/></xf>
 </cellXfs>
 <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
 </styleSheet>`;
@@ -308,7 +312,8 @@ export function createWorkbook({ sheetName = 'Tabelle1', columns, rows, columnWi
 
   titleLines.forEach((line, index) => {
     const rowNumber = index + 1;
-    const styleId = index === 0 ? STYLE.title : line.link ? STYLE.metaLink : STYLE.meta;
+    const styleId =
+      index === 0 ? (line.link ? STYLE.titleLink : STYLE.title) : line.link ? STYLE.metaLink : STYLE.meta;
     if (line.link) hyperlinks.push({ reference: `A${rowNumber}`, target: line.link });
     const cells = [cellXml(`A${rowNumber}`, line.text, styleId)];
     for (let column = 2; column <= titleSpan; column++) {
