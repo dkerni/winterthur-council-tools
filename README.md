@@ -133,9 +133,20 @@ ausgegeben, brechen den Lauf aber nicht ab — nur Schema- und Konsistenzfehler 
 
 `scripts/scrape-agenda.mjs` liest die Sitzungsübersicht
 (`https://parlament.winterthur.ch/sitzung`), bestimmt die nächste Sitzung — meist eine
-Doppelsitzung mit zwei Daten —, holt deren Traktanden (auch über mehrere Seiten hinweg,
-z.B. `https://parlament.winterthur.ch/sitzung/7603498`) und schreibt sie nach
+Doppelsitzung mit zwei Daten —, holt deren Traktanden (z.B.
+`https://parlament.winterthur.ch/sitzung/7603498`) und schreibt sie nach
 `data/traktandenliste.xlsx`. Die Startseite bietet die Datei zum Download an.
+
+Zwei Eigenheiten der Quelle sind dabei zu beachten:
+
+* Die Übersicht führt «Nächste» und «Letzte Sitzungen» als Tabellen, deren Zeilen erst im
+  Browser gerendert werden. Die Daten stehen im Attribut `data-entities`, und Sitzungen
+  sind dort als `/_rte/anlass/<id>` verlinkt — dieselbe Sitzung ist unter `/sitzung/<id>`
+  erreichbar. Beide Formen werden gelesen; bleibt `/sitzung/<id>` leer, dient
+  `/_rte/anlass/<id>` als Ausweichpfad.
+* Die Traktandenliste erscheint im Browser mehrseitig, das Blättern übernimmt aber erst
+  das Tabellen-Skript. Der Quelltext enthält alle Traktanden, ein Abruf genügt. Gibt es
+  dennoch echte Folgeseiten (Blätter-Parameter in der Adresse), werden sie mitgeladen.
 
 Spalten der Arbeitsmappe: **Nr.**, **Geschäft** (verlinkt), **Geschäftart** und
 **Bezeichnung** stammen aus der Quelle; **Zuständig Fraktion**, **Resultat Kommission**,
@@ -265,7 +276,10 @@ Ergänzend:
   i-web-CMS (JSON in `data-entities`, doppelt escaped) ist nach bestem Wissen umgesetzt,
   inklusive Browser-User-Agent, mehrerer Erkennungsstrategien und Warnungen bei
   unerwarteter Struktur. **Der erste Lauf der GitHub Action muss daher kontrolliert
-  werden**; der Commit des Workflows macht die Änderungen sichtbar.
+  werden**; der Commit des Workflows macht die Änderungen sichtbar. Der erste Lauf des
+  Traktanden-Workflows fand denn auch keine Sitzung, weil die Übersicht Sitzungen als
+  `/_rte/anlass/<id>` verlinkt und nicht als `/sitzung/<id>`; die Tests bilden das
+  Quell-Markup seither nach.
 * **Amtsdauer** = Jahre seit dem ersten Eintritt ins Parlament; Unterbrüche werden nicht
   abgezogen, weil die Quelle nur Eintrittsdaten publiziert.
 * **Alter** ist auf ±1 Jahr genau, da die Quelle nur das Geburtsjahr nennt.

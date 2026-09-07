@@ -17,58 +17,123 @@ import { columnName, createWorkbook } from '../lib/xlsx.mjs';
 
 /* ─── Sitzungsübersicht ────────────────────────────────────────────── */
 
+/**
+ * Baut ein `data-entities`-Attribut so, wie es das CMS ausgibt: JSON mit
+ * escapten Schrägstrichen, anschliessend HTML-escaped.
+ */
+function dataEntities(payload) {
+  return JSON.stringify(payload)
+    .replace(/\//g, '\\/')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/** Datumszelle der Übersicht (Desktop- und Mobilvariante, wie in der Quelle). */
+function datumCell(day) {
+  return (
+    `<span class="d-none d-md-block"><span class="text-nowrap">${day}, <br>16.15 Uhr - 22.00 Uhr </span></span>` +
+    `<span class="d-block d-md-none">${day}, 16.15 Uhr - 22.00 Uhr </span>`
+  );
+}
+
+function sessionEntity(id, title, day) {
+  return {
+    name: `<a href="/_rte/anlass/${id}">${title}</a>`,
+    'name-sort': '#17080a9e1908044e3a505c5244363244011301c0dc0c',
+    _datum: datumCell(day),
+    '_datum-sort': '#1713171f050e131f050e131504151f0736151d0736131304',
+  };
+}
+
+// Aufbau wie auf https://parlament.winterthur.ch/sitzung: zwei Tabellen
+// («Nächste» und «Letzte Sitzungen»), deren Zeilen erst im Browser gerendert
+// werden — der Tabellenkörper ist leer, die Daten stecken in `data-entities`,
+// und Sitzungen sind dort als `/_rte/anlass/<id>` verlinkt.
 const SESSION_LIST_HTML = `
 <html><body>
-  <ul class="sessions">
-    <li>
-      <span class="date">Montag, 21. September 2026</span>
-      <a href="/sitzung/7603498">Sitzung / Doppelsitzung</a>
-    </li>
-    <li>
-      <span class="date">02.11.2026</span>
-      <a href="/sitzung/7603499">Sitzung</a>
-    </li>
-    <li>
-      <span class="date">15.06.2026</span>
-      <a href="/sitzung/7603400">Sitzung</a>
-    </li>
-  </ul>
+<ul class="menu">
+  <li class="active first menu-item menu-sitzung menu-level-1"><a href="/sitzung">Sitzungen / Sitzungsdokumente<span class="sr-only">(ausgewählt)</span></a></li>
+</ul>
+<div class="icms-global-table-container"><h2>Nächste Sitzungen</h2>
+  <table class="table icms-dt rs_preserve" cellspacing="0" width="100%" id="icmsTableFutureSitzungen"
+     data-webpack-module="datatables"
+     data-entity-type="datatables"
+     data-entities="${dataEntities({
+       emptyColumns: [],
+       data: [sessionEntity('7524445', '2./3. Sitzungen', '01.06.2026'), sessionEntity('7603498', '4./5. Sitzungen', '21.09.2026')],
+     })}"
+     data-page-length="20"
+     data-order="[[ 0, &quot;asc&quot; ]]"
+     data-dt-type="localdynamic"
+     data-is-update-address-bar='true'
+  >
+    <thead><tr><th data-data="_datum" class="all dtNoAutoWidth icms-sitzung-list-col-date">Datum</th><th data-data="name" class="all dtScopeRow">Sitzung</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+<div class="icms-global-table-container"><h2>Letzte Sitzungen</h2>
+  <table class="table icms-dt rs_preserve" cellspacing="0" width="100%" id="icmsTablePastSitzungen"
+     data-entity-type="datatables"
+     data-entities="${dataEntities({
+       emptyColumns: [],
+       data: [sessionEntity('4855958', '14./15. Sitzungen', '13.04.2026')],
+     })}"
+     data-order="[[ 0, &quot;desc&quot; ]]"
+  >
+    <thead><tr><th data-data="_datum">Datum</th><th data-data="name">Sitzung</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
 </body></html>`;
 
-test('parseSessionList liest Sitzungen mit Datum und Link', () => {
+test('parseSessionList liest die Sitzungen der Übersichtsseite', () => {
   const sessions = parseSessionList(SESSION_LIST_HTML);
-  assert.equal(sessions.length, 3);
   assert.deepEqual(
     sessions.map((s) => s.id),
-    ['7603400', '7603498', '7603499'],
+    ['4855958', '7524445', '7603498'],
   );
+
   const next = sessions.find((s) => s.id === '7603498');
+  assert.equal(next.title, '4./5. Sitzungen');
   assert.equal(next.date, '2026-09-21');
+  assert.deepEqual(next.dates, ['2026-09-21']);
   assert.equal(next.url, 'https://parlament.winterthur.ch/sitzung/7603498');
+  assert.equal(next.sourceUrl, 'https://parlament.winterthur.ch/_rte/anlass/7603498');
 });
 
-test('parseSessionList wertet data-entities aus', () => {
-  const html =
-    '<table class="icms-dt" data-entities="' +
-    '[{&quot;_datum&quot;:&quot;21.09.2026&quot;,&quot;_titel&quot;:&quot;' +
-    '&lt;a href=\'/sitzung/7603498\'&gt;Doppelsitzung&lt;/a&gt;&quot;}]">' +
-    '</table>';
+test('parseSessionList hält den Navigationslink /sitzung nicht für eine Sitzung', () => {
+  assert.deepEqual(parseSessionList('<a href="/sitzung">Sitzungen / Sitzungsdokumente</a>'), []);
+});
+
+test('parseSessionList liest auch gerenderte Links samt Datum', () => {
+  const html = `
+    <ul class="sessions">
+      <li><span class="date">Montag, 21. September 2026</span><a href="/sitzung/7603498">Doppelsitzung</a></li>
+      <li><span class="date">02.11.2026</span><a href="/_rte/anlass/7603499">Sitzung</a></li>
+    </ul>`;
   const sessions = parseSessionList(html);
-  assert.equal(sessions.length, 1);
-  assert.equal(sessions[0].id, '7603498');
-  assert.equal(sessions[0].date, '2026-09-21');
+  assert.deepEqual(
+    sessions.map((s) => [s.id, s.date]),
+    [
+      ['7603498', '2026-09-21'],
+      ['7603499', '2026-11-02'],
+    ],
+  );
+  assert.equal(sessions[0].sourceUrl, 'https://parlament.winterthur.ch/sitzung/7603498');
+  assert.equal(sessions[1].sourceUrl, 'https://parlament.winterthur.ch/_rte/anlass/7603499');
 });
 
 test('selectNextSession nimmt die früheste künftige Sitzung', () => {
   const sessions = parseSessionList(SESSION_LIST_HTML);
-  const next = selectNextSession(sessions, new Date('2026-08-01T00:00:00Z'));
-  assert.equal(next.id, '7603498');
+  assert.equal(selectNextSession(sessions, new Date('2026-05-01T00:00:00Z')).id, '7524445');
+  assert.equal(selectNextSession(sessions, new Date('2026-07-01T00:00:00Z')).id, '7603498');
 });
 
 test('selectNextSession berücksichtigt den Sitzungstag selbst', () => {
   const sessions = parseSessionList(SESSION_LIST_HTML);
-  const next = selectNextSession(sessions, new Date('2026-09-21T09:00:00Z'));
-  assert.equal(next.id, '7603498');
+  assert.equal(selectNextSession(sessions, new Date('2026-06-01T09:00:00Z')).id, '7524445');
 });
 
 test('selectNextSession liefert null, wenn alle Sitzungen vorbei sind', () => {
@@ -76,14 +141,73 @@ test('selectNextSession liefert null, wenn alle Sitzungen vorbei sind', () => {
   assert.equal(selectNextSession(sessions, new Date('2027-01-01T00:00:00Z')), null);
 });
 
+test('selectNextSession zieht undatierte Sitzungen nicht datierten vor', () => {
+  const sessions = [
+    { id: '1', date: '2020-01-01', dates: ['2020-01-01'] },
+    { id: '2', date: null, dates: [] },
+  ];
+  assert.equal(selectNextSession(sessions, new Date('2026-01-01T00:00:00Z')), null);
+  assert.equal(selectNextSession([sessions[1]], new Date('2026-01-01T00:00:00Z')).id, '2');
+});
+
 test('extractDates erkennt die gängigen Schreibweisen', () => {
   assert.deepEqual(extractDates('Montag, 1. Dezember 2026'), ['2026-12-01']);
   assert.deepEqual(extractDates('01.12.2026'), ['2026-12-01']);
   assert.deepEqual(extractDates('2026-12-01'), ['2026-12-01']);
+  assert.deepEqual(extractDates(datumCell('01.12.2026')), ['2026-12-01']);
   assert.deepEqual(extractDates('kein Datum'), []);
 });
 
 /* ─── Traktanden ───────────────────────────────────────────────────── */
+
+// Aufbau wie auf einer Sitzungsseite (z.B. /sitzung/7603498): die Traktanden
+// stehen als Zeilen `<tr id="traktanden_…">` im Quelltext, das Blättern
+// übernimmt erst im Browser das Tabellen-Skript. Daneben stehen weitere
+// Tabellen (Dokumente, Kontakt), die nicht mitgelesen werden dürfen.
+const SESSION_DETAIL_HTML = `
+<div class="icms-partial-wrapper"><h2>Dokumente</h2><div class="icms-dt-wrapper"><table class="table icms-dt rs_preserve" id="icmsTable-dokumente" data-dt-type="static">
+<thead><tr><th scope="col">Name</th><th scope="col">Download</th></tr></thead>
+<tbody><tr><td>Traktandenliste</td><td><a href="/_rte/dokument/999">PDF</a></td></tr></tbody></table></div></div>
+<div class="icms-partial-wrapper"><h2>Traktanden</h2><div class="icms-dt-wrapper"><table class="table icms-dt rs_preserve" cellspacing="0" width="100%" id="icmsTable-1210141554"
+               data-dt-type="static"
+               data-order="[[ 0, &quot;asc&quot; ]]"
+               data-webpack-module="datatables"
+               data-page-length="20"
+               data-page-length-all="Alle"
+               data-paging="1"
+        ><thead>
+                <tr><th scope="col">Nr.</th><th class="dtScopeRow">Bezeichnung</th>
+                            <th scope="col">Geschäftsart</th>
+            <th scope="col">Geschäft</th></tr>
+                </thead><tbody>
+            <tr id="traktanden_88649"><td>1</td><td>                                    <div class="icms-wysiwyg">Wahl von zwei Mitgliedern in die Sachkommission Soziales und Sicherheit (SSK)</div>
+                    </td><td>
+                            Wahlen</td><td>
+                            <a href="/_rte/information/1388420">                                        2021.82</a></td></tr><tr id="traktanden_88652"><td>2</td><td>  <div class="icms-wysiwyg">Teilrevision der Verordnung &uuml;ber den Finanzhaushalt &amp; die Rechnung</div>
+                    </td><td>
+                            Weisung</td><td>
+                            <a href="/_rte/information/1388421">2021.83</a></td></tr></tbody></table></div></div>
+<div class="icms-partial-wrapper"><h2>Kontakt</h2><table class="table"><thead><tr><th scope="col">Name</th><th scope="col">Funktion</th></tr></thead>
+<tbody><tr><td>Parlamentsdienst</td><td>Sekretariat</td></tr></tbody></table></div>`;
+
+test('parseAgendaItems liest die Traktanden einer Sitzungsseite', () => {
+  const items = parseAgendaItems(SESSION_DETAIL_HTML);
+  assert.equal(items.length, 2);
+  assert.deepEqual(items[0], {
+    number: '1',
+    business: '2021.82',
+    businessUrl: 'https://parlament.winterthur.ch/_rte/information/1388420',
+    type: 'Wahlen',
+    label: 'Wahl von zwei Mitgliedern in die Sachkommission Soziales und Sicherheit (SSK)',
+  });
+  assert.equal(items[1].label, 'Teilrevision der Verordnung über den Finanzhaushalt & die Rechnung');
+  assert.equal(items[1].type, 'Weisung');
+});
+
+test('parseAgendaItems überspringt Dokumenten- und Kontakttabellen', () => {
+  const items = parseAgendaItems(SESSION_DETAIL_HTML);
+  assert.ok(!items.some((item) => item.business === 'PDF' || item.label === 'Parlamentsdienst'));
+});
 
 const AGENDA_TABLE_HTML = `
 <table>
