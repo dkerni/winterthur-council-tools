@@ -261,10 +261,7 @@ function renderCharts(host, stats, mode) {
       { title: `Ø Alter je ${groupLabel}`, sub: 'in Jahren', kind: 'ageByGroup' },
     );
   } else {
-    boxes.push(
-      { title: 'Stadtkreise', sub: 'Wohnort der Mitglieder', kind: 'districts' },
-      { title: 'Häufigste Berufe', sub: 'Top 10 nach Nennungen', kind: 'professions' },
-    );
+    boxes.push({ title: 'Stadtkreise', sub: 'Wohnort der Mitglieder', kind: 'districts' });
   }
 
   host.innerHTML = boxes.map((box) => chartBox(box.title, box.sub)).join('');
@@ -275,7 +272,7 @@ function renderCharts(host, stats, mode) {
     seats: { type: 'bar', labels, values: groups.map((entry) => entry.group.seats), colors, stepSize: 5 },
     gender: {
       type: 'doughnut',
-      labels: Object.keys(total.gender.counts).map((key) => GENDER_LABELS[key]),
+      labels: Object.keys(total.gender.counts).map((key) => GENDER_LABELS[key] || key),
       values: Object.values(total.gender.counts),
       colors: Object.keys(total.gender.counts).map((key) => GENDER_COLORS[key]),
     },
@@ -312,13 +309,6 @@ function renderCharts(host, stats, mode) {
       labels: total.districts.map((entry) => entry.name),
       values: total.districts.map((entry) => entry.count),
       colors: '#9e8a6b',
-    },
-    professions: {
-      type: 'bar',
-      horizontal: true,
-      labels: total.professions.slice(0, 10).map((entry) => entry.name),
-      values: total.professions.slice(0, 10).map((entry) => entry.count),
-      colors: '#7b8a9a',
     },
   };
 

@@ -65,10 +65,15 @@ export function loadChartLibrary() {
 const FONT_FAMILY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 function baseOptions(extra = {}) {
+  // `plugins` gezielt zusammenführen: ein flaches Spreizen von `extra` würde
+  // die Standard-Plugins (u.a. die abgeschaltete Legende) überschreiben und
+  // in Balkendiagrammen eine Legende mit «undefined» erzeugen.
+  const { plugins: extraPlugins, ...rest } = extra;
   return {
     responsive: true,
     maintainAspectRatio: false,
     animation: { duration: 250 },
+    ...rest,
     plugins: {
       legend: { display: false, labels: { font: { family: FONT_FAMILY, size: 11 } } },
       tooltip: {
@@ -76,9 +81,8 @@ function baseOptions(extra = {}) {
         titleFont: { family: FONT_FAMILY, size: 12 },
         bodyFont: { family: FONT_FAMILY, size: 12 },
       },
-      ...(extra.plugins || {}),
+      ...(extraPlugins || {}),
     },
-    ...extra,
   };
 }
 

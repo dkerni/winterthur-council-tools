@@ -259,6 +259,21 @@ export function ageOf(member, referenceDate = new Date()) {
 }
 
 /**
+ * Zeitraum der Amtsdauer: erster Eintritt bis Stichtag bzw. erfasster Austritt.
+ * @returns {{startDate: Date, end: Date}|null}
+ */
+function tenurePeriod(member, referenceDate) {
+  const start = member.firstEntryDate || member.currentMandateStart;
+  if (!start) return null;
+  const startDate = new Date(start);
+  if (Number.isNaN(startDate.getTime())) return null;
+
+  const endDate = member.mandateEnd ? new Date(member.mandateEnd) : null;
+  const end = endDate && !Number.isNaN(endDate.getTime()) && endDate < referenceDate ? endDate : referenceDate;
+  return { startDate, end };
+}
+
+/**
  * Amtsdauer in Jahren seit dem **ersten** Eintritt ins Parlament
  * (Unterbrüche werden nicht abgezogen — siehe README).
  *
@@ -267,16 +282,42 @@ export function ageOf(member, referenceDate = new Date()) {
  * @returns {number|null}
  */
 export function tenureYears(member, referenceDate = new Date()) {
-  const start = member.firstEntryDate || member.currentMandateStart;
-  if (!start) return null;
-  const startDate = new Date(start);
-  if (Number.isNaN(startDate.getTime())) return null;
+  const period = tenurePeriod(member, referenceDate);
+  if (!period) return null;
 
-  const endDate = member.mandateEnd ? new Date(member.mandateEnd) : null;
-  const end = endDate && !Number.isNaN(endDate.getTime()) && endDate < referenceDate ? endDate : referenceDate;
-
-  const years = (end - startDate) / (365.2425 * 24 * 60 * 60 * 1000);
+  const years = (period.end - period.startDate) / (365.2425 * 24 * 60 * 60 * 1000);
   return years < 0 ? 0 : Math.round(years * 10) / 10;
+}
+
+/**
+ * Amtsdauer in vollen Monaten seit dem ersten Eintritt — Grundlage für die
+ * Anzeige als «Jahre und Monate».
+ * @returns {number|null}
+ */
+export function tenureMonths(member, referenceDate = new Date()) {
+  const period = tenurePeriod(member, referenceDate);
+  if (!period) return null;
+
+  const { startDate, end } = period;
+  let months =
+    (end.getUTCFullYear() - startDate.getUTCFullYear()) * 12 + (end.getUTCMonth() - startDate.getUTCMonth());
+  if (end.getUTCDate() < startDate.getUTCDate()) months -= 1;
+  return months < 0 ? 0 : months;
+}
+
+/**
+ * Monatszahl → «4 Jahre 2 Monate» (leer bei fehlendem Wert).
+ * @param {number|null|undefined} months
+ * @returns {string}
+ */
+export function formatTenure(months) {
+  if (months == null || !Number.isFinite(months)) return '';
+  const years = Math.floor(months / 12);
+  const rest = months % 12;
+  const parts = [];
+  if (years) parts.push(`${years} ${years === 1 ? 'Jahr' : 'Jahre'}`);
+  if (rest || !years) parts.push(`${rest} ${rest === 1 ? 'Monat' : 'Monate'}`);
+  return parts.join(' ');
 }
 
 /** Anzeigename einer Kommission. */

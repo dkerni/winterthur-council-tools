@@ -1,21 +1,23 @@
 /**
- * Mitgliederliste — sortierbare Tabelle mit Suche, Filtern und Detailbereich.
+ * Mitgliederliste — sortierbare Tabelle mit Suche und Filtern. Ein Klick auf
+ * ein Mitglied öffnet dessen Profilseite auf parlament.winterthur.ch.
  */
 
-import { loadDatabase, dataErrorMessage, ageOf, tenureYears, formatDate, formatDateTime } from './data.js';
+import { loadDatabase, dataErrorMessage, ageOf, tenureYears, tenureMonths, formatTenure } from './data.js';
 import { councilNote } from './parties.js';
 import { GENDER_LABELS } from './stats.js';
 import { toCsv, downloadCsv, datedFilename } from './csv.js';
 import { escapeHtml } from './layout.js';
 
 const COLUMNS = [
-  { id: 'name', label: 'Name', sort: (m) => `${m.lastName} ${m.firstName}`.toLowerCase() },
+  { id: 'firstName', label: 'Vorname', sort: (m) => (m.firstName || '').toLowerCase() },
+  { id: 'lastName', label: 'Nachname', sort: (m) => (m.lastName || '').toLowerCase() },
   { id: 'party', label: 'Partei', sort: (m, db) => db.partyById.get(m.partyId)?.order ?? 99 },
   { id: 'fraction', label: 'Fraktion', sort: (m, db) => db.fractionById.get(m.fractionId)?.order ?? 99 },
   { id: 'age', label: 'Alter', numeric: true, sort: (m) => ageOf(m) ?? -1 },
   { id: 'district', label: 'Stadtkreis', sort: (m) => (m.district || '').toLowerCase() },
   { id: 'profession', label: 'Beruf', sort: (m) => (m.profession || '').toLowerCase() },
-  { id: 'tenure', label: 'Amtsdauer', numeric: true, sort: (m) => tenureYears(m) ?? -1 },
+  { id: 'tenure', label: 'Amtsdauer', sort: (m) => tenureMonths(m) ?? -1 },
   { id: 'inquiries', label: 'Vorstösse', numeric: true, sort: (m) => m.inquiryCount ?? 0 },
 ];
 
@@ -32,7 +34,7 @@ export async function createMembersList(container) {
     return;
   }
 
-  const state = { query: '', party: '', fraction: '', commission: '', district: '', sort: 'name', dir: 1, selected: null };
+  const state = { query: '', party: '', fraction: '', commission: '', district: '', sort: 'firstName', dir: 1 };
 
   container.innerHTML = skeleton(db);
 
@@ -42,7 +44,6 @@ export async function createMembersList(container) {
   const commissionSelect = container.querySelector('#filter-commission');
   const districtSelect = container.querySelector('#filter-district');
   const tableHost = container.querySelector('#member-table');
-  const detailHost = container.querySelector('#member-detail');
   const countHost = container.querySelector('#member-count');
 
   searchInput.addEventListener('input', () => {
@@ -106,7 +107,7 @@ export async function createMembersList(container) {
     return [...members].sort((a, b) => {
       const left = column.sort(a, db);
       const right = column.sort(b, db);
-      if (left === right) return `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`, 'de');
+      if (left === right) return `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`, 'de');
       if (typeof left === 'number' && typeof right === 'number') return (left - right) * state.dir;
       return String(left).localeCompare(String(right), 'de') * state.dir;
     });
@@ -132,30 +133,14 @@ export async function createMembersList(container) {
       });
     });
 
-    tableHost.querySelectorAll('tr[data-member]').forEach((row) => {
-      row.addEventListener('click', () => select(row.dataset.member));
-      row.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          select(row.dataset.member);
-        }
+    // Der Profil-Link in der Namensspalte bedient Tastatur und Kontextmenü;
+    // ein Klick irgendwo in der Zeile öffnet dasselbe Profil.
+    tableHost.querySelectorAll('tr[data-profile]').forEach((row) => {
+      row.addEventListener('click', (event) => {
+        if (event.target.closest('a')) return;
+        window.open(row.dataset.profile, '_blank', 'noopener');
       });
     });
-
-    showDetail();
-  }
-
-  /** Auswahl wechseln, ohne die Tabelle neu aufzubauen. */
-  function select(id) {
-    state.selected = id;
-    tableHost.querySelectorAll('tr[data-member]').forEach((row) => {
-      row.classList.toggle('is-selected', row.dataset.member === id);
-    });
-    showDetail();
-  }
-
-  function showDetail() {
-    renderDetail(detailHost, db, state.selected ? db.memberById.get(state.selected) : null);
   }
 
   render();
@@ -202,10 +187,7 @@ function skeleton(db) {
       <button type="button" class="btn" id="member-csv">Auswahl als CSV</button>
       <span class="hint" id="member-count"></span>
     </div>
-    <div class="members-layout">
-      <div class="card" id="member-table"></div>
-      <aside class="card member-detail" id="member-detail"></aside>
-    </div>`;
+    <div class="card" id="member-table"></div>`;
 }
 
 function renderTable(host, db, members, state) {
@@ -227,10 +209,18 @@ function renderTable(host, db, members, state) {
       const party = db.partyById.get(member.partyId);
       const fraction = db.fractionById.get(member.fractionId);
       const age = ageOf(member);
-      const tenure = tenureYears(member);
-      return `<tr data-member="${escapeHtml(member.id)}" class="${state.selected === member.id ? 'is-selected' : ''}"
-        tabindex="0">
-        <td>${escapeHtml(member.lastName)}, ${escapeHtml(member.firstName)}</td>
+      const tenure = formatTenure(tenureMonths(member));
+      const url = profileUrl(member);
+      const label = `${member.firstName} ${member.lastName}`.trim();
+      const nameCell = (value, primary) =>
+        url
+          ? `<a class="member-link" href="${escapeHtml(url)}" target="_blank" rel="noopener"${
+              primary ? '' : ' tabindex="-1"'
+            } title="Profil von ${escapeHtml(label)} auf parlament.winterthur.ch öffnen">${escapeHtml(value)}</a>`
+          : escapeHtml(value);
+      return `<tr data-member="${escapeHtml(member.id)}"${url ? ` data-profile="${escapeHtml(url)}"` : ''}>
+        <td>${nameCell(member.firstName, true)}</td>
+        <td>${nameCell(member.lastName, false)}</td>
         <td><span class="group-dot" style="background:${escapeHtml(party?.color || '#999')}"></span> ${escapeHtml(
           party?.abbr || '–',
         )}</td>
@@ -238,7 +228,7 @@ function renderTable(host, db, members, state) {
         <td class="num">${age ?? '–'}</td>
         <td>${escapeHtml(member.district || '–')}</td>
         <td>${escapeHtml(member.profession || '–')}</td>
-        <td class="num">${tenure ?? '–'}</td>
+        <td class="tenure">${tenure ? escapeHtml(tenure) : '–'}</td>
         <td class="num">${member.inquiryCount ?? 0}</td>
       </tr>`;
     })
@@ -252,62 +242,18 @@ function renderTable(host, db, members, state) {
     </div>`;
 }
 
-function renderDetail(host, db, member) {
-  if (!member) {
-    host.innerHTML =
-      '<h3>Details</h3><p class="empty">Eine Zeile in der Tabelle auswählen, um alle erfassten Angaben zu sehen.</p>';
-    return;
+/**
+ * Profil-Link eines Mitglieds — nur `http(s)`-Adressen werden übernommen.
+ * @returns {string|null}
+ */
+function profileUrl(member) {
+  if (!member.profileUrl) return null;
+  try {
+    const url = new URL(member.profileUrl, window.location.href);
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : null;
+  } catch {
+    return null;
   }
-
-  const party = db.partyById.get(member.partyId);
-  const fraction = db.fractionById.get(member.fractionId);
-  const age = ageOf(member);
-  const tenure = tenureYears(member);
-
-  const rows = [
-    ['Partei', party ? `${party.abbr} — ${party.name}` : '–'],
-    ['Fraktion', fraction ? fraction.name : '–'],
-    ['Geschlecht', GENDER_LABELS[member.gender] || 'unbekannt'],
-    ['Geburtsjahr', member.birthYear ? `${member.birthYear} (${age} Jahre)` : 'nicht erfasst'],
-    ['Beruf', member.profession || 'nicht erfasst'],
-    ['Stadtkreis', member.district || 'nicht erfasst'],
-    ['Im Rat seit', member.firstEntryDate ? formatDate(member.firstEntryDate) : 'nicht erfasst'],
-    ['Austritt', member.mandateEnd ? formatDate(member.mandateEnd) : 'kein Austritt erfasst'],
-    ['Amtsdauer', tenure != null ? `${tenure} Jahre` : 'nicht erfasst'],
-    ['Vorstösse', member.inquiryCount ?? 0],
-  ];
-
-  const commissions = member.commissions.length
-    ? `<div class="chip-list">${member.commissions
-        .map(
-          (entry) =>
-            `<span class="chip">${escapeHtml(entry.name)}${entry.role ? ` — ${escapeHtml(entry.role)}` : ''}</span>`,
-        )
-        .join('')}</div>`
-    : '<p class="empty">Keine Kommissionen erfasst.</p>';
-
-  host.innerHTML = `
-    <h3>${escapeHtml(member.firstName)} ${escapeHtml(member.lastName)}</h3>
-    <p class="subtitle">${escapeHtml(party?.abbr || '')}${fraction ? ` · Fraktion ${escapeHtml(fraction.shortName)}` : ''}</p>
-    <dl>${rows.map(([key, value]) => `<dt>${escapeHtml(key)}</dt><dd>${escapeHtml(String(value))}</dd>`).join('')}</dl>
-    ${
-      member.email || member.profileUrl
-        ? `<div class="detail-section"><h4>Kontakt</h4><p>${[
-            member.email ? `<a href="mailto:${escapeHtml(member.email)}">${escapeHtml(member.email)}</a>` : '',
-            member.profileUrl
-              ? `<a href="${escapeHtml(member.profileUrl)}" target="_blank" rel="noopener">Profil auf parlament.winterthur.ch</a>`
-              : '',
-          ]
-            .filter(Boolean)
-            .join(' · ')}</p></div>`
-        : ''
-    }
-    <div class="detail-section"><h4>Kommissionen</h4>${commissions}</div>
-    ${
-      member.lastSeenAt
-        ? `<p class="hint">Zuletzt bestätigt: ${escapeHtml(formatDateTime(member.lastSeenAt))}</p>`
-        : ''
-    }`;
 }
 
 function csvRows(db, members) {

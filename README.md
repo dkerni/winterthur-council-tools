@@ -16,8 +16,8 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 | `index.html` | Startseite mit Tool-Kacheln, Traktanden-Download und kompaktem Mehrheitsrechner |
 | `tools/sitzplan.html` | Interaktive Sitzordnung (Drag & Drop, Fraktionspräsidien, Export/Import) |
 | `tools/mehrheitsrechner.html` | Mehrheiten je Fraktion/Partei, Absenzen, mögliche Allianzen, teilbarer Link |
-| `tools/statistik.html` | Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise, Berufe (gesamt/Partei/Fraktion) |
-| `tools/mitglieder.html` | Durchsuchbare, sortierbare Mitgliederliste mit Detailbereich und CSV-Export |
+| `tools/statistik.html` | Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise (gesamt/Partei/Fraktion) |
+| `tools/mitglieder.html` | Durchsuchbare, sortierbare Mitgliederliste mit Link auf das Profil und CSV-Export |
 | `impressum.html` | Betreiber, Datenquellen, Umgang mit Personendaten, Haftungsausschluss |
 
 ## Projektstruktur
@@ -285,8 +285,8 @@ Ergänzend:
   Traktanden-Workflows fand denn auch keine Sitzung, weil die Übersicht Sitzungen als
   `/_rte/anlass/<id>` verlinkt und nicht als `/sitzung/<id>`; die Tests bilden das
   Quell-Markup seither nach.
-* **Amtsdauer** = Jahre seit dem ersten Eintritt ins Parlament; Unterbrüche werden nicht
-  abgezogen, weil die Quelle nur Eintrittsdaten publiziert.
+* **Amtsdauer** = Zeit seit dem ersten Eintritt ins Parlament (Anzeige in Jahren und Monaten,
+  CSV in Jahren); Unterbrüche werden nicht abgezogen, weil die Quelle nur Eintrittsdaten publiziert.
 * **Alter** ist auf ±1 Jahr genau, da die Quelle nur das Geburtsjahr nennt.
 * **Chart.js** wird von jsDelivr mit fester Version und SRI-Hash geladen. Ist das CDN
   nicht erreichbar, zeigen die Diagramme automatisch eine Wertetabelle.
