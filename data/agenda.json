@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": "2026-09-07T14:56:28.784Z",
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-07T15:25:44.915Z",
   "generatedBy": "scripts/scrape-agenda.mjs",
   "source": "https://parlament.winterthur.ch/sitzung",
   "status": "ok",
@@ -12,9 +12,10 @@
     "dates": [
       "2026-09-14"
     ],
+    "location": "#1513080a9e151508044e3a505c5244363244011501bedc0c",
     "itemCount": 18
   },
   "file": "data/traktandenliste.xlsx",
   "fileName": "traktandenliste_2026-09-14.xlsx",
-  "contentHash": "edb72c280b8385827a0d2d244c35543c62f9781fbf6899f69d1ad7efe0de90df"
+  "contentHash": "c05c7134da6b29194af5a5db2625f8ba7b71959399dcab4874816e66f974f2c3"
 }
