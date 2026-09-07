@@ -286,7 +286,7 @@ Ergänzend:
   und nichts gebündelt. Die Datei dient nur den npm-Skripten und `"type": "module"`,
   damit `node --test` die Browser-Module direkt importieren kann.
 * **Zusätzliche Module** `paths.js` (Basis-URL für den GitHub-Pages-Unterpfad samt
-  `fetchJson`) und `csv.js` (gemeinsamer CSV-Export von Statistik und Mitgliederliste).
+  `fetchJson`) und `csv.js` (CSV-Export der Mitgliederliste).
 * **Vorläufige `data/members.json`** — die Datei wurde aus `data/seating.json` und
   `data/gender-overrides.json` erzeugt (`scripts/bootstrap-members.mjs`), weil die
   Entwicklungsumgebung keinen Netzwerkzugriff auf `parlament.winterthur.ch` hat. Sie

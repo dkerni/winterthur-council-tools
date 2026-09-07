@@ -637,11 +637,6 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .filter-bar label { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: #444; }
 .filter-bar input[type='search'] { min-width: 220px; }
 
-/* --- Statistik: Auffälligkeiten ------------------------------------------ */
-.fact-list { list-style: none; font-size: 0.85rem; display: grid; gap: 0.35rem; color: #444; }
-.fact-list li { padding-left: 0.9rem; position: relative; }
-.fact-list li::before { content: '›'; position: absolute; left: 0; color: var(--clr-faint); }
-
 /* --- Mitgliederliste ----------------------------------------------------- */
 .members-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
 .members-table th, .members-table td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--clr-border-soft); text-align: left; }

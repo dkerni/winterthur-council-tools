@@ -13,7 +13,6 @@ const COLUMNS = [
   { id: 'firstName', label: 'Vorname', sort: (m) => (m.firstName || '').toLowerCase() },
   { id: 'lastName', label: 'Nachname', sort: (m) => (m.lastName || '').toLowerCase() },
   { id: 'party', label: 'Partei', sort: (m, db) => db.partyById.get(m.partyId)?.order ?? 99 },
-  { id: 'fraction', label: 'Fraktion', sort: (m, db) => db.fractionById.get(m.fractionId)?.order ?? 99 },
   { id: 'age', label: 'Alter', numeric: true, sort: (m) => ageOf(m) ?? -1 },
   { id: 'district', label: 'Stadtkreis', sort: (m) => (m.district || '').toLowerCase() },
   { id: 'profession', label: 'Beruf', sort: (m) => (m.profession || '').toLowerCase() },
@@ -207,7 +206,6 @@ function renderTable(host, db, members, state) {
   const rows = members
     .map((member) => {
       const party = db.partyById.get(member.partyId);
-      const fraction = db.fractionById.get(member.fractionId);
       const age = ageOf(member);
       const tenure = formatTenure(tenureMonths(member));
       const url = profileUrl(member);
@@ -224,7 +222,6 @@ function renderTable(host, db, members, state) {
         <td><span class="group-dot" style="background:${escapeHtml(party?.color || '#999')}"></span> ${escapeHtml(
           party?.abbr || '–',
         )}</td>
-        <td>${escapeHtml(fraction?.shortName || '–')}</td>
         <td class="num">${age ?? '–'}</td>
         <td>${escapeHtml(member.district || '–')}</td>
         <td>${escapeHtml(member.profession || '–')}</td>
