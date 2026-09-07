@@ -11,7 +11,14 @@
  * Ablauf nicht sofort brechen.
  */
 
-import { BASE_URL, decodeEntities, extractAllDataEntities, toText } from './icms.mjs';
+import {
+  BASE_URL,
+  decodeEntities,
+  extractAllDataEntities,
+  extractLabeledFields,
+  pickField,
+  toText,
+} from './icms.mjs';
 
 /** Pfad der Sitzungsübersicht. */
 export const SESSION_LIST_PATH = '/sitzung';
@@ -144,6 +151,9 @@ function firstSessionRef(value) {
   }
 }
 
+/** Feldnamen des Sitzungsorts in Quelle und Detailseite. */
+const LOCATION_FIELDS = ['ort', 'sitzungsort', 'veranstaltungsort', 'lokalitaet', 'lokal', 'raum', 'saal'];
+
 /**
  * Liest die Sitzungsübersicht (`/sitzung`).
  *
@@ -153,13 +163,13 @@ function firstSessionRef(value) {
  * zusätzlich (als Fallback) allfällige gerenderte Links.
  *
  * @param {string} html Quelltext der Übersichtsseite
- * @returns {Array<{id: string, url: string, sourceUrl: string, title: string, dates: string[], date: string|null}>}
+ * @returns {Array<{id: string, url: string, sourceUrl: string, title: string, dates: string[], date: string|null, location: string|null}>}
  *   Sitzungen, aufsteigend nach Datum (Sitzungen ohne Datum am Schluss)
  */
 export function parseSessionList(html) {
   const sessions = new Map();
 
-  const addSession = (ref, title, dates) => {
+  const addSession = (ref, title, dates, location) => {
     if (!ref) return;
     const existing = sessions.get(ref.id);
     const mergedDates = [...new Set([...(existing?.dates ?? []), ...dates])].sort();
@@ -170,6 +180,7 @@ export function parseSessionList(html) {
       title: existing?.title || title || `Sitzung ${ref.id}`,
       dates: mergedDates,
       date: mergedDates[0] ?? null,
+      location: existing?.location || location || null,
     });
   };
 
@@ -181,7 +192,7 @@ export function parseSessionList(html) {
         toText(pickEntityField(entity, ['titel', 'bezeichnung', 'name', 'sitzung', 'gremium'])) || '';
       const dateSource = pickEntityField(entity, ['datum', 'sitzungsdatum', 'beginn', 'von', 'termin']);
       const dates = extractDates(dateSource || values.join(' '));
-      addSession(ref, title, dates);
+      addSession(ref, title, dates, singleLine(pickEntityField(entity, LOCATION_FIELDS)));
     }
   }
 
@@ -204,7 +215,7 @@ export function parseSessionList(html) {
     const before = html.slice(Math.max(previousEnd, match.index - MAX_CONTEXT), linkEnd);
     const after = html.slice(linkEnd, Math.min(nextStart, linkEnd + MAX_CONTEXT));
     const dates = extractDates(before);
-    addSession(ref, toText(match[2]), dates.length ? dates : extractDates(after));
+    addSession(ref, toText(match[2]), dates.length ? dates : extractDates(after), null);
   });
 
   return [...sessions.values()].sort((a, b) => {
@@ -231,6 +242,21 @@ export function selectNextSession(sessions, now = new Date()) {
   if (upcoming.length) return upcoming[0];
   if (sessions.some((session) => session.date)) return null;
   return sessions.find((session) => !session.date) ?? null;
+}
+
+/** Höchstlänge einer Ortsangabe (schützt vor Fehlgriffen im Markup). */
+const MAX_LOCATION_LENGTH = 120;
+
+/**
+ * Angaben, die nur die Sitzungsseite selbst führt — zurzeit der Sitzungsort.
+ * Die Quelle stellt ihn als Label/Wert-Paar dar («Ort: Grosser Rathaussaal»).
+ * @param {string} html Quelltext von `/sitzung/<id>`
+ * @returns {{location: string|null}}
+ */
+export function parseSessionDetails(html) {
+  const value = pickField(extractLabeledFields(String(html ?? '')), LOCATION_FIELDS) ?? '';
+  const location = singleLine(value);
+  return { location: location && location.length <= MAX_LOCATION_LENGTH ? location : null };
 }
 
 /* ─── Traktanden ───────────────────────────────────────────────────── */
@@ -601,4 +627,43 @@ export function toWorkbookRows(items) {
     '',
     '',
   ]);
+}
+
+/** ISO-Datum als Schweizer Datum (`2026-09-21` → `21.09.2026`). */
+export function formatSwissDate(isoDate) {
+  const [year, month, day] = String(isoDate ?? '').split('-');
+  return year && month && day ? `${day}.${month}.${year}` : String(isoDate ?? '');
+}
+
+/** Aufzählung der Sitzungsdaten, z.B. «21.09.2026 und 05.10.2026». */
+function listDates(session) {
+  const dates = (session?.dates?.length ? session.dates : [session?.date]).filter(Boolean).map(formatSwissDate);
+  if (!dates.length) return '';
+  if (dates.length === 1) return dates[0];
+  return `${dates.slice(0, -1).join(', ')} und ${dates[dates.length - 1]}`;
+}
+
+/**
+ * Kopfzeilen der Arbeitsmappe: Titel, Datum und Ort der Sitzung sowie der Link
+ * auf die Sitzungsseite. Fehlende Angaben werden weggelassen.
+ * @param {{title?: string, url?: string, date?: string|null, dates?: string[], location?: string|null}} session
+ * @returns {Array<{text: string, link?: string}>}
+ */
+export function agendaTitleLines(session) {
+  const dates = listDates(session);
+  const facts = [dates ? `Sitzung vom ${dates}` : 'Sitzung', session?.location ? `Ort: ${session.location}` : '']
+    .filter(Boolean)
+    .join('   ·   ');
+
+  const lines = [{ text: session?.title ? `Traktandenliste – ${session.title}` : 'Traktandenliste' }, { text: facts }];
+  if (session?.url) {
+    let host = 'parlament.winterthur.ch';
+    try {
+      host = new URL(session.url).host;
+    } catch {
+      // Unbrauchbare Adresse: Standardhost im Text belassen.
+    }
+    lines.push({ text: `Sitzung auf ${host} öffnen`, link: session.url });
+  }
+  return lines;
 }

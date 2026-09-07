@@ -26,9 +26,11 @@ import { fileURLToPath } from 'node:url';
 import {
   AGENDA_COLUMNS,
   SESSION_LIST_PATH,
+  agendaTitleLines,
   dedupeAgendaItems,
   findPaginationLinks,
   parseAgendaItems,
+  parseSessionDetails,
   parseSessionList,
   selectNextSession,
   sortAgendaItems,
@@ -37,9 +39,13 @@ import {
 import { BASE_URL, fetchPage } from './lib/icms.mjs';
 import { createWorkbook } from './lib/xlsx.mjs';
 
-const SCHEMA_VERSION = 1;
+// Version 2: Arbeitsmappe mit Kopfbereich (Datum, Ort, Link, Logo) und
+// klassischer Tabellenformatierung. Eine Erhöhung baut die Datei neu auf,
+// auch wenn sich die Traktanden nicht geändert haben.
+const SCHEMA_VERSION = 2;
 const AGENDA_JSON = 'data/agenda.json';
 const WORKBOOK_FILE = 'data/traktandenliste.xlsx';
+const LOGO_FILE = 'media/Logo Mitte Fraktion.png';
 const MAX_PAGES = 25;
 const COLUMN_WIDTHS = [6, 18, 22, 60, 20, 22, 20, 30, 30];
 
@@ -74,6 +80,7 @@ function contentHash(session, items) {
       JSON.stringify({
         id: session?.id ?? null,
         dates: session?.dates ?? [],
+        location: session?.location ?? null,
         items: items.map((item) => [item.number, item.business, item.businessUrl, item.type, item.label]),
       }),
     )
@@ -91,6 +98,7 @@ async function crawlAgenda(startUrl) {
   const queue = [startUrl];
   const visited = new Set();
   const items = [];
+  let firstHtml = '';
 
   while (queue.length && visited.size < MAX_PAGES) {
     const pageUrl = queue.shift();
@@ -99,6 +107,7 @@ async function crawlAgenda(startUrl) {
 
     verbose(`  → ${pageUrl}`);
     const html = await fetchPage(pageUrl, { log: verbose });
+    if (!firstHtml) firstHtml = html;
     const pageItems = parseAgendaItems(html);
     verbose(`    ${pageItems.length} Traktanden`);
     items.push(...pageItems);
@@ -112,11 +121,11 @@ async function crawlAgenda(startUrl) {
     console.warn(`  ⚠ Mehr als ${MAX_PAGES} Seiten — weitere Seiten wurden nicht geladen.`);
   }
 
-  return items;
+  return { items, html: firstHtml };
 }
 
 /**
- * Traktanden einer Sitzung. Zuerst wird die öffentliche Adresse
+ * Traktanden und Angaben (Ort) einer Sitzung. Zuerst wird die öffentliche Adresse
  * `/sitzung/<id>` abgerufen; bleibt sie leer oder ist sie nicht erreichbar,
  * wird der in der Übersicht verlinkte Originalpfad (`/_rte/anlass/<id>`)
  * versucht.
@@ -124,20 +133,33 @@ async function crawlAgenda(startUrl) {
 async function fetchAgendaItems(session) {
   const alternate = session.sourceUrl && session.sourceUrl !== session.url ? session.sourceUrl : null;
 
-  let items = [];
+  let page = { items: [], html: '' };
   try {
-    items = await crawlAgenda(session.url);
+    page = await crawlAgenda(session.url);
   } catch (error) {
     if (!alternate) throw error;
     console.warn(`  ⚠ ${session.url}: ${error.message}`);
   }
 
-  if (!items.length && alternate) {
+  if (!page.items.length && alternate) {
     verbose(`  ↻ Ausweichpfad ${alternate}`);
-    items = await crawlAgenda(alternate);
+    page = await crawlAgenda(alternate);
   }
 
-  return sortAgendaItems(dedupeAgendaItems(items));
+  return {
+    items: sortAgendaItems(dedupeAgendaItems(page.items)),
+    location: parseSessionDetails(page.html).location,
+  };
+}
+
+/** Logo der Mitte-Fraktion für den Kopfbereich der Arbeitsmappe. */
+async function readLogo() {
+  try {
+    return await readFile(repoPath(LOGO_FILE));
+  } catch {
+    console.warn(`  ⚠ ${LOGO_FILE} nicht gefunden — Arbeitsmappe ohne Logo.`);
+    return null;
+  }
 }
 
 async function writeOutputs(payload, workbook) {
@@ -165,7 +187,7 @@ async function main() {
 
   if (!session) {
     log('Keine künftige Sitzung publiziert — Zustand «keine Traktanden» festhalten.');
-    if (previous?.status === 'none' && !options.force) {
+    if (previous?.status === 'none' && previous?.schemaVersion === SCHEMA_VERSION && !options.force) {
       log('Zustand ist bereits gespeichert — nichts zu tun.');
       return;
     }
@@ -189,12 +211,14 @@ async function main() {
 
   log(`Nächste Sitzung: ${session.title || session.id} (${session.dates.join(', ') || 'ohne Datum'})`);
 
-  const items = await fetchAgendaItems(session);
-  log(`  ${items.length} Traktanden gelesen`);
+  const { items, location } = await fetchAgendaItems(session);
+  // Die Übersicht führt den Ort selten mit; die Sitzungsseite hat Vorrang.
+  session.location = location || session.location || null;
+  log(`  ${items.length} Traktanden gelesen${session.location ? ` (Ort: ${session.location})` : ''}`);
 
   if (!items.length) {
     log('Sitzung ohne publizierte Traktanden — Zustand «keine Traktanden» festhalten.');
-    if (previous?.status === 'none' && !options.force) {
+    if (previous?.status === 'none' && previous?.schemaVersion === SCHEMA_VERSION && !options.force) {
       log('Zustand ist bereits gespeichert — nichts zu tun.');
       return;
     }
@@ -212,6 +236,7 @@ async function main() {
           url: session.url,
           date: session.date,
           dates: session.dates,
+          location: session.location,
           itemCount: 0,
         },
         file: null,
@@ -226,6 +251,8 @@ async function main() {
   const hash = contentHash(session, items);
   const unchanged =
     previous?.status === 'ok' &&
+    // Ein neues Schema (z.B. geänderte Formatierung) baut die Datei neu auf.
+    previous?.schemaVersion === SCHEMA_VERSION &&
     previous?.session?.id === session.id &&
     previous?.contentHash === hash &&
     existsSync(repoPath(WORKBOOK_FILE));
@@ -236,11 +263,16 @@ async function main() {
   }
 
   const sheetName = session.date ? `Traktanden ${session.date}` : 'Traktanden';
+  const logo = await readLogo();
   const workbook = createWorkbook({
     sheetName,
     columns: AGENDA_COLUMNS,
     rows: toWorkbookRows(items),
     columnWidths: COLUMN_WIDTHS,
+    title: {
+      lines: agendaTitleLines(session),
+      image: logo ? { data: logo, name: 'Die Mitte-Fraktion' } : null,
+    },
     // Fester Zeitstempel, damit identische Daten identische Dateien ergeben.
     modified: new Date(Date.UTC(2020, 0, 1)),
   });
@@ -258,6 +290,7 @@ async function main() {
         url: session.url,
         date: session.date,
         dates: session.dates,
+        location: session.location,
         itemCount: items.length,
       },
       file: WORKBOOK_FILE,

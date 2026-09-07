@@ -1,19 +1,22 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { inflateRawSync } from 'node:zlib';
 import { test } from 'node:test';
 
 import {
   AGENDA_COLUMNS,
+  agendaTitleLines,
   dedupeAgendaItems,
   extractDates,
   findPaginationLinks,
   parseAgendaItems,
+  parseSessionDetails,
   parseSessionList,
   selectNextSession,
   sortAgendaItems,
   toWorkbookRows,
 } from '../lib/agenda.mjs';
-import { columnName, createWorkbook } from '../lib/xlsx.mjs';
+import { columnName, createWorkbook, pngSize } from '../lib/xlsx.mjs';
 
 /* ─── Sitzungsübersicht ────────────────────────────────────────────── */
 
@@ -148,6 +151,48 @@ test('selectNextSession zieht undatierte Sitzungen nicht datierten vor', () => {
   ];
   assert.equal(selectNextSession(sessions, new Date('2026-01-01T00:00:00Z')), null);
   assert.equal(selectNextSession([sessions[1]], new Date('2026-01-01T00:00:00Z')).id, '2');
+});
+
+test('parseSessionList übernimmt den Ort aus der Übersicht', () => {
+  const html = `<table class="icms-dt" data-entities="${dataEntities({
+    emptyColumns: [],
+    data: [{ ...sessionEntity('7603500', '6./7. Sitzungen', '02.11.2026'), _ort: 'Grosser Rathaussaal' }],
+  })}"></table>`;
+  assert.equal(parseSessionList(html)[0].location, 'Grosser Rathaussaal');
+});
+
+// Die Sitzungsseite führt Datum und Ort als Label/Wert-Paare (Definitionsliste
+// oder Tabelle) — die Übersicht kennt den Ort meist nicht.
+test('parseSessionDetails liest den Sitzungsort', () => {
+  const list = '<dl><dt>Datum</dt><dd>14.09.2026, 16.15 Uhr</dd><dt>Ort</dt><dd>Grosser Rathaussaal, Stadthaus</dd></dl>';
+  assert.equal(parseSessionDetails(list).location, 'Grosser Rathaussaal, Stadthaus');
+
+  const table = '<table><tr><th>Ort</th><td>Grosser Rathaussaal</td></tr></table>';
+  assert.equal(parseSessionDetails(table).location, 'Grosser Rathaussaal');
+
+  assert.equal(parseSessionDetails('<p>ohne Angaben</p>').location, null);
+  assert.equal(parseSessionDetails(null).location, null);
+});
+
+test('agendaTitleLines baut Titel, Datum, Ort und Sitzungslink', () => {
+  const lines = agendaTitleLines({
+    title: '10./11. Sitzungen',
+    url: 'https://parlament.winterthur.ch/sitzung/7603501',
+    date: '2026-09-14',
+    dates: ['2026-09-14', '2026-09-28'],
+    location: 'Grosser Rathaussaal',
+  });
+  assert.equal(lines.length, 3);
+  assert.equal(lines[0].text, 'Traktandenliste – 10./11. Sitzungen');
+  assert.match(lines[1].text, /Sitzung vom 14\.09\.2026 und 28\.09\.2026/);
+  assert.match(lines[1].text, /Ort: Grosser Rathaussaal/);
+  assert.equal(lines[2].link, 'https://parlament.winterthur.ch/sitzung/7603501');
+  assert.match(lines[2].text, /parlament\.winterthur\.ch/);
+});
+
+test('agendaTitleLines kommt ohne Titel, Ort und Link aus', () => {
+  const lines = agendaTitleLines({ date: '2026-09-14', dates: ['2026-09-14'] });
+  assert.deepEqual(lines, [{ text: 'Traktandenliste' }, { text: 'Sitzung vom 14.09.2026' }]);
 });
 
 test('extractDates erkennt die gängigen Schreibweisen', () => {
@@ -401,4 +446,76 @@ test('createWorkbook ist bei gleichen Daten byte-identisch', () => {
       modified: new Date(Date.UTC(2020, 0, 1)),
     });
   assert.ok(build().equals(build()));
+});
+
+/** Kleinstes gültiges PNG (1×1) — steht im Test für das Logo. */
+const TINY_PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+  'base64',
+);
+
+test('pngSize liest die Bildmasse und weist Fremdformate ab', () => {
+  assert.deepEqual(pngSize(TINY_PNG), { width: 1, height: 1 });
+  assert.equal(pngSize(Buffer.from('kein Bild')), null);
+  assert.equal(pngSize(null), null);
+});
+
+test('das Logo der Mitte-Fraktion liegt als PNG bereit', () => {
+  const size = pngSize(readFileSync(new URL('../../media/Logo Mitte Fraktion.png', import.meta.url)));
+  assert.ok(size && size.width > 0 && size.height > 0);
+});
+
+test('createWorkbook setzt Kopfbereich, Logo und alternierende Zeilen', () => {
+  const session = {
+    title: '10./11. Sitzungen',
+    url: 'https://parlament.winterthur.ch/sitzung/7603501',
+    date: '2026-09-14',
+    dates: ['2026-09-14'],
+    location: 'Grosser Rathaussaal',
+  };
+  const buffer = createWorkbook({
+    sheetName: 'Traktanden',
+    columns: AGENDA_COLUMNS,
+    rows: toWorkbookRows(parseAgendaItems(AGENDA_TABLE_HTML)),
+    columnWidths: [6, 18, 22, 60, 20, 22, 20, 30, 30],
+    title: { lines: agendaTitleLines(session), image: { data: TINY_PNG, name: 'Die Mitte-Fraktion' } },
+    modified: new Date(Date.UTC(2020, 0, 1)),
+  });
+
+  const sheet = readZipEntry(buffer, 'xl/worksheets/sheet1.xml');
+  // Kopfbereich: drei Textzeilen und eine Leerzeile, die Tabelle beginnt auf Zeile 5.
+  assert.match(sheet, /<t xml:space="preserve">Traktandenliste – 10\.\/11\. Sitzungen<\/t>/);
+  assert.match(sheet, /<mergeCell ref="A1:G1"\/>/);
+  assert.match(sheet, /<autoFilter ref="A5:I7"\/>/);
+  assert.match(sheet, /<pane ySplit="5" topLeftCell="A6"/);
+  // Kopfzeile im Stil 4 (farbig), Datenzeilen abwechselnd im Stil 0 und 1.
+  assert.match(sheet, /<row r="5"[^>]*><c r="A5" s="4"/);
+  assert.match(sheet, /<row r="6"><c r="A6" s="0"/);
+  assert.match(sheet, /<row r="7"><c r="A7" s="1"/);
+
+  const styles = readZipEntry(buffer, 'xl/styles.xml');
+  assert.match(styles, /fgColor rgb="FF003C69"/, 'farbige Kopfzeile statt Grau');
+  assert.match(styles, /fgColor rgb="FFE8EFF5"/, 'getönte Zeilen');
+
+  // Logo rechts im Kopfbereich (Spalte H = Index 7).
+  assert.match(sheet, /<drawing r:id="rIdDr1"\/>/);
+  assert.match(readZipEntry(buffer, 'xl/drawings/drawing1.xml'), /<xdr:col>7<\/xdr:col>/);
+  assert.match(readZipEntry(buffer, '[Content_Types].xml'), /Extension="png"/);
+  assert.ok(readZipEntry(buffer, 'xl/media/image1.png'));
+
+  const rels = readZipEntry(buffer, 'xl/worksheets/_rels/sheet1.xml.rels');
+  assert.match(rels, /Target="https:\/\/parlament\.winterthur\.ch\/sitzung\/7603501"/);
+  assert.match(rels, /Target="\.\.\/drawings\/drawing1\.xml"/);
+});
+
+test('createWorkbook bleibt ohne Kopfbereich unverändert aufgebaut', () => {
+  const buffer = createWorkbook({
+    columns: ['A', 'B'],
+    rows: [['1', '2']],
+    modified: new Date(Date.UTC(2020, 0, 1)),
+  });
+  const sheet = readZipEntry(buffer, 'xl/worksheets/sheet1.xml');
+  assert.match(sheet, /<row r="1"[^>]*><c r="A1" s="4"/);
+  assert.match(sheet, /<autoFilter ref="A1:B2"\/>/);
+  assert.doesNotMatch(sheet, /mergeCell|drawing/);
 });
