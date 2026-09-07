@@ -1,12 +1,20 @@
 {
   "schemaVersion": 1,
-  "generatedAt": null,
+  "generatedAt": "2026-09-07T14:16:43.914Z",
   "generatedBy": "scripts/scrape-agenda.mjs",
   "source": "https://parlament.winterthur.ch/sitzung",
-  "status": "none",
-  "message": "Für die nächste Sitzung sind noch keine Traktanden publiziert.",
-  "session": null,
-  "file": null,
-  "fileName": null,
-  "contentHash": null
+  "status": "ok",
+  "session": {
+    "id": "7603501",
+    "title": "10./11. Sitzungen",
+    "url": "https://parlament.winterthur.ch/sitzung/7603501",
+    "date": "2026-09-14",
+    "dates": [
+      "2026-09-14"
+    ],
+    "itemCount": 9
+  },
+  "file": "data/traktandenliste.xlsx",
+  "fileName": "traktandenliste_2026-09-14.xlsx",
+  "contentHash": "2edb1da71e4453ecda1a816295b2316956cea666dc537401be341300decdc65a"
 }
