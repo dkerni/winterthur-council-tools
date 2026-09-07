@@ -1,14 +1,17 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-07-01T00:00:00Z",
-  "generatedBy": "scripts/bootstrap-members.mjs",
+  "generatedAt": "2026-09-07T14:22:03Z",
+  "generatedBy": "scripts/scrape-members.mjs",
   "source": "https://parlament.winterthur.ch",
   "sources": {
-    "seating": "media/Sitzplan_Parlamentssaal_Stand_01.07.2026.pdf"
+    "memberList": "https://parlament.winterthur.ch/stadtparlament/27428",
+    "fractions": "https://parlament.winterthur.ch/fraktionen",
+    "commissions": "https://parlament.winterthur.ch/kommissionen",
+    "memberDetail": "https://parlament.winterthur.ch/behoerdenmitglieder/{id}"
   },
   "dataQuality": {
-    "complete": false,
-    "note": "Vorläufiger Datenstand: Name, Partei und Fraktion stammen aus dem offiziellen Sitzplan (data/seating.json), das Geschlecht aus data/gender-overrides.json. Geburtsjahr, Beruf, Adresse, E-Mail, Kommissionen, Eintrittsdaten und Vorstösse werden erst durch den ersten Lauf von scripts/scrape-members.mjs befüllt.",
+    "complete": true,
+    "note": "Vollständig aus den Quellseiten erhoben. Das Geschlecht stammt aus data/gender-overrides.json.",
     "warnings": 0
   },
   "legislature": null,
@@ -160,1327 +163,2654 @@
       "seats": 9
     }
   ],
-  "commissions": [],
+  "commissions": [
+    {
+      "id": "27446",
+      "name": "Aufsichtskommission",
+      "shortName": "AK",
+      "url": "https://parlament.winterthur.ch/behoerden/27446"
+    },
+    {
+      "id": "43405",
+      "name": "Die Mitte (Die Mitte)",
+      "shortName": "Die Mitte (Die Mitte)",
+      "url": "https://parlament.winterthur.ch/behoerden/43405"
+    },
+    {
+      "id": "27482",
+      "name": "Evangelische Volkspartei / Eidgenössisch-Demokratische Union-Fraktion (EVP/EDU)",
+      "shortName": "Evangelische Volkspartei / Eidg…",
+      "url": "https://parlament.winterthur.ch/behoerden/27482"
+    },
+    {
+      "id": "27476",
+      "name": "FDP.Die Liberalen-Fraktion (FDP)",
+      "shortName": "FDP.Die Liberalen-Fraktion (FDP)",
+      "url": "https://parlament.winterthur.ch/behoerden/27476"
+    },
+    {
+      "id": "27455",
+      "name": "Fraktionspräsident/innen",
+      "shortName": "Fraktionspräsident/innen",
+      "url": "https://parlament.winterthur.ch/behoerden/27455"
+    },
+    {
+      "id": "27464",
+      "name": "Grüne/Alternative Linke-Fraktion (Grüne/AL)",
+      "shortName": "Grüne/Alternative Linke-Fraktio…",
+      "url": "https://parlament.winterthur.ch/behoerden/27464"
+    },
+    {
+      "id": "27485",
+      "name": "Grünliberale Partei-Fraktion (GLP)",
+      "shortName": "Grünliberale Partei-Fraktion (G…",
+      "url": "https://parlament.winterthur.ch/behoerden/27485"
+    },
+    {
+      "id": "27434",
+      "name": "Parlamentsleitung",
+      "shortName": "Parlamentsleitung",
+      "url": "https://parlament.winterthur.ch/behoerden/27434"
+    },
+    {
+      "id": "27452",
+      "name": "Sachkommission Bildung, Sport und Kultur",
+      "shortName": "SK Bildung, Sport und Kultur",
+      "url": "https://parlament.winterthur.ch/behoerden/27452"
+    },
+    {
+      "id": "41921",
+      "name": "Sachkommission Soziales und Sicherheit",
+      "shortName": "SK Soziales und Sicherheit",
+      "url": "https://parlament.winterthur.ch/behoerden/41921"
+    },
+    {
+      "id": "29048",
+      "name": "Sachkommission Stadtbau",
+      "shortName": "SK Stadtbau",
+      "url": "https://parlament.winterthur.ch/behoerden/29048"
+    },
+    {
+      "id": "29045",
+      "name": "Sachkommission Umwelt und Betriebe",
+      "shortName": "SK Umwelt und Betriebe",
+      "url": "https://parlament.winterthur.ch/behoerden/29045"
+    },
+    {
+      "id": "27479",
+      "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+      "shortName": "Schweizerische Volkspartei-Frak…",
+      "url": "https://parlament.winterthur.ch/behoerden/27479"
+    },
+    {
+      "id": "27473",
+      "name": "Sozialdemokratische Partei-Fraktion (SP)",
+      "shortName": "Sozialdemokratische Partei-Frak…",
+      "url": "https://parlament.winterthur.ch/behoerden/27473"
+    },
+    {
+      "id": "44527",
+      "name": "Spezialkommission Ombudsperson 2026",
+      "shortName": "SpK Ombudsperson 2026",
+      "url": "https://parlament.winterthur.ch/behoerden/44527"
+    },
+    {
+      "id": "27428",
+      "name": "Stadtparlament",
+      "shortName": "Stadtparlament",
+      "url": "https://parlament.winterthur.ch/behoerden/27428"
+    }
+  ],
   "members": [
     {
-      "id": "angele-philipp",
+      "id": "281240",
       "firstName": "Philipp",
       "lastName": "Angele",
       "displayName": "Philipp Angele",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "svp",
       "fractionId": "svp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1982,
+      "profession": "Finanz- / Investitions-Controller",
+      "firstEntryDate": "2021-09-22",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Töss",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27434",
+          "name": "Parlamentsleitung",
+          "role": "1. Vizepräsident"
+        },
+        {
+          "id": "29048",
+          "name": "Sachkommission Stadtbau",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27479",
+          "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+          "role": "Vizepräsident"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "1. Vizepräsident"
+        }
+      ],
+      "inquiryCount": 14,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281240",
+      "photoUrl": "https://pcdn1.i-web.ch/pmoJHhaYqCQIlX_M42L9XU4IZ5Q=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a5082df12c2e"
     },
     {
-      "id": "della-sega-christian",
+      "id": "402649",
       "firstName": "Christian",
       "lastName": "Della Sega",
       "displayName": "Christian Della Sega",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "svp",
       "fractionId": "svp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1968,
+      "profession": "Geschäftsführer / Unternehmer",
+      "firstEntryDate": "2024-12-17",
+      "currentMandateStart": "2024-12-17",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27452",
+          "name": "Sachkommission Bildung, Sport und Kultur",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27479",
+          "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/402649",
+      "photoUrl": "https://pcdn1.i-web.ch/ekfuuPGc6P_Ie1qRfblTEitIm1I=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b7fef34bf"
     },
     {
-      "id": "ehrbar-jan",
+      "id": "394963",
       "firstName": "Jan",
       "lastName": "Ehrbar",
       "displayName": "Jan Ehrbar",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "svp",
       "fractionId": "svp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1993,
+      "profession": "Gärtner, Landwirt",
+      "firstEntryDate": "2024-10-01",
+      "currentMandateStart": "2024-10-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Seen",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27452",
+          "name": "Sachkommission Bildung, Sport und Kultur",
+          "role": "Vizepräsident"
+        },
+        {
+          "id": "27479",
+          "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 4,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/394963",
+      "photoUrl": "https://pcdn1.i-web.ch/uzuwVf4e3QvJEa7RUCgdRur1dgQ=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d3021b288f"
     },
     {
-      "id": "gisler-gabriella",
+      "id": "280943",
       "firstName": "Gabriella",
-      "lastName": "Gisler",
-      "displayName": "Gabriella Gisler",
-      "email": null,
-      "address": null,
+      "lastName": "Gisler-Burri",
+      "displayName": "Gabriella Gisler-Burri",
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "svp",
       "fractionId": "svp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1962,
+      "profession": "lic. iur.",
+      "firstEntryDate": "2013-03-06",
+      "currentMandateStart": "2013-03-06",
       "mandateEnd": null,
-      "district": null,
-      "gender": "w",
-      "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "district": "Oberwinterthur",
+      "gender": "unbekannt",
+      "genderSource": "unknown",
+      "commissions": [
+        {
+          "id": "41921",
+          "name": "Sachkommission Soziales und Sicherheit",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27479",
+          "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 15,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280943",
+      "photoUrl": "https://pcdn1.i-web.ch/wTFRZne-xOdz3hyCSxeo0VmU300=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d3021e7ce4"
     },
     {
-      "id": "graf-marco",
+      "id": "380656",
       "firstName": "Marco",
       "lastName": "Graf",
       "displayName": "Marco Graf",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "svp",
       "fractionId": "svp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1983,
+      "profession": "Maschinenmechaniker und KMU-Unternehmer",
+      "firstEntryDate": "2024-07-01",
+      "currentMandateStart": "2024-07-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27479",
+          "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 6,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/380656",
+      "photoUrl": "https://pcdn1.i-web.ch/uJMcft4rfeP71QwKvqRY3G2BYFE=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a0091ce43708"
     },
     {
-      "id": "gross-michael",
+      "id": "280874",
       "firstName": "Michael",
       "lastName": "Gross",
       "displayName": "Michael Gross",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "svp",
       "fractionId": "svp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1973,
+      "profession": "Bauingenieur",
+      "firstEntryDate": "2016-03-04",
+      "currentMandateStart": "2016-03-04",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27479",
+          "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "44527",
+          "name": "Spezialkommission Ombudsperson 2026",
+          "role": "Vizepräsident"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 28,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280874",
+      "photoUrl": "https://pcdn1.i-web.ch/3eAo4RhoNP2AUhnlwZNWEHQCKtk=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d51e676ceb"
     },
     {
-      "id": "gubler-stefan",
+      "id": "281518",
       "firstName": "Stefan",
       "lastName": "Gubler",
       "displayName": "Stefan Gubler",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "svp",
       "fractionId": "svp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1966,
+      "profession": "Bankangestellter",
+      "firstEntryDate": "2020-12-09",
+      "currentMandateStart": "2020-12-09",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "29045",
+          "name": "Sachkommission Umwelt und Betriebe",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27479",
+          "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 4,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281518",
+      "photoUrl": "https://pcdn1.i-web.ch/SXHkkGTsOrUB21UwfLM2RkrD_X8=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_687df3274ebec"
     },
     {
-      "id": "hartmann-christian",
+      "id": "281201",
       "firstName": "Christian",
       "lastName": "Hartmann",
       "displayName": "Christian Hartmann",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "svp",
       "fractionId": "svp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1967,
+      "profession": "lic.oec.publ. / Unternehmer",
+      "firstEntryDate": "2020-10-01",
+      "currentMandateStart": "2020-10-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Wülflingen",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Präsident"
+        },
+        {
+          "id": "27455",
+          "name": "Fraktionspräsident/innen",
+          "role": "Vizepräsident"
+        },
+        {
+          "id": "27479",
+          "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+          "role": "Präsident"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 15,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281201",
+      "photoUrl": "https://pcdn1.i-web.ch/Pjha936CSqEsDsiytW4C9sU69Yo=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a42c58ac99cb"
     },
     {
-      "id": "kramer-tim",
+      "id": "470299",
       "firstName": "Tim",
       "lastName": "Kramer",
       "displayName": "Tim Kramer",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "svp",
       "fractionId": "svp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 2001,
+      "profession": "Forstwart / Student",
+      "firstEntryDate": "2026-05-11",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27479",
+          "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/470299",
+      "photoUrl": "https://pcdn1.i-web.ch/Phl9y5hP13EaNjRsfj0E4iLItmY=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a016b1563ea9"
     },
     {
-      "id": "wackerlin-marc",
+      "id": "280925",
       "firstName": "Marc",
       "lastName": "Wäckerlin",
       "displayName": "Marc Wäckerlin",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "svp",
       "fractionId": "svp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1971,
+      "profession": "CTO, Technischer Direktor",
+      "firstEntryDate": "2010-05-10",
+      "currentMandateStart": "2023-11-22",
       "mandateEnd": null,
-      "district": null,
+      "district": "Seen",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27479",
+          "name": "Schweizerische Volkspartei-Fraktion (SVP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 74,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280925",
+      "photoUrl": "https://pcdn1.i-web.ch/pn2f4qknrNghv3291l_3S8E602o=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d39ba9c1c8"
     },
     {
-      "id": "fehr-jan",
+      "id": "281440",
       "firstName": "Jan",
       "lastName": "Fehr",
       "displayName": "Jan Fehr",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "fdp",
       "fractionId": "fdp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1990,
+      "profession": "Geschäftsführer Detailgeschäft",
+      "firstEntryDate": "2021-05-12",
+      "currentMandateStart": "2021-05-12",
       "mandateEnd": null,
-      "district": null,
+      "district": "Wülflingen",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27476",
+          "name": "FDP.Die Liberalen-Fraktion (FDP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "29045",
+          "name": "Sachkommission Umwelt und Betriebe",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 3,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281440",
+      "photoUrl": "https://pcdn1.i-web.ch/MYH2dPSgqwapisP0MOKz1SO48o8=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a475949d76a1"
     },
     {
-      "id": "helg-felix",
+      "id": "281761",
       "firstName": "Felix",
       "lastName": "Helg",
       "displayName": "Felix Helg",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "fdp",
       "fractionId": "fdp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1965,
+      "profession": "Dr. iur.",
+      "firstEntryDate": "2006-11-01",
+      "currentMandateStart": "2006-11-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Töss",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27476",
+          "name": "FDP.Die Liberalen-Fraktion (FDP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "44527",
+          "name": "Spezialkommission Ombudsperson 2026",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 70,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281761",
+      "photoUrl": "https://pcdn1.i-web.ch/jSaQtMkRm7RrumgVWhmMXvydqQU=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8c5ab168d2a"
     },
     {
-      "id": "maier-christian",
+      "id": "280955",
       "firstName": "Christian",
       "lastName": "Maier",
       "displayName": "Christian Maier",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "fdp",
       "fractionId": "fdp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1980,
+      "profession": "Betriebsökonom / Geschäftsführer",
+      "firstEntryDate": "2020-02-01",
+      "currentMandateStart": "2020-02-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Wülflingen",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27476",
+          "name": "FDP.Die Liberalen-Fraktion (FDP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 19,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280955",
+      "photoUrl": "https://pcdn1.i-web.ch/Rikvyh-zTvxzeYGez9VzZmu96rs=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_696f287a5ffa0"
     },
     {
-      "id": "mancuso-cabello-cristina",
+      "id": "375415",
       "firstName": "Cristina",
       "lastName": "Mancuso Cabello",
       "displayName": "Cristina Mancuso Cabello",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "fdp",
       "fractionId": "fdp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1987,
+      "profession": "Leitende medizinische Praxisassistentin",
+      "firstEntryDate": "2024-04-17",
+      "currentMandateStart": "2024-04-17",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27476",
+          "name": "FDP.Die Liberalen-Fraktion (FDP)",
+          "role": "Präsidentin"
+        },
+        {
+          "id": "27455",
+          "name": "Fraktionspräsident/innen",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27452",
+          "name": "Sachkommission Bildung, Sport und Kultur",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 8,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/375415",
+      "photoUrl": "https://pcdn1.i-web.ch/V7BV1TU0Hx6fNn1NwwV_qj-lMLg=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a4ca4978f370"
     },
     {
-      "id": "perroulaz-raphael",
+      "id": "281213",
       "firstName": "Raphael",
       "lastName": "Perroulaz",
       "displayName": "Raphael Perroulaz",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "fdp",
       "fractionId": "fdp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1992,
+      "profession": "Architekt / M.A. Arch. ZHAW",
+      "firstEntryDate": "2019-10-02",
+      "currentMandateStart": "2019-10-02",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27476",
+          "name": "FDP.Die Liberalen-Fraktion (FDP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "29048",
+          "name": "Sachkommission Stadtbau",
+          "role": "Präsident"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 8,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281213",
+      "photoUrl": "https://pcdn1.i-web.ch/3HTPDZx2X70FVyF6GCErU3QCqm8=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b5ce52e76"
     },
     {
-      "id": "romay-ogando-dani",
+      "id": "375421",
       "firstName": "Dani",
-      "lastName": "Romay Ogando",
-      "displayName": "Dani Romay Ogando",
-      "email": null,
-      "address": null,
+      "lastName": "Romay",
+      "displayName": "Dani Romay",
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "fdp",
       "fractionId": "fdp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1978,
+      "profession": "Bau- / Immobilienunternehmer",
+      "firstEntryDate": "2024-04-17",
+      "currentMandateStart": "2024-04-17",
       "mandateEnd": null,
-      "district": null,
-      "gender": "m",
-      "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "district": "Winterthur-Stadt",
+      "gender": "unbekannt",
+      "genderSource": "unknown",
+      "commissions": [
+        {
+          "id": "27476",
+          "name": "FDP.Die Liberalen-Fraktion (FDP)",
+          "role": "Präsident"
+        },
+        {
+          "id": "27455",
+          "name": "Fraktionspräsident/innen",
+          "role": "Mitglied"
+        },
+        {
+          "id": "29048",
+          "name": "Sachkommission Stadtbau",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 10,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/375421",
+      "photoUrl": "https://pcdn1.i-web.ch/gY3c_NMaYuFXqbfBUTLIZCkZINI=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d39bb71b4c"
     },
     {
-      "id": "tobler-raphael",
+      "id": "297686",
       "firstName": "Raphael",
       "lastName": "Tobler",
       "displayName": "Raphael Tobler",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "fdp",
       "fractionId": "fdp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1987,
+      "profession": "Geschäftsführer",
+      "firstEntryDate": "2022-05-16",
+      "currentMandateStart": "2022-05-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Seen",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27476",
+          "name": "FDP.Die Liberalen-Fraktion (FDP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 11,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/297686",
+      "photoUrl": "https://pcdn1.i-web.ch/k3SpcIEkRgI0FXu-K9SHxH8bfwo=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d302166811"
     },
     {
-      "id": "zwahlen-daniel",
+      "id": "419314",
       "firstName": "Daniel",
       "lastName": "Zwahlen",
       "displayName": "Daniel Zwahlen",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "fdp",
       "fractionId": "fdp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1967,
+      "profession": "Arzt",
+      "firstEntryDate": "2025-04-09",
+      "currentMandateStart": "2025-04-09",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27476",
+          "name": "FDP.Die Liberalen-Fraktion (FDP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "41921",
+          "name": "Sachkommission Soziales und Sicherheit",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/419314",
+      "photoUrl": "https://pcdn1.i-web.ch/6R2qjI9Vh8i4G3z2RfGs0mTjo7E=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b8f471475"
     },
     {
-      "id": "brundler-simon",
+      "id": "472441",
       "firstName": "Simon",
       "lastName": "Bründler",
       "displayName": "Simon Bründler",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "mitte",
       "fractionId": "mitte",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 2000,
+      "profession": "Verbandssekretär / Student",
+      "firstEntryDate": "2026-05-11",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "43405",
+          "name": "Die Mitte (Die Mitte)",
+          "role": "Keine Funktion"
+        },
+        {
+          "id": "29048",
+          "name": "Sachkommission Stadtbau",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/472441",
+      "photoUrl": "https://pcdn1.i-web.ch/ZvlhCXNIpyAsK38F8zGA-s1_7xQ=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a47594997933"
     },
     {
-      "id": "kern-dominik",
+      "id": "468709",
       "firstName": "Dominik",
       "lastName": "Kern",
       "displayName": "Dominik Kern",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "mitte",
       "fractionId": "mitte",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1991,
+      "profession": "Software-Ingenieur",
+      "firstEntryDate": "2026-05-11",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "43405",
+          "name": "Die Mitte (Die Mitte)",
+          "role": "Keine Funktion"
+        },
+        {
+          "id": "29045",
+          "name": "Sachkommission Umwelt und Betriebe",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/468709",
+      "photoUrl": "https://pcdn1.i-web.ch/RNcN1AvzvXLW-Qs9BHHdDMtgc9Q=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d39ba695a0"
     },
     {
-      "id": "kuster-iris",
+      "id": "280916",
       "firstName": "Iris",
       "lastName": "Kuster",
       "displayName": "Iris Kuster",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "mitte",
       "fractionId": "mitte",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1962,
+      "profession": "lic. oec. HSG",
+      "firstEntryDate": "2016-01-01",
+      "currentMandateStart": "2016-01-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Seen",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "43405",
+          "name": "Die Mitte (Die Mitte)",
+          "role": "Präsidentin"
+        },
+        {
+          "id": "27455",
+          "name": "Fraktionspräsident/innen",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27452",
+          "name": "Sachkommission Bildung, Sport und Kultur",
+          "role": "Mitglied"
+        },
+        {
+          "id": "44527",
+          "name": "Spezialkommission Ombudsperson 2026",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 67,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280916",
+      "photoUrl": "https://pcdn1.i-web.ch/m4Xde5Qy25W4QpPGP-iXlgVT0zw=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d30211ded6"
     },
     {
-      "id": "vogel-kaspar",
+      "id": "297677",
       "firstName": "Kaspar",
       "lastName": "Vogel",
       "displayName": "Kaspar Vogel",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "mitte",
       "fractionId": "mitte",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1969,
+      "profession": "Sekundarlehrer",
+      "firstEntryDate": "2022-05-16",
+      "currentMandateStart": "2022-05-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Wülflingen",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "43405",
+          "name": "Die Mitte (Die Mitte)",
+          "role": "Keine Funktion"
+        },
+        {
+          "id": "41921",
+          "name": "Sachkommission Soziales und Sicherheit",
+          "role": "Vizepräsident"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 16,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/297677",
+      "photoUrl": "https://pcdn1.i-web.ch/Fxbsn1sfCfq7mX2alUN2IfowXk0=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a42bf82e9a74"
     },
     {
-      "id": "zuraikat-andre",
+      "id": "280949",
       "firstName": "André",
       "lastName": "Zuraikat",
       "displayName": "André Zuraikat",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "mitte",
       "fractionId": "mitte",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1986,
+      "profession": "MAS BA / Leiter International Claims",
+      "firstEntryDate": "2019-05-13",
+      "currentMandateStart": "2019-05-13",
       "mandateEnd": null,
-      "district": null,
+      "district": "Töss",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Mitglied"
+        },
+        {
+          "id": "43405",
+          "name": "Die Mitte (Die Mitte)",
+          "role": "Keine Funktion"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 30,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280949",
+      "photoUrl": "https://pcdn1.i-web.ch/3wCcHXTaM6D8dXw0iCe3_Kzo2O4=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d39badcab3"
     },
     {
-      "id": "ernst-nora",
+      "id": "297689",
       "firstName": "Nora",
       "lastName": "Ernst",
       "displayName": "Nora Ernst",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "glp",
       "fractionId": "glp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1986,
+      "profession": "Nachhaltigkeits-Managerin, Umweltnaturwissenschaftlerin ETH",
+      "firstEntryDate": "2022-05-16",
+      "currentMandateStart": "2022-05-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27485",
+          "name": "Grünliberale Partei-Fraktion (GLP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 14,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/297689",
+      "photoUrl": "https://pcdn1.i-web.ch/IqVcOpSfJTmDrcNaHRfsVh21RMY=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a42c58a54ad8"
     },
     {
-      "id": "guddal-jan",
+      "id": "380659",
       "firstName": "Jan",
       "lastName": "Guddal",
       "displayName": "Jan Guddal",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "glp",
       "fractionId": "glp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1993,
+      "profession": "Data Scientist",
+      "firstEntryDate": "2024-08-01",
+      "currentMandateStart": "2024-08-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27485",
+          "name": "Grünliberale Partei-Fraktion (GLP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 10,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/380659",
+      "photoUrl": "https://pcdn1.i-web.ch/wfDvWSq0wwCXjpnVwwZjdgswjYY=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d3020e6afe"
     },
     {
-      "id": "holderegger-nicole",
+      "id": "297665",
       "firstName": "Nicole",
       "lastName": "Holderegger",
       "displayName": "Nicole Holderegger",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "glp",
       "fractionId": "glp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1974,
+      "profession": "Juristin / Leiterin Straf- & Massnahmevollzug Oberjugendanwaltschaft Kt. Zürich",
+      "firstEntryDate": "2022-05-16",
+      "currentMandateStart": "2022-05-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Töss",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27485",
+          "name": "Grünliberale Partei-Fraktion (GLP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27452",
+          "name": "Sachkommission Bildung, Sport und Kultur",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 20,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/297665",
+      "photoUrl": "https://pcdn1.i-web.ch/qwsFqcu5y-EBhBYUUWarhTDXBp0=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a42bf82babe0"
     },
     {
-      "id": "kocher-samuel",
+      "id": "280931",
       "firstName": "Samuel",
       "lastName": "Kocher",
       "displayName": "Samuel Kocher",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "glp",
       "fractionId": "glp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1972,
+      "profession": "Geschäftsführer",
+      "firstEntryDate": "2018-05-14",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Veltheim",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27485",
+          "name": "Grünliberale Partei-Fraktion (GLP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27434",
+          "name": "Parlamentsleitung",
+          "role": "Präsident"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Präsident"
+        }
+      ],
+      "inquiryCount": 19,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280931",
+      "photoUrl": "https://pcdn1.i-web.ch/hCg3ES1wlD-XdnpkI6APhyiPxG8=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a01ed887b6cb"
     },
     {
-      "id": "nater-markus",
+      "id": "281006",
       "firstName": "Markus",
       "lastName": "Nater",
       "displayName": "Markus Nater",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "glp",
       "fractionId": "glp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1970,
+      "profession": "Experte Nachhaltigkeit",
+      "firstEntryDate": "2016-05-09",
+      "currentMandateStart": "2016-05-09",
       "mandateEnd": null,
-      "district": null,
+      "district": "Veltheim",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27455",
+          "name": "Fraktionspräsident/innen",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27485",
+          "name": "Grünliberale Partei-Fraktion (GLP)",
+          "role": "Präsident"
+        },
+        {
+          "id": "29048",
+          "name": "Sachkommission Stadtbau",
+          "role": "Mitglied"
+        },
+        {
+          "id": "44527",
+          "name": "Spezialkommission Ombudsperson 2026",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 27,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281006",
+      "photoUrl": "https://pcdn1.i-web.ch/MFKdJFWb7lHXRM5tq6e2CxzgoOU=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d39bb1bbbc"
     },
     {
-      "id": "oeschger-benedikt",
+      "id": "354763",
       "firstName": "Benedikt",
       "lastName": "Oeschger",
       "displayName": "Benedikt Oeschger",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "glp",
       "fractionId": "glp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 2001,
+      "profession": "Masterstudent Agrarwissenschaften ETH",
+      "firstEntryDate": "2023-09-20",
+      "currentMandateStart": "2023-09-20",
       "mandateEnd": null,
-      "district": null,
+      "district": "Seen",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27485",
+          "name": "Grünliberale Partei-Fraktion (GLP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "41921",
+          "name": "Sachkommission Soziales und Sicherheit",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 17,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/354763",
+      "photoUrl": "https://pcdn1.i-web.ch/yOdpM8sgi-K9UsWndsRkKYfMlrw=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_69368cbb73893"
     },
     {
-      "id": "steiner-annetta",
+      "id": "280970",
       "firstName": "Annetta",
       "lastName": "Steiner",
       "displayName": "Annetta Steiner",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "glp",
       "fractionId": "glp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1964,
+      "profession": "Umweltkommunikatorin",
+      "firstEntryDate": "2010-05-10",
+      "currentMandateStart": "2019-05-13",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27485",
+          "name": "Grünliberale Partei-Fraktion (GLP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "29045",
+          "name": "Sachkommission Umwelt und Betriebe",
+          "role": "Präsidentin"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 63,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280970",
+      "photoUrl": "https://pcdn1.i-web.ch/xJ__qc-gZgU3XEYqQsIvujQx7n4=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a451052ba5a7"
     },
     {
-      "id": "goncalves-simon",
+      "id": "319877",
       "firstName": "Simon",
       "lastName": "Gonçalves",
       "displayName": "Simon Gonçalves",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "edu",
       "fractionId": "evp-edu",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1988,
+      "profession": "Musiker / Jugendarbeiter / Student",
+      "firstEntryDate": "2022-11-02",
+      "currentMandateStart": "2022-11-02",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27482",
+          "name": "Evangelische Volkspartei / Eidgenössisch-Demokratische Union-Fraktion (EVP/EDU)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "41921",
+          "name": "Sachkommission Soziales und Sicherheit",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/319877",
+      "photoUrl": "https://pcdn1.i-web.ch/xQaWJPFB-nNJ1SocIPtnbziJOYc=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b8f3e4af4"
     },
     {
-      "id": "kramer-schwob-franziska",
+      "id": "280928",
       "firstName": "Franziska",
       "lastName": "Kramer-Schwob",
       "displayName": "Franziska Kramer-Schwob",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "evp",
       "fractionId": "evp-edu",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1981,
+      "profession": "Rechtsanwältin / lic. iur.",
+      "firstEntryDate": "2019-08-01",
+      "currentMandateStart": "2019-08-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27482",
+          "name": "Evangelische Volkspartei / Eidgenössisch-Demokratische Union-Fraktion (EVP/EDU)",
+          "role": "Präsidentin"
+        },
+        {
+          "id": "27455",
+          "name": "Fraktionspräsident/innen",
+          "role": "Mitglied"
+        },
+        {
+          "id": "44527",
+          "name": "Spezialkommission Ombudsperson 2026",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 32,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280928",
+      "photoUrl": "https://pcdn1.i-web.ch/leNc5h8XrGMjr6RFsUvkqEIt0gc=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d39bba37b8"
     },
     {
-      "id": "roth-nater-daniela",
+      "id": "280946",
       "firstName": "Daniela",
       "lastName": "Roth-Nater",
       "displayName": "Daniela Roth-Nater",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "evp",
       "fractionId": "evp-edu",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1971,
+      "profession": "Betriebswirtschaft FM, Sozialdiakonin",
+      "firstEntryDate": "2020-02-21",
+      "currentMandateStart": "2020-02-21",
       "mandateEnd": null,
-      "district": null,
+      "district": "Seen",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27482",
+          "name": "Evangelische Volkspartei / Eidgenössisch-Demokratische Union-Fraktion (EVP/EDU)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27452",
+          "name": "Sachkommission Bildung, Sport und Kultur",
+          "role": "Mitglied"
+        },
+        {
+          "id": "29045",
+          "name": "Sachkommission Umwelt und Betriebe",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 37,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280946",
+      "photoUrl": "https://pcdn1.i-web.ch/GqqGOWxibBkUlZtku9cznysCYoE=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d2277b802e"
     },
     {
-      "id": "wurzer-alexander",
+      "id": "336578",
       "firstName": "Alexander",
       "lastName": "Würzer",
       "displayName": "Alexander Würzer",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "evp",
       "fractionId": "evp-edu",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1994,
+      "profession": "Generalsekretär EVP Schweiz",
+      "firstEntryDate": "2023-03-29",
+      "currentMandateStart": "2023-03-29",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27482",
+          "name": "Evangelische Volkspartei / Eidgenössisch-Demokratische Union-Fraktion (EVP/EDU)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "29048",
+          "name": "Sachkommission Stadtbau",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 15,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/336578",
+      "photoUrl": "https://pcdn1.i-web.ch/zUvB-Ku-g8fLmWnqkkHHSZHRk5o=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a42bf827eece"
     },
     {
-      "id": "brunel-cristina",
+      "id": "280958",
       "firstName": "Cristina",
       "lastName": "Brunel",
       "displayName": "Cristina Brunel",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1966,
+      "profession": "Kauffrau",
+      "firstEntryDate": "2019-05-08",
+      "currentMandateStart": "2025-07-02",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27452",
+          "name": "Sachkommission Bildung, Sport und Kultur",
+          "role": "Präsidentin"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280958",
+      "photoUrl": "https://pcdn1.i-web.ch/zVPvJhCrPBW119OqRHqRS8EErws=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b7fe7b3e2"
     },
     {
-      "id": "fischer-tobija",
+      "id": "468607",
       "firstName": "Tobija",
       "lastName": "Fischer",
       "displayName": "Tobija Fischer",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1996,
+      "profession": "Selbständiger Designer & Webentwickler",
+      "firstEntryDate": "2026-05-11",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Mattenbach",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "29045",
+          "name": "Sachkommission Umwelt und Betriebe",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/468607",
+      "photoUrl": "https://pcdn1.i-web.ch/IOv0ez-bij_ExOhbNsu0HnouAcM=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b71054534"
     },
     {
-      "id": "gnesa-marilena",
+      "id": "281512",
       "firstName": "Marilena",
       "lastName": "Gnesa",
       "displayName": "Marilena Gnesa",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1962,
+      "profession": "lic. iur. / Juristin",
+      "firstEntryDate": "2021-06-01",
+      "currentMandateStart": "2021-06-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Töss",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 6,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281512",
+      "photoUrl": "https://pcdn1.i-web.ch/LVGJtH49Tq4SurwcKVU1T_RbNUI=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a83dfebcc8f6"
     },
     {
-      "id": "gschwind-thomi",
+      "id": "297692",
       "firstName": "Thomi",
       "lastName": "Gschwind",
       "displayName": "Thomi Gschwind",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
+      "birthYear": 1992,
       "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "firstEntryDate": "2022-05-16",
+      "currentMandateStart": "2022-05-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 5,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/297692",
+      "photoUrl": "https://pcdn1.i-web.ch/pNXrVDQFPsjA3gdLcxLLk-e8e1A=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a0091cf76462"
     },
     {
-      "id": "hager-katja",
+      "id": "336560",
       "firstName": "Katja",
       "lastName": "Hager",
       "displayName": "Katja Hager",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1998,
+      "profession": "Ökonomin",
+      "firstEntryDate": "2023-03-29",
+      "currentMandateStart": "2023-03-29",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 10,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/336560",
+      "photoUrl": "https://pcdn1.i-web.ch/0axA1-bnCP80PxbYeWMb-YX_BmA=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a0091c90059f"
     },
     {
-      "id": "helbling-wehrli-beatrice",
+      "id": "280973",
       "firstName": "Beatrice",
       "lastName": "Helbling-Wehrli",
       "displayName": "Beatrice Helbling-Wehrli",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1963,
+      "profession": "Dipl. Sozialarbeiterin FH",
+      "firstEntryDate": "2011-05-16",
+      "currentMandateStart": "2011-05-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Seen",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Vizepräsidentin"
+        },
+        {
+          "id": "27455",
+          "name": "Fraktionspräsident/innen",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Präsidentin"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 22,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280973",
+      "photoUrl": "https://pcdn1.i-web.ch/IYdJYZ00KvF_TXnXy_e5y8Bx3c0=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a1d4e016a69c"
     },
     {
-      "id": "jacot-descombes-lea",
+      "id": "282109",
       "firstName": "Lea",
       "lastName": "Jacot-Descombes",
       "displayName": "Lea Jacot-Descombes",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1984,
+      "profession": "Lehrerin / Umweltnaturwissenschaftlerin",
+      "firstEntryDate": "2018-05-14",
+      "currentMandateStart": "2018-05-14",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "29045",
+          "name": "Sachkommission Umwelt und Betriebe",
+          "role": "Vizepräsidentin"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 12,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/282109",
+      "photoUrl": "https://pcdn1.i-web.ch/9VjvpHHlilfZ2AfeJZ10rWyTGS0=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a0ffc2d2bc5c"
     },
     {
-      "id": "kunzler-fredy",
+      "id": "281207",
       "firstName": "Fredy",
       "lastName": "Künzler",
       "displayName": "Fredy Künzler",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1968,
+      "profession": "Unternehmer / Internet Engineer",
+      "firstEntryDate": "2008-06-04",
+      "currentMandateStart": "2008-06-04",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "29045",
+          "name": "Sachkommission Umwelt und Betriebe",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 47,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281207",
+      "photoUrl": "https://pcdn1.i-web.ch/ZthDCOWE3jlS3haJb4ZBeU2jy08=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b71086531"
     },
     {
-      "id": "kuratli-benjamin",
+      "id": "468514",
       "firstName": "Benjamin",
       "lastName": "Kuratli",
       "displayName": "Benjamin Kuratli",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1993,
+      "profession": "Mittelschullehrer Geografie",
+      "firstEntryDate": "2026-05-11",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "29048",
+          "name": "Sachkommission Stadtbau",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/468514",
+      "photoUrl": "https://pcdn1.i-web.ch/MC8hQJ12xvzp10Wh_UJScaCKzf4=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b5cdb0288"
     },
     {
-      "id": "merz-livia",
+      "id": "309154",
       "firstName": "Livia",
       "lastName": "Merz",
       "displayName": "Livia Merz",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1994,
+      "profession": "Historikerin",
+      "firstEntryDate": "2022-08-01",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27434",
+          "name": "Parlamentsleitung",
+          "role": "2. Vizepräsidentin"
+        },
+        {
+          "id": "29048",
+          "name": "Sachkommission Stadtbau",
+          "role": "Vizepräsidentin"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "2. Vizepräsidentin"
+        }
+      ],
+      "inquiryCount": 7,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/309154",
+      "photoUrl": "https://pcdn1.i-web.ch/iQLQuaU--LhuTwsie8xgbwVe_Fk=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a0d796a6bfbe"
     },
     {
-      "id": "muster-valeria",
+      "id": "470302",
       "firstName": "Valeria",
       "lastName": "Muster",
       "displayName": "Valeria Muster",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 2001,
+      "profession": "Parteisekretärin / Studentin",
+      "firstEntryDate": "2026-05-11",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Wülflingen",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27452",
+          "name": "Sachkommission Bildung, Sport und Kultur",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/470302",
+      "photoUrl": "https://pcdn1.i-web.ch/Hq0JLotTIUCnpwsH1pCZl6qx2iY=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b7feacdb6"
     },
     {
-      "id": "pfirter-martina",
+      "id": "470296",
       "firstName": "Martina",
       "lastName": "Pfirter",
       "displayName": "Martina Pfirter",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1990,
+      "profession": "Juristin",
+      "firstEntryDate": "2026-05-11",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/470296",
+      "photoUrl": "https://pcdn1.i-web.ch/IpfUVu9Z7K-HPEZxLZSTJNTJRB4=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_69fc933fcb65b"
     },
     {
-      "id": "sorgo-maria",
+      "id": "280862",
       "firstName": "Maria",
       "lastName": "Sorgo",
       "displayName": "Maria Sorgo",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1985,
+      "profession": "Psychologin",
+      "firstEntryDate": "2014-05-12",
+      "currentMandateStart": "2022-05-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27455",
+          "name": "Fraktionspräsident/innen",
+          "role": "Präsidentin"
+        },
+        {
+          "id": "41921",
+          "name": "Sachkommission Soziales und Sicherheit",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Präsidentin"
+        },
+        {
+          "id": "44527",
+          "name": "Spezialkommission Ombudsperson 2026",
+          "role": "Präsidentin"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 14,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280862",
+      "photoUrl": "https://pcdn1.i-web.ch/PIzU0hbxm_JxhNfAFCWtXh3FSMU=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8c5ab0e6327"
     },
     {
-      "id": "steiner-markus",
+      "id": "280940",
       "firstName": "Markus",
       "lastName": "Steiner",
       "displayName": "Markus Steiner",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1973,
+      "profession": "Aromatechnolog / Hausmann",
+      "firstEntryDate": "2016-01-27",
+      "currentMandateStart": "2024-11-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Mattenbach",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 17,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/280940",
+      "photoUrl": "https://pcdn1.i-web.ch/0ie6EbWqiZMz3kbUc-ApHiZ4FTA=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_678f4bef8a6ce"
     },
     {
-      "id": "stritt-gabriela",
+      "id": "281225",
       "firstName": "Gabriela",
       "lastName": "Stritt",
       "displayName": "Gabriela Stritt",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1960,
+      "profession": "Sozialarbeiterin FH",
+      "firstEntryDate": "2015-05-01",
+      "currentMandateStart": "2015-05-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Mattenbach",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "41921",
+          "name": "Sachkommission Soziales und Sicherheit",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 37,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281225",
+      "photoUrl": "https://pcdn1.i-web.ch/LA0JDa9ZOxvC20gKldFC0FcUP1g=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b8f386b5e"
     },
     {
-      "id": "tschirky-feratovic-franziska",
+      "id": "468601",
       "firstName": "Franziska",
       "lastName": "Tschirky Feratovic",
       "displayName": "Franziska Tschirky Feratovic",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1971,
+      "profession": "Berufsbildungsfachfrau (MSc)",
+      "firstEntryDate": "2026-05-11",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/468601",
+      "photoUrl": "https://pcdn1.i-web.ch/prJyBe-rHTXhng7mE4TMITbBBMY=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a42bad13ad5b"
     },
     {
-      "id": "weber-philippe",
+      "id": "281228",
       "firstName": "Philippe",
       "lastName": "Weber",
       "displayName": "Philippe Weber",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "sp",
       "fractionId": "sp",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1988,
+      "profession": "Applikationsentwickler",
+      "firstEntryDate": "2020-08-12",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27473",
+          "name": "Sozialdemokratische Partei-Fraktion (SP)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 13,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281228",
+      "photoUrl": "https://pcdn1.i-web.ch/WIoz_qvmX7EYSkYKOtwrDrqJMOU=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a17d64979c8e"
     },
     {
-      "id": "bueler-andreas",
+      "id": "281024",
       "firstName": "Andreas",
       "lastName": "Büeler",
       "displayName": "Andreas Büeler",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "gruene",
       "fractionId": "gruene-al",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1979,
+      "profession": "Projektleiter Verfahrens-, Umwelt- und Energietechnik",
+      "firstEntryDate": "2021-01-16",
+      "currentMandateStart": "2021-01-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27455",
+          "name": "Fraktionspräsident/innen",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27464",
+          "name": "Grüne/Alternative Linke-Fraktion (Grüne/AL)",
+          "role": "Präsident"
+        },
+        {
+          "id": "44527",
+          "name": "Spezialkommission Ombudsperson 2026",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 7,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281024",
+      "photoUrl": "https://pcdn1.i-web.ch/q57wPzFyClUy2av-5x8FyOoRLjc=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8c5ab199ae4"
     },
     {
-      "id": "frei-glowatz-katharina",
+      "id": "281000",
       "firstName": "Katharina",
       "lastName": "Frei Glowatz",
       "displayName": "Katharina Frei Glowatz",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "gruene",
       "fractionId": "gruene-al",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1968,
+      "profession": "Landschaftsarchitektin FH / Lehrerin",
+      "firstEntryDate": "2019-05-13",
+      "currentMandateStart": "2019-05-13",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27464",
+          "name": "Grüne/Alternative Linke-Fraktion (Grüne/AL)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "29048",
+          "name": "Sachkommission Stadtbau",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 26,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/281000",
+      "photoUrl": "https://pcdn1.i-web.ch/ye6VjEHaJ5rWSw4yMK6klEFfs5w=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_69cb7c985fa7c"
     },
     {
-      "id": "hertli-wanner-corinne",
+      "id": "412957",
       "firstName": "Corinne",
       "lastName": "Hertli-Wanner",
       "displayName": "Corinne Hertli-Wanner",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "gruene",
       "fractionId": "gruene-al",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1975,
+      "profession": "Juristin",
+      "firstEntryDate": "2025-02-16",
+      "currentMandateStart": "2025-02-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Mattenbach",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27464",
+          "name": "Grüne/Alternative Linke-Fraktion (Grüne/AL)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "41921",
+          "name": "Sachkommission Soziales und Sicherheit",
+          "role": "Präsidentin"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/412957",
+      "photoUrl": "https://pcdn1.i-web.ch/ioZPnUjmO5AGf_RSsn3gWzEANcQ=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b8f3bbc96"
     },
     {
-      "id": "lischer-maria",
+      "id": "357550",
       "firstName": "Maria",
       "lastName": "Lischer",
       "displayName": "Maria Lischer",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "gruene",
       "fractionId": "gruene-al",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1966,
+      "profession": "Energieingenieurin, dipl. Ing. ETH",
+      "firstEntryDate": "2023-10-16",
+      "currentMandateStart": "2023-10-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Veltheim",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27464",
+          "name": "Grüne/Alternative Linke-Fraktion (Grüne/AL)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27452",
+          "name": "Sachkommission Bildung, Sport und Kultur",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 3,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/357550",
+      "photoUrl": "https://pcdn1.i-web.ch/GtXHGDKo3NmUzHOwTWQ3mzjxPZs=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_67bd6e6193672"
     },
     {
-      "id": "praetorius-julius",
+      "id": "344912",
       "firstName": "Julius",
       "lastName": "Praetorius",
       "displayName": "Julius Praetorius",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "gruene",
       "fractionId": "gruene-al",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 2000,
+      "profession": "HR Manager, Ökonom (B.Sc)",
+      "firstEntryDate": "2023-06-21",
+      "currentMandateStart": "2023-06-21",
       "mandateEnd": null,
-      "district": null,
+      "district": "Seen",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27464",
+          "name": "Grüne/Alternative Linke-Fraktion (Grüne/AL)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "29045",
+          "name": "Sachkommission Umwelt und Betriebe",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 6,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/344912",
+      "photoUrl": "https://pcdn1.i-web.ch/h4jFcW5mXgNGukzUpBiIHc5N9dQ=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a451053314a4"
     },
     {
-      "id": "zundel-michael",
+      "id": "352039",
       "firstName": "Michael",
       "lastName": "Zundel",
       "displayName": "Michael Zundel",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "gruene",
       "fractionId": "gruene-al",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1995,
+      "profession": "Informatiker",
+      "firstEntryDate": "2023-08-16",
+      "currentMandateStart": "2023-08-16",
       "mandateEnd": null,
-      "district": null,
+      "district": "Seen",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27464",
+          "name": "Grüne/Alternative Linke-Fraktion (Grüne/AL)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 6,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/352039",
+      "photoUrl": "https://pcdn1.i-web.ch/_ogxsvjP2RC9lxTVzXCCUa8S9m4=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a4ca290069cd"
     },
     {
-      "id": "bachmann-miguel-p",
-      "firstName": "Miguel P.",
-      "lastName": "Bachmann",
-      "displayName": "Miguel P. Bachmann",
-      "email": null,
-      "address": null,
+      "id": "403309",
+      "firstName": "Pedro",
+      "lastName": "Bachmann Miguel",
+      "displayName": "Pedro Bachmann Miguel",
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "al",
       "fractionId": "gruene-al",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1991,
+      "profession": "Sozialpädagoge / Betreuungsleitung schulerg. Betreuung und Berufsschullehrer BFS",
+      "firstEntryDate": "2025-01-01",
+      "currentMandateStart": "2025-01-01",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27446",
+          "name": "Aufsichtskommission",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27464",
+          "name": "Grüne/Alternative Linke-Fraktion (Grüne/AL)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 5,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/403309",
+      "photoUrl": "https://pcdn1.i-web.ch/n0W8uipzoY3irUAF_cjid40ZaV4=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a8d33c640904"
     },
     {
-      "id": "hugentobler-roman",
+      "id": "282268",
       "firstName": "Roman",
       "lastName": "Hugentobler",
       "displayName": "Roman Hugentobler",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "al",
       "fractionId": "gruene-al",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1989,
+      "profession": "Fachspezialist Sozialraum und Quartierentwicklung",
+      "firstEntryDate": "2019-11-13",
+      "currentMandateStart": "2019-11-13",
       "mandateEnd": null,
-      "district": null,
+      "district": "Oberwinterthur",
       "gender": "m",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27464",
+          "name": "Grüne/Alternative Linke-Fraktion (Grüne/AL)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 17,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/282268",
+      "photoUrl": "https://pcdn1.i-web.ch/A1mAcWJSgRI1rbeB7RlrU_LA-OM=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a44a5469b68a"
     },
     {
-      "id": "jung-rona",
+      "id": "468616",
       "firstName": "Rona",
       "lastName": "Jung",
       "displayName": "Rona Jung",
-      "email": null,
-      "address": null,
+      "email": "servicedesk@win.ch",
+      "address": {
+        "street": "Pionierstrasse 7",
+        "zip": "8403",
+        "city": "Winterthur"
+      },
       "partyId": "al",
       "fractionId": "gruene-al",
-      "birthYear": null,
-      "profession": null,
-      "firstEntryDate": null,
-      "currentMandateStart": null,
+      "birthYear": 1998,
+      "profession": "Doktorandin / Wissenschaftliche Mitarbeiterin",
+      "firstEntryDate": "2026-05-11",
+      "currentMandateStart": "2026-05-11",
       "mandateEnd": null,
-      "district": null,
+      "district": "Winterthur-Stadt",
       "gender": "w",
       "genderSource": "override",
-      "commissions": [],
-      "inquiryCount": 0,
-      "profileUrl": null,
-      "photoUrl": null
+      "commissions": [
+        {
+          "id": "27464",
+          "name": "Grüne/Alternative Linke-Fraktion (Grüne/AL)",
+          "role": "Mitglied"
+        },
+        {
+          "id": "41921",
+          "name": "Sachkommission Soziales und Sicherheit",
+          "role": "Mitglied"
+        },
+        {
+          "id": "27428",
+          "name": "Stadtparlament",
+          "role": "Mitglied"
+        }
+      ],
+      "inquiryCount": 1,
+      "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/468616",
+      "photoUrl": "https://pcdn1.i-web.ch/lyzqv83FEKBxj_833Xpd6v0sXxM=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b8f4213ab"
     }
   ]
 }
