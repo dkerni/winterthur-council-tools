@@ -97,7 +97,7 @@
       "color": "#d95b0e",
       "order": 9,
       "fractionId": "gruene-al",
-      "aliases": ["AL", "Alternative Liste", "Alternative Liste (AL)"]
+      "aliases": ["AL", "Alternative Liste", "Alternative Liste (AL)", "Alternative Linke", "Alternative Linke (AL)"]
     }
   ],
   "fractions": [
@@ -107,7 +107,7 @@
       "shortName": "SVP",
       "partyIds": ["svp"],
       "order": 1,
-      "aliases": ["SVP", "SVP-Fraktion", "Fraktion SVP"]
+      "aliases": ["SVP", "SVP-Fraktion", "Fraktion SVP", "Schweizerische Volkspartei", "Schweizerische Volkspartei-Fraktion"]
     },
     {
       "id": "fdp",
@@ -139,7 +139,7 @@
       "shortName": "EVP/EDU",
       "partyIds": ["evp", "edu"],
       "order": 5,
-      "aliases": ["EVP/EDU", "EVP/EDU-Fraktion", "EDU/EVP", "EDU/EVP-Fraktion", "Fraktion EVP/EDU"]
+      "aliases": ["EVP/EDU", "EVP/EDU-Fraktion", "EDU/EVP", "EDU/EVP-Fraktion", "Fraktion EVP/EDU", "Evangelische Volkspartei / Eidgenössisch-Demokratische Union-Fraktion"]
     },
     {
       "id": "sp",

@@ -147,7 +147,7 @@ function renderKpis(host, db, stats) {
     {
       value: total.inquiries.total || '–',
       label: 'Erfasste Vorstösse',
-      note: total.inquiries.first ? `davon ${total.inquiries.first} erstunterzeichnet` : 'Noch nicht erfasst',
+      note: total.inquiries.total ? 'Summe über alle Mitglieder' : 'Noch nicht erfasst',
     },
   ];
 

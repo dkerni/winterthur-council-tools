@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "generatedAt": "2026-07-01T00:00:00Z",
   "generatedBy": "scripts/bootstrap-members.mjs",
   "source": "https://parlament.winterthur.ch",
@@ -175,16 +175,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -201,16 +197,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -227,16 +219,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -253,16 +241,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -279,16 +263,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -305,16 +285,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -331,16 +307,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -357,16 +329,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -383,16 +351,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -409,16 +373,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -435,16 +395,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -461,16 +417,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -487,16 +439,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -513,16 +461,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -539,16 +483,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -565,16 +505,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
-      "gender": "unbekannt",
-      "genderSource": "unknown",
+      "gender": "m",
+      "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -591,16 +527,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -617,16 +549,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -643,16 +571,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -669,16 +593,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -695,16 +615,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -721,16 +637,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -747,16 +659,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -773,16 +681,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -799,16 +703,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -825,16 +725,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -851,16 +747,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -877,16 +769,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -903,16 +791,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -929,16 +813,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -955,16 +835,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -981,16 +857,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1007,16 +879,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1033,16 +901,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1059,16 +923,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1085,16 +945,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
-      "gender": "unbekannt",
-      "genderSource": "unknown",
+      "gender": "m",
+      "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1111,16 +967,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1137,16 +989,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1163,16 +1011,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1189,16 +1033,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1215,16 +1055,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1241,16 +1077,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1267,16 +1099,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1293,16 +1121,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1319,16 +1143,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1345,16 +1165,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1371,16 +1187,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1397,16 +1209,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1423,16 +1231,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1449,16 +1253,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1475,16 +1275,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1501,16 +1297,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1527,16 +1319,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1553,16 +1341,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1579,16 +1363,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1605,16 +1385,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1631,16 +1407,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1657,16 +1429,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1683,16 +1451,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "m",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     },
@@ -1709,16 +1473,12 @@
       "profession": null,
       "firstEntryDate": null,
       "currentMandateStart": null,
+      "mandateEnd": null,
       "district": null,
       "gender": "w",
       "genderSource": "override",
       "commissions": [],
-      "inquiries": [],
-      "inquiryCounts": {
-        "total": 0,
-        "first": 0,
-        "co": 0
-      },
+      "inquiryCount": 0,
       "profileUrl": null,
       "photoUrl": null
     }

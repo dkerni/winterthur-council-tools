@@ -16,7 +16,7 @@ const COLUMNS = [
   { id: 'district', label: 'Stadtkreis', sort: (m) => (m.district || '').toLowerCase() },
   { id: 'profession', label: 'Beruf', sort: (m) => (m.profession || '').toLowerCase() },
   { id: 'tenure', label: 'Amtsdauer', numeric: true, sort: (m) => tenureYears(m) ?? -1 },
-  { id: 'inquiries', label: 'Vorstösse', numeric: true, sort: (m) => m.inquiryCounts?.total ?? 0 },
+  { id: 'inquiries', label: 'Vorstösse', numeric: true, sort: (m) => m.inquiryCount ?? 0 },
 ];
 
 /**
@@ -239,7 +239,7 @@ function renderTable(host, db, members, state) {
         <td>${escapeHtml(member.district || '–')}</td>
         <td>${escapeHtml(member.profession || '–')}</td>
         <td class="num">${tenure ?? '–'}</td>
-        <td class="num">${member.inquiryCounts?.total ?? 0}</td>
+        <td class="num">${member.inquiryCount ?? 0}</td>
       </tr>`;
     })
     .join('');
@@ -272,7 +272,9 @@ function renderDetail(host, db, member) {
     ['Beruf', member.profession || 'nicht erfasst'],
     ['Stadtkreis', member.district || 'nicht erfasst'],
     ['Im Rat seit', member.firstEntryDate ? formatDate(member.firstEntryDate) : 'nicht erfasst'],
+    ['Austritt', member.mandateEnd ? formatDate(member.mandateEnd) : 'kein Austritt erfasst'],
     ['Amtsdauer', tenure != null ? `${tenure} Jahre` : 'nicht erfasst'],
+    ['Vorstösse', member.inquiryCount ?? 0],
   ];
 
   const commissions = member.commissions.length
@@ -283,20 +285,6 @@ function renderDetail(host, db, member) {
         )
         .join('')}</div>`
     : '<p class="empty">Keine Kommissionen erfasst.</p>';
-
-  const inquiries = member.inquiries.length
-    ? `<ul class="inquiry-list">${member.inquiries
-        .slice(0, 25)
-        .map(
-          (entry) => `<li>
-            <a href="${escapeHtml(entry.url || '#')}" target="_blank" rel="noopener">${escapeHtml(entry.title)}</a>
-            <div class="inquiry-meta">${escapeHtml(entry.type || '')}${
-              entry.date ? ` · ${escapeHtml(formatDate(entry.date))}` : ''
-            }${entry.role === 'first' ? ' · erstunterzeichnet' : ''}</div>
-          </li>`,
-        )
-        .join('')}</ul>`
-    : '<p class="empty">Keine Vorstösse erfasst.</p>';
 
   host.innerHTML = `
     <h3>${escapeHtml(member.firstName)} ${escapeHtml(member.lastName)}</h3>
@@ -315,9 +303,6 @@ function renderDetail(host, db, member) {
         : ''
     }
     <div class="detail-section"><h4>Kommissionen</h4>${commissions}</div>
-    <div class="detail-section"><h4>Vorstösse${
-      member.inquiryCounts?.total ? ` (${member.inquiryCounts.total})` : ''
-    }</h4>${inquiries}</div>
     ${
       member.lastSeenAt
         ? `<p class="hint">Zuletzt bestätigt: ${escapeHtml(formatDateTime(member.lastSeenAt))}</p>`
@@ -337,9 +322,10 @@ function csvRows(db, members) {
     beruf: member.profession || '',
     stadtkreis: member.district || '',
     im_rat_seit: member.firstEntryDate || '',
+    austritt: member.mandateEnd || '',
     amtsdauer_jahre: tenureYears(member) ?? '',
     kommissionen: member.commissions.map((entry) => entry.name).join(' | '),
-    vorstoesse: member.inquiryCounts?.total ?? 0,
+    vorstoesse: member.inquiryCount ?? 0,
     profil: member.profileUrl || '',
   }));
 }

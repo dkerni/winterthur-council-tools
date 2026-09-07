@@ -66,7 +66,7 @@ function checkPartyMeta(meta) {
 }
 
 function checkMembers(db, meta) {
-  if (db.schemaVersion !== 1) error(`members.json: unbekannte schemaVersion «${db.schemaVersion}»`);
+  if (db.schemaVersion !== 2) error(`members.json: unbekannte schemaVersion «${db.schemaVersion}»`);
   if (!db.generatedAt || !ISO_DATETIME.test(db.generatedAt)) {
     error(`members.json: generatedAt ist kein ISO-Zeitstempel («${db.generatedAt}»)`);
   }
@@ -125,13 +125,16 @@ function checkMembers(db, meta) {
       error(`members.json: «${who}» — Geschlecht gesetzt, aber genderSource ist nicht «override»`);
     }
 
-    for (const field of ['firstEntryDate', 'currentMandateStart']) {
+    for (const field of ['firstEntryDate', 'currentMandateStart', 'mandateEnd']) {
       if (member[field] && !ISO_DATE.test(member[field])) {
         error(`members.json: «${who}» — «${field}» ist kein ISO-Datum («${member[field]}»)`);
       }
     }
     if (member.firstEntryDate && member.currentMandateStart && member.currentMandateStart < member.firstEntryDate) {
       error(`members.json: «${who}» — currentMandateStart liegt vor firstEntryDate`);
+    }
+    if (member.mandateEnd && member.currentMandateStart && member.mandateEnd < member.currentMandateStart) {
+      error(`members.json: «${who}» — mandateEnd liegt vor currentMandateStart`);
     }
 
     if (member.email && !EMAIL.test(member.email)) {
@@ -149,18 +152,8 @@ function checkMembers(db, meta) {
       if (!entry.id || !entry.name) error(`members.json: «${who}» — unvollständiger Kommissionseintrag`);
     }
 
-    for (const inquiry of member.inquiries || []) {
-      if (inquiry.date && !ISO_DATE.test(inquiry.date)) {
-        error(`members.json: «${who}» — Vorstoss mit ungültigem Datum «${inquiry.date}»`);
-      }
-    }
-
-    const counts = member.inquiryCounts || {};
-    if (counts.total !== (member.inquiries || []).length) {
-      error(`members.json: «${who}» — inquiryCounts.total passt nicht zur Anzahl Vorstösse`);
-    }
-    if ((counts.first || 0) + (counts.co || 0) > (counts.total || 0)) {
-      error(`members.json: «${who}» — inquiryCounts sind inkonsistent`);
+    if (!Number.isInteger(member.inquiryCount) || member.inquiryCount < 0) {
+      error(`members.json: «${who}» — «inquiryCount» ist keine gültige Anzahl («${member.inquiryCount}»)`);
     }
 
     // Warnungen: Felder, die erst der Scraper befüllt (aggregiert ausgegeben).

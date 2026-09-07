@@ -118,9 +118,11 @@ Der Scraper ruft die Quelle sequenziell mit Pause zwischen den Anfragen ab (rund
 * Fraktionen — `https://parlament.winterthur.ch/fraktionen`
 * Kommissionen — `https://parlament.winterthur.ch/kommissionen`
 
-Automatisiert läuft das Ganze wöchentlich über
-`.github/workflows/update-members.yml`: Scraper → strenge Validierung → Tests → **Pull
+Automatisiert läuft das Ganze wöchentlich über den Workflow «Update member data»
+(`.github/workflows/update-members.yml`): Scraper → Validierung → Tests → **Pull
 Request** (kein direkter Push auf `main`), damit jede Datenänderung sichtbar geprüft wird.
+Warnungen der Validierung (z.B. eine auf der Quelle fehlende Berufsangabe) werden
+ausgegeben, brechen den Lauf aber nicht ab — nur Schema- und Konsistenzfehler tun das.
 `.github/workflows/validate.yml` prüft Tests und Daten bei jedem Push und Pull Request,
 `.github/workflows/deploy-pages.yml` veröffentlicht `main` auf GitHub Pages.
 
@@ -165,11 +167,11 @@ nichts Neues und schreibt deshalb nichts.
 
 ## Datenschema
 
-`data/members.json` (`schemaVersion: 1`):
+`data/members.json` (`schemaVersion: 2`):
 
 ```jsonc
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "generatedAt": "2026-07-01T00:00:00Z",   // Zeitpunkt des Scraper-Laufs
   "generatedBy": "scripts/scrape-members.mjs",
   "source": "https://parlament.winterthur.ch",
@@ -191,12 +193,12 @@ nichts Neues und schreibt deshalb nichts.
     "profession": null,
     "firstEntryDate": null,          // erster Eintritt ins Parlament (ISO-Datum)
     "currentMandateStart": null,
+    "mandateEnd": null,              // Austritt (ISO-Datum), null = weiterhin im Amt
     "district": null,                // Stadtkreis
     "gender": "m",                   // m | w | d | unbekannt
     "genderSource": "override",      // override | heuristik | unbekannt
     "commissions": [{ "id": "…", "name": "…", "role": "Mitglied" }],
-    "inquiries":   [{ "title": "…", "type": "…", "date": "…", "url": "…", "role": "first" }],
-    "inquiryCounts": { "total": 0, "first": 0, "co": 0 },
+    "inquiryCount": 0,               // Anzahl Vorstösse (nur die Anzahl, keine Details)
     "profileUrl": null,
     "photoUrl": null
   }]
@@ -223,7 +225,7 @@ Ergänzend:
 | Sitzordnung | umgesetzt (`tools/sitzplan.html`) |
 | Mehrheitsrechner | umgesetzt (`tools/mehrheitsrechner.html`), inkl. möglicher Allianzen |
 | Statistik zur aktuellen Zusammensetzung | umgesetzt (`tools/statistik.html`); Alter, Beruf, Stadtkreis und Amtsdauer erscheinen, sobald der Scraper gelaufen ist |
-| Historische Statistik (Vorstösse) | Grundlage gelegt: Vorstösse werden je Person strukturiert gespeichert; eigene Auswertung folgt |
+| Historische Statistik (Vorstösse) | Je Person wird nur die **Anzahl** Vorstösse gespeichert; eine detaillierte Auswertung folgt |
 | Zusammenfassung der nächsten Sitzung | offen (nächste Ausbaustufe) |
 | Traktandenliste als Excel/CSV | umgesetzt (`scripts/scrape-agenda.mjs`, Download auf der Startseite) |
 

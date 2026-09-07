@@ -104,52 +104,42 @@ function normalizeLabel(value) {
 }
 
 /**
- * Ordnet einen Freitext («Sozialdemokratische Partei (SP)») einer Partei aus
- * `party-meta.json` zu.
- * @returns {object|null}
+ * Kürzel aus einem Klammerzusatz, z.B. «Grünliberale Partei (GLP)» oder
+ * «Alternative Linke (AL; früher: Alternative Liste)» → `AL`.
+ * @returns {string[]} normalisierte Kandidaten
  */
-export function matchParty(meta, label) {
+function abbrCandidates(label) {
+  const candidates = [];
+  for (const match of String(label ?? '').matchAll(/\(([^)]+)\)/g)) {
+    for (const part of match[1].split(/[;,]/)) {
+      const normalized = normalizeLabel(part);
+      if (normalized && normalized.length <= 12) candidates.push(normalized);
+    }
+  }
+  return candidates;
+}
+
+/** Findet einen Eintrag, dessen Bezeichnungen exakt zum Suchbegriff passen. */
+function findByLabel(entries, needle) {
+  return entries.find((entry) => labelCandidates(entry).some((candidate) => normalizeLabel(candidate) === needle));
+}
+
+/** Gemeinsame Zuordnungslogik für Parteien und Fraktionen. */
+function matchEntry(entries, label) {
   const needle = normalizeLabel(label);
   if (!needle) return null;
 
-  const exact = meta.parties.find((party) =>
-    labelCandidates(party).some((candidate) => normalizeLabel(candidate) === needle),
-  );
+  const exact = findByLabel(entries, needle);
   if (exact) return exact;
 
-  // Kürzel in Klammern, z.B. «Grünliberale Partei (GLP)»
-  const abbrMatch = String(label).match(/\(([^)]{1,12})\)/);
-  if (abbrMatch) {
-    const abbr = normalizeLabel(abbrMatch[1]);
-    const byAbbr = meta.parties.find((party) =>
-      labelCandidates(party).some((candidate) => normalizeLabel(candidate) === abbr),
-    );
+  for (const abbr of abbrCandidates(label)) {
+    const byAbbr = findByLabel(entries, abbr);
     if (byAbbr) return byAbbr;
   }
 
   return (
-    meta.parties.find((party) =>
-      labelCandidates(party).some((candidate) => {
-        const normalized = normalizeLabel(candidate);
-        return normalized.length > 2 && (needle.includes(normalized) || normalized.includes(needle));
-      }),
-    ) || null
-  );
-}
-
-/** Ordnet einen Freitext einer Fraktion aus `party-meta.json` zu. */
-export function matchFraction(meta, label) {
-  const needle = normalizeLabel(label);
-  if (!needle) return null;
-
-  const exact = meta.fractions.find((fraction) =>
-    labelCandidates(fraction).some((candidate) => normalizeLabel(candidate) === needle),
-  );
-  if (exact) return exact;
-
-  return (
-    meta.fractions.find((fraction) =>
-      labelCandidates(fraction).some((candidate) => {
+    entries.find((entry) =>
+      labelCandidates(entry).some((candidate) => {
         const normalized = normalizeLabel(candidate);
         return normalized.length > 2 && (needle.includes(normalized) || normalized.includes(needle));
       }),
@@ -158,10 +148,42 @@ export function matchFraction(meta, label) {
 }
 
 /**
+ * Ordnet einen Freitext («Sozialdemokratische Partei (SP)») einer Partei aus
+ * `party-meta.json` zu.
+ * @returns {object|null}
+ */
+export function matchParty(meta, label) {
+  return matchEntry(meta.parties, label);
+}
+
+/** Ordnet einen Freitext einer Fraktion aus `party-meta.json` zu. */
+export function matchFraction(meta, label) {
+  return matchEntry(meta.fractions, label);
+}
+
+/**
+ * Vergleicht zwei Namen unabhängig von der Reihenfolge der Bestandteile.
+ * Initialen (`P.` → `p`) und Kurzformen (`Dani` → `Daniel`) gelten als
+ * Übereinstimmung, wenn der kürzere Bestandteil ein Präfix des längeren ist.
+ */
+function namesLooselyEqual(left, right) {
+  const tokens = (value) => normalizeName(value).split(' ').filter(Boolean).sort();
+  const a = tokens(left);
+  const b = tokens(right);
+  if (!a.length || a.length !== b.length) return false;
+  return a.every((token, index) => {
+    const other = b[index];
+    if (token === other) return true;
+    const [short, long] = token.length <= other.length ? [token, other] : [other, token];
+    return long.startsWith(short);
+  });
+}
+
+/**
  * Sucht den Geschlechts-Override zu einem Mitglied.
  * Zuordnung über die Personen-ID, sonst über den normalisierten Namen
  * («Vorname Nachname» oder «Nachname Vorname»).
- * @returns {{gender: string, matchedBy: 'id'|'name'}|null}
+ * @returns {{gender: string, matchedBy: 'id'|'name'|'name-fuzzy'}|null}
  */
 export function findGenderOverride(overrides, member) {
   const entries = overrides.overrides || [];
@@ -171,24 +193,23 @@ export function findGenderOverride(overrides, member) {
     if (byId) return { gender: byId.gender, matchedBy: 'id' };
   }
 
-  const keys = new Set(
-    [
-      `${member.firstName} ${member.lastName}`,
-      `${member.lastName} ${member.firstName}`,
-      member.displayName,
-    ]
-      .filter(Boolean)
-      .map(normalizeName),
+  const rawKeys = [`${member.firstName} ${member.lastName}`, `${member.lastName} ${member.firstName}`, member.displayName].filter(
+    Boolean,
   );
+  const keys = new Set(rawKeys.map(normalizeName));
 
   const byName = entries.find((entry) => {
     if (!entry.name) return false;
     const normalized = normalizeName(entry.name);
-    const swapped = normalizeName(entry.name).split(' ').reverse().join(' ');
+    const swapped = normalized.split(' ').reverse().join(' ');
     return keys.has(normalized) || keys.has(swapped);
   });
+  if (byName) return { gender: byName.gender, matchedBy: 'name' };
 
-  return byName ? { gender: byName.gender, matchedBy: 'name' } : null;
+  // Fallback: Namensbestandteile in abweichender Reihenfolge oder Kurzform
+  // (die Quelle führt z.B. «Bachmann Miguel Pedro» statt «Miguel P. Bachmann»).
+  const fuzzy = entries.find((entry) => entry.name && rawKeys.some((key) => namesLooselyEqual(entry.name, key)));
+  return fuzzy ? { gender: fuzzy.gender, matchedBy: 'name-fuzzy' } : null;
 }
 
 /** Stabile Sortierung nach Partei-Reihenfolge, dann Nachname, Vorname. */
