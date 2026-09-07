@@ -5,6 +5,7 @@ import { test } from 'node:test';
 
 import {
   AGENDA_COLUMNS,
+  agendaFileName,
   agendaTitleLines,
   dedupeAgendaItems,
   extractDates,
@@ -177,6 +178,19 @@ test('parseSessionDetails liest den Sitzungsort', () => {
   // solches Token gehört nicht als Ort in die Arbeitsmappe.
   const masked = '<dl><dt>Ort</dt><dd>#1513080a9e151508044e3a505c5244363244011501bedc0c</dd></dl>';
   assert.equal(parseSessionDetails(masked).location, null);
+});
+
+test('agendaFileName nennt Datum, Traktandenliste und Sitzungsnummern', () => {
+  assert.equal(
+    agendaFileName({ title: '8./9. Sitzungen', date: '2026-08-18', dates: ['2026-08-18'] }),
+    '2026 08 18 Traktandenliste 8 9.xlsx',
+  );
+  assert.equal(agendaFileName({ title: '12. Sitzung', date: '2026-09-14' }), '2026 09 14 Traktandenliste 12.xlsx');
+});
+
+test('agendaFileName lässt fehlende Angaben weg', () => {
+  assert.equal(agendaFileName({ title: 'Sitzung 7603501' }), 'Traktandenliste.xlsx');
+  assert.equal(agendaFileName(null), 'Traktandenliste.xlsx');
 });
 
 test('agendaTitleLines baut zwei Kopfzeilen, beide mit dem Sitzungslink', () => {

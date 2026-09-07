@@ -651,6 +651,31 @@ export function formatSwissDate(isoDate) {
   return year && month && day ? `${day}.${month}.${year}` : String(isoDate ?? '');
 }
 
+/**
+ * Sitzungsnummern aus dem Titel, z.B. «10./11. Sitzungen» → `['10', '11']`.
+ * Gezählt werden nur Zahlen mit nachfolgendem Punkt — die Sitzungs-ID im
+ * Ersatztitel («Sitzung 7603501») bleibt so aussen vor.
+ * @param {{title?: string}} session
+ * @returns {string[]}
+ */
+export function sessionNumbers(session) {
+  return [...String(session?.title ?? '').matchAll(/(\d+)\s*\./g)].map((match) => String(Number(match[1])));
+}
+
+/**
+ * Dateiname der Traktandenliste: Sitzungsdatum, «Traktandenliste» und die
+ * Sitzungsnummern, z.B. `2026 08 18 Traktandenliste 8 9.xlsx`.
+ * @param {{title?: string, date?: string|null, dates?: string[]}} session
+ * @returns {string}
+ */
+export function agendaFileName(session) {
+  const date = (session?.dates?.length ? session.dates[0] : session?.date) || '';
+  const parts = [/^\d{4}-\d{2}-\d{2}$/.test(date) ? date.replaceAll('-', ' ') : '', 'Traktandenliste']
+    .concat(sessionNumbers(session))
+    .filter(Boolean);
+  return `${parts.join(' ')}.xlsx`;
+}
+
 /** Aufzählung der Sitzungsdaten, z.B. «21.09.2026 und 05.10.2026». */
 function listDates(session) {
   const dates = (session?.dates?.length ? session.dates : [session?.date]).filter(Boolean).map(formatSwissDate);
