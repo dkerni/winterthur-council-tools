@@ -1,0 +1,65 @@
+name: Traktandenliste aktualisieren
+
+on:
+  schedule:
+    # Werktäglich um 08:00 Ortszeit: 06:00 UTC entspricht der Sommerzeit,
+    # 07:00 UTC der Winterzeit. Der jeweils «falsche» Lauf findet nichts Neues
+    # und schreibt deshalb nichts.
+    - cron: '0 6,7 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: update-agenda
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Traktanden der nächsten Sitzung abrufen
+        run: npm run scrape:agenda
+
+      - name: Tests ausführen
+        run: npm test
+
+      - name: Änderungen prüfen
+        id: diff
+        run: |
+          if git diff --quiet -- data/agenda.json data/traktandenliste.xlsx; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Keine neue Sitzung — es gibt nichts zu tun."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git status --short -- data/agenda.json data/traktandenliste.xlsx
+          fi
+
+      - name: Änderungen committen
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A data/agenda.json data/traktandenliste.xlsx
+          git commit -m 'Traktandenliste der nächsten Sitzung aktualisieren'
+          git push origin HEAD:"${GITHUB_REF_NAME}"
+
+      - name: Website neu veröffentlichen
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Pushes mit dem GITHUB_TOKEN lösen keine Workflows aus — das
+          # Pages-Deployment wird deshalb ausdrücklich angestossen.
+          gh workflow run deploy-pages.yml --ref "${GITHUB_REF_NAME}"

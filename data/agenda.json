@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": null,
+  "generatedBy": "scripts/scrape-agenda.mjs",
+  "source": "https://parlament.winterthur.ch/sitzung",
+  "status": "none",
+  "message": "Für die nächste Sitzung sind noch keine Traktanden publiziert.",
+  "session": null,
+  "file": null,
+  "fileName": null,
+  "contentHash": null
+}
