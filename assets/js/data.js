@@ -48,8 +48,7 @@ async function build() {
     return {
       ...m,
       commissions: m.commissions || [],
-      inquiries: m.inquiries || [],
-      inquiryCounts: m.inquiryCounts || { total: (m.inquiries || []).length, first: 0, co: 0 },
+      inquiryCount: Number(m.inquiryCount) || 0,
       canVote: !nonVoting,
       ...(nonVoting ? { nonVotingRole: nonVoting.role || 'ohne Stimmrecht' } : {}),
     };
@@ -262,6 +261,9 @@ export function ageOf(member, referenceDate = new Date()) {
 /**
  * Amtsdauer in Jahren seit dem **ersten** Eintritt ins Parlament
  * (Unterbrüche werden nicht abgezogen — siehe README).
+ *
+ * Ist ein Austritt (`mandateEnd`) erfasst und liegt er in der Vergangenheit,
+ * endet die Amtsdauer an diesem Datum statt am Stichtag.
  * @returns {number|null}
  */
 export function tenureYears(member, referenceDate = new Date()) {
@@ -269,7 +271,11 @@ export function tenureYears(member, referenceDate = new Date()) {
   if (!start) return null;
   const startDate = new Date(start);
   if (Number.isNaN(startDate.getTime())) return null;
-  const years = (referenceDate - startDate) / (365.2425 * 24 * 60 * 60 * 1000);
+
+  const endDate = member.mandateEnd ? new Date(member.mandateEnd) : null;
+  const end = endDate && !Number.isNaN(endDate.getTime()) && endDate < referenceDate ? endDate : referenceDate;
+
+  const years = (end - startDate) / (365.2425 * 24 * 60 * 60 * 1000);
   return years < 0 ? 0 : Math.round(years * 10) / 10;
 }
 

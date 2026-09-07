@@ -6,7 +6,8 @@
  *   1. Listenseite der Mitglieder holen → `data-entities`-JSON auslesen
  *   2. Auf aktive Mandate filtern (erwartet: 60 Mitglieder)
  *   3. Je Mitglied die Personenseite holen (Geburtsjahr, Beruf, Stadtkreis,
- *      Adresse, E-Mail, politische Vorstösse)
+ *      Adresse, E-Mail, Ein-/Austritt sowie die **Anzahl** politischer
+ *      Vorstösse — Einzelheiten zu den Vorstössen werden nicht gespeichert)
  *   4. Fraktionsseite holen und die Mitglieder je Fraktion zuordnen
  *   5. Normalisieren, Geschlechts-Overrides einmischen und
  *      `data/members.json` deterministisch schreiben
@@ -39,7 +40,6 @@ import {
   matchParty,
   normalizeName,
   readJson,
-  splitNameFirstLast,
   splitNameLastFirst,
   writeJson,
 } from './lib/normalize.mjs';
@@ -51,7 +51,7 @@ const SOURCES = {
   memberDetail: `${BASE_URL}/behoerdenmitglieder/{id}`,
 };
 
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 const EXPECTED_MEMBERS = 60;
 
 const args = process.argv.slice(2);
@@ -139,13 +139,6 @@ function firstHref(html) {
 
 /* ─── Personenseite ────────────────────────────────────────────────── */
 
-const INQUIRY_TYPES = new Map([
-  ['1', 'Motion'],
-  ['2', 'Postulat'],
-  ['3', 'Interpellation'],
-  ['4', 'Schriftliche Anfrage'],
-]);
-
 async function fetchMemberDetail(member) {
   const html = await fetchPage(member.profileUrl, { log: (m) => verbose(m) });
   const fields = extractLabeledFields(html);
@@ -162,9 +155,9 @@ async function fetchMemberDetail(member) {
     profession: pickField(fields, ['beruf', 'tätigkeit', 'berufliche tätigkeit']),
     district: pickField(fields, ['stadtkreis', 'kreis', 'wahlkreis']) || member.district,
     entryDate: parseDate(pickField(fields, ['eintritt', 'im amt seit', 'mitglied seit']) || ''),
-    exitDate: parseDate(pickField(fields, ['austritt']) || ''),
+    exitDate: parseDate(pickField(fields, ['austritt', 'rücktritt', 'ruecktritt']) || ''),
     address: buildAddress(fields, text),
-    inquiries: extractInquiries(html),
+    inquiryCount: countInquiries(html),
   };
 
   if (!detail.birthYear) {
@@ -192,47 +185,20 @@ function buildAddress(fields, text) {
   return parsed || null;
 }
 
-function extractInquiries(html) {
+/**
+ * Anzahl Vorstösse einer Personenseite — gezählt werden die Einträge der
+ * Vorstoss-Tabelle. Einzelheiten (Titel, Datum, Rolle) werden bewusst nicht
+ * gespeichert; die Website zeigt nur die Anzahl.
+ * @returns {number}
+ */
+function countInquiries(html) {
   const entities = extractDataEntities(html);
-  const inquiries = [];
 
-  for (const entity of entities) {
+  return entities.filter((entity) => {
     const title = toText(entity.name || entity._name || entity.titel || '');
     const number = toText(entity.nummer || entity._nummer || '');
-    if (!title && !number) continue;
-
-    const id =
-      extractRefId(entity.name || entity._name || '', 'geschaeft') ||
-      (String(entity.name || '').match(/\/(\d{5,})/) || [])[1] ||
-      null;
-
-    const categoryId = String(entity.kategorieId ?? entity._kategorieId ?? '').trim();
-    const type =
-      toText(entity.kategorie || entity._kategorie || '') ||
-      INQUIRY_TYPES.get(categoryId) ||
-      (categoryId ? `Kategorie ${categoryId}` : null);
-
-    inquiries.push({
-      id,
-      title,
-      type,
-      number: number || null,
-      date: parseDate(entity.geschaeftsdatum || entity._geschaeftsdatum || ''),
-      role: toText(entity._rolle || entity.rolle || '') || null,
-    });
-  }
-
-  return inquiries;
-}
-
-function countInquiries(inquiries) {
-  let first = 0;
-  let co = 0;
-  for (const inquiry of inquiries) {
-    if (/erst/i.test(inquiry.role || '')) first++;
-    else if (/mit/i.test(inquiry.role || '')) co++;
-  }
-  return { total: inquiries.length, first, co };
+    return Boolean(title || number);
+  }).length;
 }
 
 /* ─── Fraktionen ───────────────────────────────────────────────────── */
@@ -367,7 +333,6 @@ async function main() {
 
     if (!fractionId) warn(`Keine Fraktion für ${displayName} gefunden`);
 
-    const inquiries = detail?.inquiries || [];
     const member = {
       id: listMember.id,
       firstName,
@@ -381,12 +346,12 @@ async function main() {
       profession: detail?.profession || null,
       firstEntryDate: listMember.firstEntryDate || detail?.entryDate || null,
       currentMandateStart: listMember.currentMandateStart || detail?.entryDate || null,
-      district: listMember.district || detail?.district || null,
+      mandateEnd: listMember.mandateEnd || detail?.exitDate || null,
+      district: detail?.district || listMember.district || null,
       gender: 'unbekannt',
       genderSource: 'unknown',
       commissions: listMember.commissions,
-      inquiries,
-      inquiryCounts: countInquiries(inquiries),
+      inquiryCount: detail?.inquiryCount ?? 0,
       profileUrl: listMember.profileUrl,
       photoUrl: listMember.photoUrl,
     };
@@ -460,7 +425,7 @@ async function main() {
   log(`  Mitglieder:        ${members.length}`);
   log(`  mit Detaildaten:   ${enriched}`);
   log(`  Kommissionen:      ${database.commissions.length}`);
-  log(`  Vorstösse gesamt:  ${members.reduce((sum, m) => sum + m.inquiryCounts.total, 0)}`);
+  log(`  Vorstösse gesamt:  ${members.reduce((sum, m) => sum + m.inquiryCount, 0)}`);
   log(`  Warnungen:         ${warnings.length}`);
 
   if (options.dryRun) {

@@ -25,7 +25,7 @@ import {
   writeJson,
 } from './lib/normalize.mjs';
 
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 const BASE_URL = 'https://parlament.winterthur.ch';
 
 async function main() {
@@ -55,12 +55,12 @@ async function main() {
       profession: null,
       firstEntryDate: null,
       currentMandateStart: null,
+      mandateEnd: null,
       district: null,
       gender: 'unbekannt',
       genderSource: 'unknown',
       commissions: [],
-      inquiries: [],
-      inquiryCounts: { total: 0, first: 0, co: 0 },
+      inquiryCount: 0,
       profileUrl: null,
       photoUrl: null,
     };

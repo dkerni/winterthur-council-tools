@@ -112,8 +112,7 @@ export function aggregate(members, referenceDate = new Date()) {
     professions: frequencies(members.map((member) => member.profession).filter(Boolean)),
     professionsKnown: members.filter((member) => member.profession).length,
     inquiries: {
-      total: members.reduce((sum, member) => sum + (member.inquiryCounts?.total || 0), 0),
-      first: members.reduce((sum, member) => sum + (member.inquiryCounts?.first || 0), 0),
+      total: members.reduce((sum, member) => sum + (member.inquiryCount || 0), 0),
     },
   };
 }
@@ -161,8 +160,7 @@ export function statsRows(db, referenceDate = new Date()) {
     aktuelles_mandat_seit: member.currentMandateStart || '',
     amtsdauer_jahre: tenureYears(member, referenceDate) ?? '',
     kommissionen: (member.commissions || []).map((entry) => entry.name).join(' | '),
-    vorstoesse_total: member.inquiryCounts?.total ?? 0,
-    vorstoesse_erstunterzeichnet: member.inquiryCounts?.first ?? 0,
+    vorstoesse_total: member.inquiryCount ?? 0,
     profil: member.profileUrl || '',
   }));
 }
