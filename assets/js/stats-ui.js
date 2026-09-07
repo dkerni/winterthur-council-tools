@@ -4,9 +4,8 @@
 
 import { loadDatabase, dataErrorMessage, formatDateTime } from './data.js';
 import { councilNote } from './parties.js';
-import { computeStats, statsRows, GENDER_LABELS } from './stats.js';
+import { computeStats, GENDER_LABELS } from './stats.js';
 import { renderChart } from './charts.js';
-import { toCsv, downloadCsv, datedFilename } from './csv.js';
 import { escapeHtml } from './layout.js';
 
 const MODES = [
@@ -15,7 +14,10 @@ const MODES = [
   { id: 'fraction', label: 'Fraktion' },
 ];
 
-const GENDER_COLORS = { m: '#4a6fa5', w: '#c1668b', d: '#7aa06a', unbekannt: '#bdbdb5' };
+const GENDER_COLORS = { m: '#4a6fa5', w: '#c1668b' };
+
+/** Im Diagramm ausgewiesene Geschlechter — «divers» und «unbekannt» bleiben aussen vor. */
+const GENDER_KEYS = ['m', 'w'];
 
 /**
  * Baut die Statistik-Oberfläche in den Container.
@@ -37,7 +39,6 @@ export async function createStatistics(container) {
   const kpiHost = container.querySelector('#stats-kpi');
   const chartHost = container.querySelector('#stats-charts');
   const tableHost = container.querySelector('#stats-table');
-  const extremeHost = container.querySelector('#stats-extremes');
   const noteHost = container.querySelector('#stats-note');
 
   modeButtons.forEach((button) => {
@@ -48,18 +49,13 @@ export async function createStatistics(container) {
     });
   });
 
-  container.querySelector('#stats-csv').addEventListener('click', () => {
-    downloadCsv(datedFilename('stadtparlament_winterthur_mitglieder'), toCsv(statsRows(db)));
-  });
-
-  renderQualityNote(noteHost, db);
+  renderDataNote(noteHost, db);
   container.querySelector('#stats-council').textContent = councilNote(db.meta);
 
   function render() {
     const groupMode = mode === 'total' ? 'party' : mode;
     const stats = computeStats(db, groupMode);
     renderKpis(kpiHost, db, stats);
-    renderExtremes(extremeHost, stats);
     renderTable(tableHost, stats, mode);
     renderCharts(chartHost, stats, mode);
   }
@@ -76,45 +72,18 @@ function skeleton() {
             `<button type="button" data-mode="${item.id}" aria-pressed="${item.id === 'total'}">${item.label}</button>`,
         ).join('')}
       </div>
-      <button type="button" class="btn" id="stats-csv">Rohdaten als CSV</button>
     </div>
     <p class="hint" id="stats-council"></p>
     <div id="stats-note"></div>
     <div class="kpi-grid" id="stats-kpi"></div>
-    <div id="stats-extremes"></div>
     <div id="stats-table"></div>
     <div class="chart-grid" id="stats-charts"></div>`;
 }
 
-function renderQualityNote(host, db) {
-  const missing = {
-    Geburtsjahr: db.members.filter((member) => !member.birthYear).length,
-    Beruf: db.members.filter((member) => !member.profession).length,
-    Stadtkreis: db.members.filter((member) => !member.district).length,
-    Eintrittsdatum: db.members.filter((member) => !member.firstEntryDate && !member.currentMandateStart).length,
-  };
-  const gaps = Object.entries(missing).filter(([, count]) => count > 0);
-  const guessed = db.members.filter((member) => member.genderSource === 'heuristik').length;
-  const unknownGender = db.members.filter((member) => !['m', 'w', 'd'].includes(member.gender)).length;
-
-  const parts = [];
-  if (gaps.length) {
-    parts.push(
-      `Unvollständige Felder: ${gaps.map(([field, count]) => `${field} (${count} von ${db.members.length})`).join(', ')}.`,
-    );
-  }
-  parts.push(
-    `Das Geschlecht wird nicht offiziell publiziert. Es stammt aus einer manuell gepflegten Liste; ` +
-      `${unknownGender} Person(en) sind als «unbekannt» erfasst${guessen(guessed)}. Korrekturhinweise sind willkommen.`,
-  );
-
-  host.innerHTML = `<div class="notice stats-note">${parts.join(' ')}${
-    db.generatedAt ? ` <span class="hint">Datenstand: ${escapeHtml(formatDateTime(db.generatedAt))}.</span>` : ''
-  }</div>`;
-}
-
-function guessen(count) {
-  return count ? `, ${count} wurden heuristisch bestimmt` : '';
+function renderDataNote(host, db) {
+  host.innerHTML = db.generatedAt
+    ? `<p class="hint stats-note">Datenstand: ${escapeHtml(formatDateTime(db.generatedAt))}.</p>`
+    : '';
 }
 
 function renderKpis(host, db, stats) {
@@ -132,7 +101,7 @@ function renderKpis(host, db, stats) {
     {
       value: `${share}%`,
       label: 'Frauenanteil',
-      note: `${women} von ${total.count}; ${total.gender.counts.unbekannt} unbekannt`,
+      note: `${women} von ${total.count}`,
     },
     {
       value: total.tenure.average != null ? `${total.tenure.average}` : '–',
@@ -160,38 +129,6 @@ function renderKpis(host, db, stats) {
       </div>`,
     )
     .join('');
-}
-
-function memberName(member) {
-  return `${member.firstName} ${member.lastName}`.trim();
-}
-
-function renderExtremes(host, stats) {
-  const { age, tenure } = stats.total;
-  const items = [];
-  if (age.youngest && age.oldest) {
-    items.push(
-      `Jüngstes Mitglied: <strong>${escapeHtml(memberName(age.youngest))}</strong> (${
-        new Date().getFullYear() - age.youngest.birthYear
-      } Jahre)`,
-      `Ältestes Mitglied: <strong>${escapeHtml(memberName(age.oldest))}</strong> (${
-        new Date().getFullYear() - age.oldest.birthYear
-      } Jahre)`,
-    );
-  }
-  if (tenure.longest.length) {
-    items.push(
-      `Längste Amtsdauer: ${tenure.longest
-        .slice(0, 3)
-        .map((member) => `<strong>${escapeHtml(memberName(member))}</strong>`)
-        .join(', ')}`,
-    );
-  }
-  host.innerHTML = items.length
-    ? `<div class="card"><h2>Auffälligkeiten</h2><ul class="fact-list">${items
-        .map((item) => `<li>${item}</li>`)
-        .join('')}</ul></div>`
-    : '';
 }
 
 function renderTable(host, stats, mode) {
@@ -272,9 +209,9 @@ function renderCharts(host, stats, mode) {
     seats: { type: 'bar', labels, values: groups.map((entry) => entry.group.seats), colors, stepSize: 5 },
     gender: {
       type: 'doughnut',
-      labels: Object.keys(total.gender.counts).map((key) => GENDER_LABELS[key] || key),
-      values: Object.values(total.gender.counts),
-      colors: Object.keys(total.gender.counts).map((key) => GENDER_COLORS[key]),
+      labels: GENDER_KEYS.map((key) => GENDER_LABELS[key] || key),
+      values: GENDER_KEYS.map((key) => total.gender.counts[key] || 0),
+      colors: GENDER_KEYS.map((key) => GENDER_COLORS[key]),
     },
     age: {
       type: 'bar',

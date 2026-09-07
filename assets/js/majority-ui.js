@@ -66,7 +66,6 @@ export async function createMajorityCalculator(container, options = {}) {
     result: container.querySelector('[data-result]'),
     alliances: container.querySelector('[data-alliances]'),
     note: container.querySelector('[data-council-note]'),
-    status: container.querySelector('[data-status]'),
   };
 
   function currentGroups() {
@@ -136,12 +135,9 @@ export async function createMajorityCalculator(container, options = {}) {
         </label>
 
         <button type="button" data-reset>Zurücksetzen</button>
-        <button type="button" data-share>Link zum Szenario kopieren</button>
-        <span class="status-msg" data-status></span>
       </div>
       <p class="hint">${escapeHtml(majorityDescription(state.majorityType, totalSeats))}</p>
     `;
-    refs.status = refs.controls.querySelector('[data-status]');
 
     refs.controls.querySelectorAll('[data-mode]').forEach((button) => {
       button.addEventListener('click', () => {
@@ -164,24 +160,6 @@ export async function createMajorityCalculator(container, options = {}) {
       state.majorityType = 'simple';
       renderAll();
     });
-
-    refs.controls.querySelector('[data-share]').addEventListener('click', async () => {
-      const url = window.location.href;
-      try {
-        await navigator.clipboard.writeText(url);
-        setStatus('Link kopiert.');
-      } catch {
-        setStatus('Kopieren nicht möglich — Link aus der Adresszeile übernehmen.');
-      }
-    });
-  }
-
-  function setStatus(message) {
-    if (!refs.status) return;
-    refs.status.textContent = message;
-    setTimeout(() => {
-      if (refs.status && refs.status.textContent === message) refs.status.textContent = '';
-    }, 4000);
   }
 
   function renderGroups() {

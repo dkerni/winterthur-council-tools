@@ -71,14 +71,6 @@ export function aggregate(members, referenceDate = new Date()) {
   const ages = members.map((member) => ageOf(member, referenceDate)).filter((value) => value != null);
   const tenures = members.map((member) => tenureYears(member, referenceDate)).filter((value) => value != null);
 
-  const withAge = members.filter((member) => ageOf(member, referenceDate) != null);
-  const byAge = [...withAge].sort((a, b) => ageOf(a, referenceDate) - ageOf(b, referenceDate));
-
-  const withTenure = members.filter((member) => tenureYears(member, referenceDate) != null);
-  const byTenure = [...withTenure].sort(
-    (a, b) => tenureYears(b, referenceDate) - tenureYears(a, referenceDate),
-  );
-
   const gender = { m: 0, w: 0, d: 0, unbekannt: 0 };
   for (const member of members) {
     const key = Object.prototype.hasOwnProperty.call(gender, member.gender) ? member.gender : 'unbekannt';
@@ -96,15 +88,12 @@ export function aggregate(members, referenceDate = new Date()) {
       known: ages.length,
       average: average(ages),
       median: median(ages),
-      youngest: byAge[0] || null,
-      oldest: byAge[byAge.length - 1] || null,
       histogram: bucketize(ages, AGE_BUCKETS),
     },
     tenure: {
       known: tenures.length,
       average: average(tenures),
       median: median(tenures),
-      longest: byTenure.slice(0, 5),
       histogram: bucketize(tenures, TENURE_BUCKETS),
     },
     districts: frequencies(members.map((member) => member.district).filter(Boolean)),
@@ -136,31 +125,4 @@ export function computeStats(db, mode = 'party', referenceDate = new Date()) {
       seats: group.seats,
     })),
   };
-}
-
-/**
- * Rohdaten für den CSV-Export (eine Zeile je Mitglied).
- * @param {object} db
- * @param {Date} [referenceDate]
- */
-export function statsRows(db, referenceDate = new Date()) {
-  return db.members.map((member) => ({
-    id: member.id,
-    vorname: member.firstName,
-    nachname: member.lastName,
-    partei: db.partyById.get(member.partyId)?.abbr || member.partyId || '',
-    fraktion: db.fractionById.get(member.fractionId)?.shortName || member.fractionId || '',
-    geschlecht: GENDER_LABELS[member.gender] || 'unbekannt',
-    geschlecht_quelle: member.genderSource || '',
-    geburtsjahr: member.birthYear ?? '',
-    alter: ageOf(member, referenceDate) ?? '',
-    beruf: member.profession || '',
-    stadtkreis: member.district || '',
-    erster_eintritt: member.firstEntryDate || '',
-    aktuelles_mandat_seit: member.currentMandateStart || '',
-    amtsdauer_jahre: tenureYears(member, referenceDate) ?? '',
-    kommissionen: (member.commissions || []).map((entry) => entry.name).join(' | '),
-    vorstoesse_total: member.inquiryCount ?? 0,
-    profil: member.profileUrl || '',
-  }));
 }
