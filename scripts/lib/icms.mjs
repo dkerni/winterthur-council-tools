@@ -137,31 +137,44 @@ export function decodeEntities(value) {
 }
 
 /**
- * Liest das `data-entities`-Attribut einer Tabelle und gibt das enthaltene
- * JSON-Array zurück.
+ * Liest die `data-entities`-Attribute aller Tabellen einer Seite. Seiten mit
+ * mehreren Listen (z.B. «Nächste» und «Letzte Sitzungen») liefern deshalb auch
+ * mehrere Datensatz-Blöcke.
  * @param {string} html Seitenquelltext
  * @param {string} [tableId] optionale Tabellen-ID (z.B. `icmsTable-personList`)
- * @returns {Array<object>} Datensätze (leer, wenn nichts gefunden wurde)
+ * @returns {Array<Array<object>>} je Tabelle ein Array von Datensätzen
  */
-export function extractDataEntities(html, tableId) {
+export function extractAllDataEntities(html, tableId) {
   const tables = [...html.matchAll(/<table\b[^>]*>/gi)].map((m) => m[0]);
 
   const candidates = tableId
     ? tables.filter((tag) => new RegExp(`id\\s*=\\s*["']${escapeRegExp(tableId)}["']`, 'i').test(tag))
     : tables;
 
+  const blocks = [];
   for (const tag of candidates.length ? candidates : tables) {
     const match = tag.match(/data-entities\s*=\s*"([^"]*)"/i) || tag.match(/data-entities\s*=\s*'([^']*)'/i);
     if (!match) continue;
     try {
       const parsed = JSON.parse(decodeEntities(match[1]));
-      if (Array.isArray(parsed)) return parsed;
-      if (parsed && Array.isArray(parsed.data)) return parsed.data;
+      if (Array.isArray(parsed)) blocks.push(parsed);
+      // Das CMS verpackt Listen als `{"emptyColumns":[],"data":[…]}`.
+      else if (parsed && Array.isArray(parsed.data)) blocks.push(parsed.data);
     } catch {
       // Nächste Tabelle probieren.
     }
   }
-  return [];
+  return blocks;
+}
+
+/**
+ * Liest das `data-entities`-Attribut der ersten passenden Tabelle.
+ * @param {string} html Seitenquelltext
+ * @param {string} [tableId] optionale Tabellen-ID (z.B. `icmsTable-personList`)
+ * @returns {Array<object>} Datensätze (leer, wenn nichts gefunden wurde)
+ */
+export function extractDataEntities(html, tableId) {
+  return extractAllDataEntities(html, tableId)[0] ?? [];
 }
 
 function escapeRegExp(value) {

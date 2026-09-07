@@ -86,9 +86,9 @@ function downloadName(session) {
   return date ? `traktandenliste_${date}.xlsx` : 'traktandenliste.xlsx';
 }
 
-/** Traktanden einer Sitzung inkl. Folgeseiten. */
-async function fetchAgendaItems(session) {
-  const queue = [session.url];
+/** Traktanden einer Seite inkl. allfälliger Folgeseiten. */
+async function crawlAgenda(startUrl) {
+  const queue = [startUrl];
   const visited = new Set();
   const items = [];
 
@@ -110,6 +110,31 @@ async function fetchAgendaItems(session) {
 
   if (queue.length) {
     console.warn(`  ⚠ Mehr als ${MAX_PAGES} Seiten — weitere Seiten wurden nicht geladen.`);
+  }
+
+  return items;
+}
+
+/**
+ * Traktanden einer Sitzung. Zuerst wird die öffentliche Adresse
+ * `/sitzung/<id>` abgerufen; bleibt sie leer oder ist sie nicht erreichbar,
+ * wird der in der Übersicht verlinkte Originalpfad (`/_rte/anlass/<id>`)
+ * versucht.
+ */
+async function fetchAgendaItems(session) {
+  const alternate = session.sourceUrl && session.sourceUrl !== session.url ? session.sourceUrl : null;
+
+  let items = [];
+  try {
+    items = await crawlAgenda(session.url);
+  } catch (error) {
+    if (!alternate) throw error;
+    console.warn(`  ⚠ ${session.url}: ${error.message}`);
+  }
+
+  if (!items.length && alternate) {
+    verbose(`  ↻ Ausweichpfad ${alternate}`);
+    items = await crawlAgenda(alternate);
   }
 
   return sortAgendaItems(dedupeAgendaItems(items));

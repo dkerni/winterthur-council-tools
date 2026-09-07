@@ -11,7 +11,7 @@
  * Ablauf nicht sofort brechen.
  */
 
-import { BASE_URL, decodeEntities, extractDataEntities, toText } from './icms.mjs';
+import { BASE_URL, decodeEntities, extractAllDataEntities, toText } from './icms.mjs';
 
 /** Pfad der Sitzungsübersicht. */
 export const SESSION_LIST_PATH = '/sitzung';
@@ -123,46 +123,80 @@ export function sessionUrl(id) {
 }
 
 /**
+ * Verweise auf eine Sitzung. Die Übersicht verlinkt Sitzungen als
+ * `/_rte/anlass/<id>` (interner Referenzpfad des CMS); dieselbe Sitzung ist
+ * unter `/sitzung/<id>` erreichbar. Beide Formen werden erkannt.
+ */
+const SESSION_HREF = /\/(?:_rte\/)?(?:anlass|sitzung)\/(\d+)/;
+
+/**
+ * Erste Sitzungsreferenz in einem Text (HTML-Fragment, Attribut, JSON-Wert).
+ * @param {string} value
+ * @returns {{id: string, sourceUrl: string}|null}
+ */
+function firstSessionRef(value) {
+  const match = String(value ?? '').match(SESSION_HREF);
+  if (!match) return null;
+  try {
+    return { id: match[1], sourceUrl: new URL(match[0], BASE_URL).href };
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Liest die Sitzungsübersicht (`/sitzung`).
+ *
+ * Die Seite liefert die Listen als `data-entities`-JSON («Nächste Sitzungen»
+ * und «Letzte Sitzungen»); die Tabellenkörper bleiben leer, weil das CMS die
+ * Zeilen erst im Browser rendert. Ausgewertet werden deshalb alle Tabellen —
+ * zusätzlich (als Fallback) allfällige gerenderte Links.
+ *
  * @param {string} html Quelltext der Übersichtsseite
- * @returns {Array<{id: string, url: string, title: string, dates: string[], date: string|null}>}
+ * @returns {Array<{id: string, url: string, sourceUrl: string, title: string, dates: string[], date: string|null}>}
  *   Sitzungen, aufsteigend nach Datum (Sitzungen ohne Datum am Schluss)
  */
 export function parseSessionList(html) {
   const sessions = new Map();
 
-  const addSession = (id, title, dates) => {
-    if (!id) return;
-    const existing = sessions.get(id);
+  const addSession = (ref, title, dates) => {
+    if (!ref) return;
+    const existing = sessions.get(ref.id);
     const mergedDates = [...new Set([...(existing?.dates ?? []), ...dates])].sort();
-    sessions.set(id, {
-      id,
-      url: sessionUrl(id),
-      title: existing?.title || title || `Sitzung ${id}`,
+    sessions.set(ref.id, {
+      id: ref.id,
+      url: sessionUrl(ref.id),
+      sourceUrl: existing?.sourceUrl || ref.sourceUrl,
+      title: existing?.title || title || `Sitzung ${ref.id}`,
       dates: mergedDates,
       date: mergedDates[0] ?? null,
     });
   };
 
-  for (const entity of extractDataEntities(html)) {
-    const values = Object.values(entity).map((value) => String(value ?? ''));
-    const id = firstSessionId(values.join(' '));
-    const title =
-      toText(pickEntityField(entity, ['titel', 'bezeichnung', 'name', 'sitzung', 'gremium'])) || '';
-    const dateSource = pickEntityField(entity, ['datum', 'sitzungsdatum', 'beginn', 'von', 'termin']);
-    const dates = extractDates(dateSource || values.join(' '));
-    addSession(id, title, dates);
+  for (const entities of extractAllDataEntities(html)) {
+    for (const entity of entities) {
+      const values = Object.values(entity).map((value) => String(value ?? ''));
+      const ref = firstSessionRef(values.join(' '));
+      const title =
+        toText(pickEntityField(entity, ['titel', 'bezeichnung', 'name', 'sitzung', 'gremium'])) || '';
+      const dateSource = pickEntityField(entity, ['datum', 'sitzungsdatum', 'beginn', 'von', 'termin']);
+      const dates = extractDates(dateSource || values.join(' '));
+      addSession(ref, title, dates);
+    }
   }
 
   // Fallback bzw. Ergänzung: gerenderte Links auf Sitzungsseiten. Als Kontext
   // für das Datum dient der Abschnitt zwischen dem vorherigen und dem nächsten
   // Sitzungslink — bei Doppelsitzungen stehen dort beide Daten.
-  const links = [
-    ...html.matchAll(/<a\b[^>]*href\s*=\s*["'][^"']*\/sitzung\/(\d+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi),
-  ];
-  links.forEach((match, index) => {
-    const previousEnd = index === 0 ? 0 : links[index - 1].index + links[index - 1][0].length;
-    const nextStart = index === links.length - 1 ? html.length : links[index + 1].index;
+  const links = [...html.matchAll(/<a\b[^>]*href\s*=\s*["']([^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi)]
+    .map((match) => ({ match, ref: firstSessionRef(decodeEntities(match[1])) }))
+    .filter((entry) => entry.ref);
+
+  links.forEach(({ match, ref }, index) => {
+    const previous = links[index - 1]?.match;
+    const next = links[index + 1]?.match;
+    const previousEnd = previous ? previous.index + previous[0].length : 0;
+    const nextStart = next ? next.index : html.length;
     const linkEnd = match.index + match[0].length;
 
     // Zuerst der Abschnitt vor dem Link (übliche Darstellung: Datum, dann Link);
@@ -170,7 +204,7 @@ export function parseSessionList(html) {
     const before = html.slice(Math.max(previousEnd, match.index - MAX_CONTEXT), linkEnd);
     const after = html.slice(linkEnd, Math.min(nextStart, linkEnd + MAX_CONTEXT));
     const dates = extractDates(before);
-    addSession(match[1], toText(match[2]), dates.length ? dates : extractDates(after));
+    addSession(ref, toText(match[2]), dates.length ? dates : extractDates(after));
   });
 
   return [...sessions.values()].sort((a, b) => {
@@ -181,16 +215,12 @@ export function parseSessionList(html) {
   });
 }
 
-function firstSessionId(value) {
-  const match = String(value).match(/\/sitzung\/(\d+)/);
-  return match ? match[1] : null;
-}
-
 
 /**
  * Wählt die nächste Sitzung: die früheste, die nicht in der Vergangenheit liegt.
- * Sitzungen ohne erkennbares Datum werden nur verwendet, wenn es keine
- * datierte künftige Sitzung gibt.
+ * Sitzungen ohne erkennbares Datum werden nur verwendet, wenn überhaupt keine
+ * Sitzung ein Datum trägt — sonst würde eine undatierte vergangene Sitzung
+ * eine datierte Liste verdrängen.
  * @param {Array<object>} sessions Ergebnis von `parseSessionList`
  * @param {Date} [now]
  * @returns {object|null}
@@ -199,6 +229,7 @@ export function selectNextSession(sessions, now = new Date()) {
   const today = now.toISOString().slice(0, 10);
   const upcoming = sessions.filter((session) => session.date && session.date >= today);
   if (upcoming.length) return upcoming[0];
+  if (sessions.some((session) => session.date)) return null;
   return sessions.find((session) => !session.date) ?? null;
 }
 
@@ -238,31 +269,51 @@ function isUsableItem(item) {
 
 /**
  * Liest die Traktanden einer Sitzungsseite.
+ *
+ * Die Sitzungsseite rendert die Traktanden serverseitig als Tabelle
+ * (`<tr id="traktanden_…">`); das Blättern übernimmt erst im Browser das
+ * Tabellen-Skript. Ein einzelner Abruf liefert deshalb alle Traktanden, auch
+ * wenn die Liste im Browser mehrseitig erscheint. Liefert eine Seite dennoch
+ * `data-entities`, wird dieses bevorzugt.
+ *
  * @param {string} html Quelltext einer Seite von `/sitzung/<id>`
  * @returns {Array<{number: string, business: string, businessUrl: string|null, type: string, label: string}>}
  */
 export function parseAgendaItems(html) {
-  const fromEntities = extractDataEntities(html)
-    .map((entity) =>
-      makeItem(
-        pickEntityField(entity, NUMBER_FIELDS),
-        pickEntityField(entity, BUSINESS_FIELDS),
-        pickEntityField(entity, TYPE_FIELDS),
-        pickEntityField(entity, LABEL_FIELDS),
-      ),
-    )
-    .filter(isUsableItem);
-  if (fromEntities.length) return fromEntities;
+  for (const entities of extractAllDataEntities(html)) {
+    const fromEntities = entities
+      .map((entity) =>
+        makeItem(
+          pickEntityField(entity, NUMBER_FIELDS),
+          pickEntityField(entity, BUSINESS_FIELDS),
+          pickEntityField(entity, TYPE_FIELDS),
+          pickEntityField(entity, LABEL_FIELDS),
+        ),
+      )
+      .filter(isUsableItem);
+    if (fromEntities.length) return fromEntities;
+  }
 
   return parseAgendaTables(html);
 }
 
-/** Fallback: gerenderte Tabellen der Sitzungsseite auswerten. */
+/** Traktanden-Zeilen der Sitzungsseite: `<tr id="traktanden_88649">`. */
+const AGENDA_ROW_ID = /<tr\b[^>]*\bid\s*=\s*["']traktanden[_-]/i;
+
+/**
+ * Fallback: gerenderte Tabellen der Sitzungsseite auswerten.
+ *
+ * Die Sitzungsseite enthält neben den Traktanden weitere Tabellen (Dokumente,
+ * Kontakte). Sind Traktanden-Zeilen erkennbar, zählen nur deren Tabellen.
+ */
 function parseAgendaTables(html) {
   const items = [];
 
-  for (const table of String(html).matchAll(/<table\b[^>]*>([\s\S]*?)<\/table>/gi)) {
-    const rows = [...table[1].matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((row) =>
+  const bodies = [...String(html).matchAll(/<table\b[^>]*>([\s\S]*?)<\/table>/gi)].map((table) => table[1]);
+  const agendaBodies = bodies.filter((body) => AGENDA_ROW_ID.test(body));
+
+  for (const body of agendaBodies.length ? agendaBodies : bodies) {
+    const rows = [...body.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((row) =>
       [...row[1].matchAll(/<(t[hd])\b[^>]*>([\s\S]*?)<\/\1>/gi)].map((cell) => cell[2]),
     );
     if (rows.length < 2) continue;
