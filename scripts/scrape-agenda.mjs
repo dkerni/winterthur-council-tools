@@ -39,10 +39,10 @@ import {
 import { BASE_URL, fetchPage } from './lib/icms.mjs';
 import { createWorkbook } from './lib/xlsx.mjs';
 
-// Version 2: Arbeitsmappe mit Kopfbereich (Datum, Ort, Link, Logo) und
-// klassischer Tabellenformatierung. Eine Erhöhung baut die Datei neu auf,
+// Version 3: Kopfbereich mit zwei Zeilen (Titel sowie Datum/Ort), beide direkt
+// mit der Sitzungsseite verknüpft. Eine Erhöhung baut die Datei neu auf,
 // auch wenn sich die Traktanden nicht geändert haben.
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 const AGENDA_JSON = 'data/agenda.json';
 const WORKBOOK_FILE = 'data/traktandenliste.xlsx';
 const LOGO_FILE = 'media/Logo Mitte Fraktion.png';

@@ -161,11 +161,13 @@ Fraktionsarbeit gedacht. Die Datei entsteht ohne zusätzliche Abhängigkeiten
 
 Aufbau des Blattes:
 
-* **Kopfbereich** (Zeilen 1–3): Titel der Sitzung, Datum und Ort, darunter der Link auf
-  die Sitzungsseite; rechts steht das Logo der Mitte-Fraktion (`media/Logo Mitte
-  Fraktion.png`, als Bild in die Mappe eingebettet). Den Ort führt erst die Sitzungsseite
-  als Label/Wert-Paar («Ort: …»); fehlt er, bleibt die Angabe weg.
-* **Kopfzeile der Tabelle** (Zeile 5): weisse Schrift auf dem Dunkelblau des Logos, mit
+* **Kopfbereich** (Zeilen 1–2): Titel der Sitzung sowie Datum und Ort — beide Zeilen sind
+  direkt mit der Sitzungsseite verknüpft; rechts steht das Logo der Mitte-Fraktion
+  (`media/Logo Mitte Fraktion.png`, als Bild in die Mappe eingebettet). Den Ort führt erst
+  die Sitzungsseite als Label/Wert-Paar («Ort: …»); fehlt er oder maskiert ihn die Quelle
+  (ein Token wie `#1513…dc0c`, das erst ein Skript im Browser auflöst), bleibt die Angabe
+  weg.
+* **Kopfzeile der Tabelle** (Zeile 4): weisse Schrift auf dem Dunkelblau des Logos, mit
   Autofilter und fixiert, damit sie beim Blättern stehen bleibt.
 * **Datenzeilen**: klassische Tabellenoptik mit Zellrahmen und abwechselnd weissem und
   hellblauem Hintergrund.
@@ -174,7 +176,7 @@ Aufbau des Blattes:
 
 ```jsonc
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "status": "ok",                       // ok = Datei vorhanden, none = keine Traktanden
   "session": { "id": "7603498", "title": "…", "url": "…",
                "date": "2026-09-21", "dates": ["2026-09-21", "2026-10-05"],
