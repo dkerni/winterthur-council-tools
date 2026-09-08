@@ -127,7 +127,7 @@ export const ALLIANCES = [
   },
   {
     id: 'alle-ausser-links',
-    name: 'Einfach alle ausser die Linken',
+    name: 'Alle ausser Rot-grün',
     fractionIds: ['svp', 'fdp', 'mitte', 'glp', 'evp-edu'],
     color: '#8a6d3b',
   },
@@ -146,7 +146,7 @@ export const ALLIANCES = [
   },
   {
     id: 'progressive',
-    name: 'Die progressive Allianz',
+    name: 'Progressive Allianz',
     fractionIds: ['sp', 'gruene-al', 'glp', 'evp-edu'],
     color: '#a3195b',
   },
