@@ -11,6 +11,7 @@ import { escapeHtml } from './layout.js';
 import { siteUrl } from './paths.js';
 import { councilNote } from './parties.js';
 import {
+  ALLIANCES,
   DEFAULT_VOTE,
   MAJORITY_TYPES,
   VOTE_ABSTAIN,
@@ -18,6 +19,7 @@ import {
   VOTE_OPTIONS,
   VOTE_YES,
   allianceResults,
+  allianceVotes,
   computeResult,
   majorityDescription,
   outcomeLabel,
@@ -302,19 +304,22 @@ export async function createMajorityCalculator(container, options = {}) {
         (entry) => `
       <li class="alliance ${entry.winning ? 'is-winning' : 'is-losing'}"
           style="--alliance-color:${escapeHtml(entry.alliance.color)}">
-        <span class="alliance-name">
-          <span class="group-dot" style="background:${escapeHtml(entry.alliance.color)}"></span>
-          <strong>${escapeHtml(entry.alliance.name)}</strong>
-          <span class="alliance-parts">${entry.groups
-            .map((group) => escapeHtml(group.shortName || group.name))
-            .join(' &amp; ')}</span>
-        </span>
-        <span class="alliance-votes">
-          <strong>${entry.votes}</strong> Stimmen
-          <span class="badge ${entry.winning ? 'ok' : 'neutral'}">${
-            entry.winning ? `Mehrheit (+${entry.margin})` : `fehlen ${-entry.margin}`
-          }</span>
-        </span>
+        <button type="button" class="alliance-apply" data-alliance="${escapeHtml(entry.alliance.id)}"
+                title="Stimmen setzen: diese Fraktionen Ja, alle übrigen Nein">
+          <span class="alliance-name">
+            <span class="group-dot" style="background:${escapeHtml(entry.alliance.color)}"></span>
+            <strong>${escapeHtml(entry.alliance.name)}</strong>
+            <span class="alliance-parts">${entry.groups
+              .map((group) => escapeHtml(group.shortName || group.name))
+              .join(' &amp; ')}</span>
+          </span>
+          <span class="alliance-votes">
+            <strong>${entry.votes}</strong> Stimmen
+            <span class="badge ${entry.winning ? 'ok' : 'neutral'}">${
+              entry.winning ? `Mehrheit (+${entry.margin})` : `fehlen ${-entry.margin}`
+            }</span>
+          </span>
+        </button>
       </li>`,
       )
       .join('');
@@ -323,9 +328,21 @@ export async function createMajorityCalculator(container, options = {}) {
       <p class="subtitle">
         Übliche fraktionsweise Bündnisse und ihre Stimmenzahl. Erforderliches Mehr:
         <strong>${required}</strong> Stimmen. Absenzen sind berücksichtigt; das Ratspräsidium
-        stimmt nicht mit.
+        stimmt nicht mit. Ein Klick auf ein Bündnis setzt dessen Fraktionen auf Ja und alle
+        übrigen auf Nein.
       </p>
       <ul class="alliance-list">${rows}</ul>`;
+
+    refs.alliances.querySelectorAll('[data-alliance]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const alliance = ALLIANCES.find((entry) => entry.id === button.dataset.alliance);
+        if (!alliance) return;
+        state.votes = allianceVotes(currentGroups(), alliance, fractionGroups());
+        renderGroups();
+        renderResult();
+        syncUrl();
+      });
+    });
   }
 
   function syncUrl() {
