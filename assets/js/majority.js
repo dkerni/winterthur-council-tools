@@ -165,6 +165,33 @@ export const ALLIANCES = [
 ];
 
 /**
+ * Stimmverhalten einer Allianz: Die beteiligten Fraktionen stimmen Ja, alle
+ * übrigen Gruppen Nein. Im Parteimodus werden die Fraktionen über ihre
+ * Parteien aufgelöst, dafür ist `fractions` nötig.
+ *
+ * @param {Group[]} groups Gruppen des aktuellen Modus (Fraktionen oder Parteien)
+ * @param {{fractionIds: string[]}} alliance
+ * @param {Group[]} [fractions] Fraktionen mit `partyIds`
+ * @returns {Record<string, string>} Gruppen-ID → Stimmverhalten
+ */
+export function allianceVotes(groups, alliance, fractions = []) {
+  const fractionIds = new Set(alliance?.fractionIds || []);
+  const memberIds = new Set(fractionIds);
+  for (const fraction of fractions) {
+    if (!fractionIds.has(fraction.id)) continue;
+    for (const partyId of fraction.partyIds || []) memberIds.add(partyId);
+  }
+
+  const votes = {};
+  for (const group of groups) {
+    const ids = group.partyIds && group.partyIds.length ? group.partyIds : [group.id];
+    const inAlliance = memberIds.has(group.id) || ids.every((id) => memberIds.has(id));
+    votes[group.id] = inAlliance ? VOTE_YES : VOTE_NO;
+  }
+  return votes;
+}
+
+/**
  * @typedef {{id: string, name: string, shortName?: string, color?: string, seats: number, partyIds?: string[]}} Group
  */
 

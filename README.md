@@ -15,7 +15,7 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 | --- | --- |
 | `index.html` | Startseite mit Tool-Kacheln, Traktanden-Download und kompaktem Mehrheitsrechner |
 | `tools/sitzplan.html` | Interaktive Sitzordnung (Drag & Drop, Fraktionspräsidien, Export/Import) |
-| `tools/mehrheitsrechner.html` | Mehrheiten je Fraktion/Partei, Absenzen, mögliche Allianzen, teilbarer Link |
+| `tools/mehrheitsrechner.html` | Mehrheiten je Fraktion/Partei, Absenzen, mögliche Allianzen (per Klick als Stimmvorlage), teilbarer Link |
 | `tools/statistik.html` | Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise (gesamt/Partei/Fraktion) |
 | `tools/mitglieder.html` | Durchsuchbare, sortierbare Mitgliederliste mit Link auf das Profil und CSV-Export |
 | `impressum.html` | Betreiber, Datenquellen, Umgang mit Personendaten, Haftungsausschluss |

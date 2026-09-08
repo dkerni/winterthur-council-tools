@@ -14,6 +14,7 @@ import {
   MAJORITY_TYPES,
   VOTE_OPTIONS,
   allianceResults,
+  allianceVotes,
   computeResult,
   minimalWinningCoalitions,
   outcomeLabel,
@@ -361,4 +362,57 @@ test('Allianzen mit unbekannten Fraktionen werden übersprungen', () => {
     results.map((entry) => entry.alliance.id),
     ['ok'],
   );
+});
+
+test('Allianz als Stimmvorlage: Beteiligte Ja, alle übrigen Nein', () => {
+  const alliance = ALLIANCES.find((entry) => entry.id === 'buergerliche');
+  const votes = allianceVotes(VOTING_FRACTIONS, alliance, VOTING_FRACTIONS);
+
+  assert.equal(votes.svp, 'yes');
+  assert.equal(votes.fdp, 'yes');
+  assert.equal(votes.mitte, 'yes');
+  assert.equal(votes.glp, 'no');
+  assert.equal(votes['evp-edu'], 'no');
+  assert.equal(votes.sp, 'no');
+  assert.equal(votes['gruene-al'], 'no');
+
+  const result = computeResult({ groups: VOTING_FRACTIONS, votes });
+  assert.equal(result.yes, 23);
+  assert.equal(result.no, 36);
+  assert.equal(result.abstain, 0);
+  assert.equal(result.outcome, 'rejected');
+});
+
+test('Allianz im Parteimodus löst Sammelfraktionen auf', () => {
+  const alliance = ALLIANCES.find((entry) => entry.id === 'progressive');
+  const votes = allianceVotes(VOTING_PARTIES, alliance, VOTING_FRACTIONS);
+
+  assert.equal(votes.sp, 'yes');
+  assert.equal(votes.gruene, 'yes');
+  assert.equal(votes.al, 'yes');
+  assert.equal(votes.glp, 'yes');
+  assert.equal(votes.evp, 'yes');
+  assert.equal(votes.edu, 'yes');
+  assert.equal(votes.svp, 'no');
+  assert.equal(votes.fdp, 'no');
+  assert.equal(votes.mitte, 'no');
+
+  const result = computeResult({ groups: VOTING_PARTIES, votes });
+  assert.equal(result.yes, 36);
+  assert.equal(result.no, 23);
+  assert.equal(result.outcome, 'accepted');
+});
+
+test('Allianz-Stimmen entsprechen der ausgewiesenen Stimmenzahl — auch mit Absenzen', () => {
+  const absences = { sp: 4, svp: 2 };
+  const results = allianceResults({ groups: VOTING_FRACTIONS, absences });
+
+  for (const entry of results) {
+    const votes = allianceVotes(VOTING_FRACTIONS, entry.alliance, VOTING_FRACTIONS);
+    const result = computeResult({ groups: VOTING_FRACTIONS, votes, absences });
+    assert.equal(result.yes, entry.votes, `«${entry.alliance.name}» stimmt nicht`);
+    assert.equal(result.abstain, 0);
+    assert.equal(result.yes + result.no, result.present);
+    assert.equal(result.outcome === 'accepted', entry.winning);
+  }
 });
