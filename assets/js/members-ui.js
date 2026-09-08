@@ -3,10 +3,8 @@
  * ein Mitglied öffnet dessen Profilseite auf parlament.winterthur.ch.
  */
 
-import { loadDatabase, dataErrorMessage, ageOf, tenureYears, tenureMonths, formatTenure } from './data.js';
+import { loadDatabase, dataErrorMessage, ageOf, tenureMonths, formatTenure } from './data.js';
 import { councilNote } from './parties.js';
-import { GENDER_LABELS } from './stats.js';
-import { toCsv, downloadCsv, datedFilename } from './csv.js';
 import { escapeHtml } from './layout.js';
 
 const COLUMNS = [
@@ -41,8 +39,6 @@ export async function createMembersList(container) {
   const partySelect = container.querySelector('#filter-party');
   const districtSelect = container.querySelector('#filter-district');
   const tableHost = container.querySelector('#member-table');
-  const countHost = container.querySelector('#member-count');
-
   searchInput.addEventListener('input', () => {
     state.query = searchInput.value.trim().toLowerCase();
     render();
@@ -63,10 +59,6 @@ export async function createMembersList(container) {
     });
     render();
   });
-  container.querySelector('#member-csv').addEventListener('click', () => {
-    downloadCsv(datedFilename('mitglieder'), toCsv(csvRows(db, filtered())));
-  });
-
   function filtered() {
     return db.members.filter((member) => {
       if (state.party && member.partyId !== state.party) return false;
@@ -102,10 +94,6 @@ export async function createMembersList(container) {
 
   function render() {
     const members = sorted(filtered());
-    countHost.textContent =
-      members.length === db.members.length
-        ? `${db.members.length} Mitglieder`
-        : `${members.length} von ${db.members.length} Mitgliedern`;
     renderTable(tableHost, db, members, state);
 
     tableHost.querySelectorAll('th[data-sort]').forEach((header) => {
@@ -159,8 +147,6 @@ function skeleton(db) {
           .join('')}</select>
       </label>
       <button type="button" class="btn" id="member-reset">Filter zurücksetzen</button>
-      <button type="button" class="btn" id="member-csv">Auswahl als CSV</button>
-      <span class="hint" id="member-count"></span>
     </div>
     <div class="card" id="member-table"></div>`;
 }
@@ -227,24 +213,4 @@ function profileUrl(member) {
   } catch {
     return null;
   }
-}
-
-function csvRows(db, members) {
-  return members.map((member) => ({
-    nachname: member.lastName,
-    vorname: member.firstName,
-    partei: db.partyById.get(member.partyId)?.abbr || '',
-    fraktion: db.fractionById.get(member.fractionId)?.shortName || '',
-    geschlecht: GENDER_LABELS[member.gender] || 'unbekannt',
-    geburtsjahr: member.birthYear ?? '',
-    alter: ageOf(member) ?? '',
-    beruf: member.profession || '',
-    stadtkreis: member.district || '',
-    im_rat_seit: member.firstEntryDate || '',
-    austritt: member.mandateEnd || '',
-    amtsdauer_jahre: tenureYears(member) ?? '',
-    kommissionen: member.commissions.map((entry) => entry.name).join(' | '),
-    vorstoesse: member.inquiryCount ?? 0,
-    profil: member.profileUrl || '',
-  }));
 }
