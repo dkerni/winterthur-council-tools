@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-07T14:22:03Z",
+  "generatedAt": "2026-09-08T11:39:33Z",
   "generatedBy": "scripts/scrape-members.mjs",
   "source": "https://parlament.winterthur.ch",
   "sources": {
@@ -396,8 +396,8 @@
     {
       "id": "280943",
       "firstName": "Gabriella",
-      "lastName": "Gisler",
-      "displayName": "Gabriella Gisler",
+      "lastName": "Gisler-Burri",
+      "displayName": "Gabriella Gisler-Burri",
       "email": "servicedesk@win.ch",
       "address": {
         "street": "Pionierstrasse 7",
@@ -412,8 +412,8 @@
       "currentMandateStart": "2013-03-06",
       "mandateEnd": null,
       "district": "Oberwinterthur",
-      "gender": "w",
-      "genderSource": "override",
+      "gender": "unbekannt",
+      "genderSource": "unknown",
       "commissions": [
         {
           "id": "41921",
@@ -641,7 +641,7 @@
           "role": "Mitglied"
         }
       ],
-      "inquiryCount": 1,
+      "inquiryCount": 0,
       "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/470299",
       "photoUrl": "https://pcdn1.i-web.ch/Phl9y5hP13EaNjRsfj0E4iLItmY=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a016b1563ea9"
     },
@@ -1019,7 +1019,7 @@
           "role": "Mitglied"
         }
       ],
-      "inquiryCount": 1,
+      "inquiryCount": 0,
       "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/419314",
       "photoUrl": "https://pcdn1.i-web.ch/6R2qjI9Vh8i4G3z2RfGs0mTjo7E=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b8f471475"
     },
@@ -1805,7 +1805,7 @@
           "role": "Mitglied"
         }
       ],
-      "inquiryCount": 1,
+      "inquiryCount": 0,
       "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/468607",
       "photoUrl": "https://pcdn1.i-web.ch/IOv0ez-bij_ExOhbNsu0HnouAcM=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b71054534"
     },
@@ -2094,7 +2094,7 @@
           "role": "Mitglied"
         }
       ],
-      "inquiryCount": 1,
+      "inquiryCount": 0,
       "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/468514",
       "photoUrl": "https://pcdn1.i-web.ch/MC8hQJ12xvzp10Wh_UJScaCKzf4=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b5cdb0288"
     },
@@ -2183,7 +2183,7 @@
           "role": "Mitglied"
         }
       ],
-      "inquiryCount": 1,
+      "inquiryCount": 0,
       "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/470302",
       "photoUrl": "https://pcdn1.i-web.ch/Hq0JLotTIUCnpwsH1pCZl6qx2iY=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b7feacdb6"
     },
@@ -2220,7 +2220,7 @@
           "role": "Mitglied"
         }
       ],
-      "inquiryCount": 1,
+      "inquiryCount": 0,
       "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/470296",
       "photoUrl": "https://pcdn1.i-web.ch/IpfUVu9Z7K-HPEZxLZSTJNTJRB4=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_69fc933fcb65b"
     },
@@ -2808,7 +2808,7 @@
           "role": "Mitglied"
         }
       ],
-      "inquiryCount": 1,
+      "inquiryCount": 0,
       "profileUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/468616",
       "photoUrl": "https://pcdn1.i-web.ch/lyzqv83FEKBxj_833Xpd6v0sXxM=/100x0/smart/filters:strip_exif()/g1237/0/0/imim_6a02b8f4213ab"
     }
