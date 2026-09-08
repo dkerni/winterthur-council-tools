@@ -42,7 +42,10 @@ function buildSvgBackground() {
   svg.setAttribute('viewBox', `0 0 ${m.stageWidth} ${m.stageHeight}`);
   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-  const CX = m.stageWidth / 2; // Bühnenmitte = Mittelgang
+  const CX = ((380 - m.dxMin) / (m.dxMax - m.dxMin)) * m.stageWidth;
+  const CY = -30; // virtueller Mittelpunkt oberhalb der Bühne
+
+  const rings = [570, 530, 490, 450, 410, 370, 330];
 
   let svgHtml = `
     <defs>
@@ -54,8 +57,19 @@ function buildSvgBackground() {
     <rect width="${m.stageWidth}" height="${m.stageHeight}" fill="url(#floorGrad)" rx="4"/>
   `;
 
+  for (const r of rings) {
+    const startAngle = (205 * Math.PI) / 180;
+    const endAngle = (335 * Math.PI) / 180;
+    const x1 = CX + r * Math.cos(startAngle);
+    const y1 = CY + r * Math.sin(startAngle);
+    const x2 = CX + r * Math.cos(endAngle);
+    const y2 = CY + r * Math.sin(endAngle);
+    svgHtml += `<path d="M${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2}"
+                  fill="none" stroke="#d0d0c0" stroke-width="1" stroke-dasharray="4,6"/>`;
+  }
+
+  const podX = CX - 91;
   const podW = 240;
-  const podX = CX - podW / 2;
   const podY = 8;
   const podH = 30;
   svgHtml += `

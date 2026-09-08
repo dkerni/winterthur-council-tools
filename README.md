@@ -250,9 +250,8 @@ Ergänzend:
   fehlender Grundlage als `unbekannt` geführt. Korrekturen sind über die im Impressum
   genannten Kontaktwege willkommen.
 * `data/seating.json` — Sitzordnung inkl. Koordinatenabbildung aus dem Sitzplan-PDF.
-  Die Koordinaten sind gegenüber dem PDF auf ein symmetrisches Raster ausgerichtet
-  (Mittelgang genau in der Bühnenmitte, gleiche Reihen- und Spaltenabstände), damit der
-  Sitzplan mittig und ohne Versatz dargestellt wird.
+  Einzelne Koordinaten sind gegenüber dem PDF minimal verschoben, damit sich die
+  Sitzsymbole in der Darstellung nicht überlappen.
 
 ## Umsetzungsstand der Ideenliste
 
