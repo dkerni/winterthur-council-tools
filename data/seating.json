@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "description": "Sitzkoordinaten des Parlamentssaals. px/py sind die Koordinaten aus dem Original-PDF (Hochformat); die Umrechnung auf die Bühne erfolgt über coordinateMapping. Einzelne Koordinaten sind gegenüber dem PDF minimal verschoben, damit sich die Sitzsymbole in der Darstellung nicht überlappen.",
+  "description": "Sitzkoordinaten des Parlamentssaals. px/py sind die Koordinaten aus dem Original-PDF (Hochformat); die Umrechnung auf die Bühne erfolgt über coordinateMapping. Einzelne Koordinaten sind gegenüber dem PDF minimal verschoben, damit sich die Sitzsymbole in der Darstellung nicht überlappen. Die drei durchgehenden Reihen sind zudem exakt ausgerichtet: gleiche px je Reihe, Sitzabstand = Sitzbreite (34.2), Mittelgang = 1.3 Sitzbreiten um die Saalachse py 432.",
   "source": "media/Sitzplan_Parlamentssaal_Stand_01.07.2026.pdf",
   "asOf": "2026-07-01",
   "coordinateMapping": {
-    "comment": "display x = pdfHeight - py, display y = px; anschliessend linear auf stageWidth/stageHeight normiert.",
+    "comment": "display x = pdfHeight - py, display y = px; anschliessend linear auf stageWidth/stageHeight normiert. Der dx-Bereich ist symmetrisch um die Saalachse (py 432 → dx 410) gewählt, damit Mittelgang und Präsidium exakt in der Bühnenmitte liegen.",
     "pdfHeight": 842,
-    "dxMin": 60,
-    "dxMax": 700,
+    "dxMin": 110,
+    "dxMax": 710,
     "dyMin": 75,
     "dyMax": 520,
-    "stageWidth": 1000,
+    "stageWidth": 940,
     "stageHeight": 580
   },
   "seats": [
@@ -234,24 +234,24 @@
       "id": "fdp01",
       "name": "Jan Fehr",
       "party": "FDP",
-      "px": 493.6,
-      "py": 605.9,
+      "px": 493.4,
+      "py": 608.1,
       "isFp": false
     },
     {
       "id": "fdp02",
       "name": "Daniel Zwahlen",
       "party": "FDP",
-      "px": 493.6,
-      "py": 573.1,
+      "px": 493.4,
+      "py": 573.9,
       "isFp": false
     },
     {
       "id": "fdp03",
       "name": "Raphael Tobler",
       "party": "FDP",
-      "px": 493.6,
-      "py": 538.6,
+      "px": 493.4,
+      "py": 539.7,
       "isFp": false
     },
     {
@@ -298,24 +298,24 @@
       "id": "glp01",
       "name": "Nora Ernst",
       "party": "GLP",
-      "px": 493.6,
-      "py": 504,
+      "px": 493.4,
+      "py": 505.5,
       "isFp": false
     },
     {
       "id": "glp02",
       "name": "Annetta Steiner",
       "party": "GLP",
-      "px": 493.6,
-      "py": 469.5,
+      "px": 493.4,
+      "py": 471.3,
       "isFp": false
     },
     {
       "id": "glp03",
       "name": "Samuel Kocher (Präs.)",
       "party": "GLP",
-      "px": 493.6,
-      "py": 391.8,
+      "px": 493.4,
+      "py": 392.7,
       "isFp": false
     },
     {
@@ -323,7 +323,7 @@
       "name": "Nicole Holderegger",
       "party": "GLP",
       "px": 422.4,
-      "py": 388.6,
+      "py": 392.7,
       "isFp": false
     },
     {
@@ -331,7 +331,7 @@
       "name": "Jan Guddal",
       "party": "GLP",
       "px": 422.4,
-      "py": 347.6,
+      "py": 358.5,
       "isFp": false
     },
     {
@@ -339,7 +339,7 @@
       "name": "Markus Nater",
       "party": "GLP",
       "px": 422.4,
-      "py": 472.7,
+      "py": 471.3,
       "isFp": true
     },
     {
@@ -347,39 +347,39 @@
       "name": "Benedikt Oeschger",
       "party": "GLP",
       "px": 422.4,
-      "py": 513.7,
+      "py": 505.5,
       "isFp": false
     },
     {
       "id": "gru01",
       "name": "Katharina Frei Glowatz",
       "party": "Grüne",
-      "px": 493.2,
-      "py": 359.6,
+      "px": 493.4,
+      "py": 358.5,
       "isFp": false
     },
     {
       "id": "gru02",
       "name": "Corinne Hertli-Wanner",
       "party": "Grüne",
-      "px": 493.2,
-      "py": 325,
+      "px": 493.4,
+      "py": 324.3,
       "isFp": false
     },
     {
       "id": "gru03",
       "name": "Julius Praetorius",
       "party": "Grüne",
-      "px": 493.2,
-      "py": 290.5,
+      "px": 493.4,
+      "py": 290.1,
       "isFp": false
     },
     {
       "id": "gru04",
       "name": "Andreas Büeler",
       "party": "Grüne",
-      "px": 421.8,
-      "py": 309.8,
+      "px": 422.4,
+      "py": 324.3,
       "isFp": true
     },
     {
@@ -418,8 +418,8 @@
       "id": "al03",
       "name": "Miguel P. Bachmann",
       "party": "AL",
-      "px": 493.2,
-      "py": 250.4,
+      "px": 493.4,
+      "py": 255.9,
       "isFp": false
     },
     {
@@ -442,16 +442,16 @@
       "id": "evp03",
       "name": "Alexander Würzer",
       "party": "EVP",
-      "px": 351.2,
-      "py": 357.4,
+      "px": 350.5,
+      "py": 358.5,
       "isFp": false
     },
     {
       "id": "edu01",
       "name": "Simon Gonçalves",
       "party": "EDU",
-      "px": 351.1,
-      "py": 392.3,
+      "px": 350.5,
+      "py": 392.7,
       "isFp": false
     },
     {
@@ -466,16 +466,16 @@
       "id": "mit02",
       "name": "André Zuraikat",
       "party": "Die Mitte",
-      "px": 349.9,
-      "py": 508.8,
+      "px": 350.5,
+      "py": 505.5,
       "isFp": false
     },
     {
       "id": "mit03",
       "name": "Dominik Kern",
       "party": "Die Mitte",
-      "px": 350.4,
-      "py": 474.7,
+      "px": 350.5,
+      "py": 471.3,
       "isFp": false
     },
     {
@@ -491,7 +491,7 @@
       "name": "Kaspar Vogel",
       "party": "Die Mitte",
       "px": 422.4,
-      "py": 553,
+      "py": 539.7,
       "isFp": false
     }
   ],

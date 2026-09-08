@@ -42,7 +42,8 @@ function buildSvgBackground() {
   svg.setAttribute('viewBox', `0 0 ${m.stageWidth} ${m.stageHeight}`);
   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-  const CX = ((380 - m.dxMin) / (m.dxMax - m.dxMin)) * m.stageWidth;
+  // Symmetrieachse des Saals: Mittelgang, Präsidium und Ringe liegen exakt mittig.
+  const CX = m.stageWidth / 2;
   const CY = -30; // virtueller Mittelpunkt oberhalb der Bühne
 
   const rings = [570, 530, 490, 450, 410, 370, 330];
@@ -68,8 +69,8 @@ function buildSvgBackground() {
                   fill="none" stroke="#d0d0c0" stroke-width="1" stroke-dasharray="4,6"/>`;
   }
 
-  const podX = CX - 91;
-  const podW = 240;
+  const podW = m.stageWidth * 0.24;
+  const podX = CX - podW / 2;
   const podY = 8;
   const podH = 30;
   svgHtml += `
