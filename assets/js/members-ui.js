@@ -3,7 +3,7 @@
  * ein Mitglied öffnet dessen Profilseite auf parlament.winterthur.ch.
  */
 
-import { loadDatabase, dataErrorMessage, ageOf, tenureMonths, formatTenure } from './data.js';
+import { loadDatabase, dataErrorMessage, ageOf, tenureMonths, formatTenure, inquiriesPerYear } from './data.js';
 import { councilNote } from './parties.js';
 import { escapeHtml } from './layout.js';
 
@@ -16,6 +16,7 @@ const COLUMNS = [
   { id: 'profession', label: 'Beruf', sort: (m) => (m.profession || '').toLowerCase() },
   { id: 'tenure', label: 'Amtsdauer', sort: (m) => tenureMonths(m) ?? -1 },
   { id: 'inquiries', label: 'Vorstösse', numeric: true, sort: (m) => m.inquiryCount ?? 0 },
+  { id: 'inquiriesPerYear', label: 'Vorstösse pro Jahr', numeric: true, sort: (m) => inquiriesPerYear(m) ?? -1 },
 ];
 
 /**
@@ -189,6 +190,7 @@ function renderTable(host, db, members, state) {
         <td>${escapeHtml(member.profession || '–')}</td>
         <td class="tenure">${tenure ? escapeHtml(tenure) : '–'}</td>
         <td class="num">${member.inquiryCount ?? 0}</td>
+        <td class="num">${inquiriesPerYear(member)?.toFixed(1) ?? '–'}</td>
       </tr>`;
     })
     .join('');
