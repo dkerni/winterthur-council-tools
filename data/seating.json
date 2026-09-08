@@ -26,7 +26,7 @@
       "id": "sp02",
       "name": "Livia Merz",
       "party": "SP",
-      "px": 193.4,
+      "px": 191.4,
       "py": 195.6,
       "isFp": false
     },
@@ -74,7 +74,7 @@
       "id": "sp08",
       "name": "Fredy Künzler",
       "party": "SP",
-      "px": 145.3,
+      "px": 143.3,
       "py": 262.1,
       "isFp": false
     },
@@ -82,7 +82,7 @@
       "id": "sp09",
       "name": "Katja Hager",
       "party": "SP",
-      "px": 181.1,
+      "px": 179.1,
       "py": 262.2,
       "isFp": false
     },
@@ -122,7 +122,7 @@
       "id": "sp14",
       "name": "Thomi Gschwind",
       "party": "SP",
-      "px": 142.1,
+      "px": 140.1,
       "py": 329,
       "isFp": false
     },
@@ -130,7 +130,7 @@
       "id": "sp15",
       "name": "Tobija Fischer",
       "party": "SP",
-      "px": 177.8,
+      "px": 175.8,
       "py": 329.2,
       "isFp": false
     },
@@ -218,7 +218,7 @@
       "id": "svp09",
       "name": "Jan Ehrbar",
       "party": "SVP",
-      "px": 284.1,
+      "px": 283.1,
       "py": 526.1,
       "isFp": true
     },
@@ -386,7 +386,7 @@
       "id": "gru05",
       "name": "Michael Zundel",
       "party": "Grüne",
-      "px": 390.6,
+      "px": 389.6,
       "py": 304.2,
       "isFp": false
     },
@@ -426,7 +426,7 @@
       "id": "evp01",
       "name": "Daniela Roth-Nater",
       "party": "EVP",
-      "px": 284.1,
+      "px": 283.1,
       "py": 337.9,
       "isFp": true
     },
@@ -482,7 +482,7 @@
       "id": "mit04",
       "name": "Iris Kuster",
       "party": "Die Mitte",
-      "px": 390.6,
+      "px": 389.6,
       "py": 559.8,
       "isFp": true
     },
