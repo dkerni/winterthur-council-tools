@@ -64,6 +64,10 @@
   overflow: visible;
 }
 
+.seat:hover {
+  z-index: 30;
+}
+
 .seat .party-badge {
   font-size: clamp(6px, 0.85vw, 9px);
   font-weight: 700;
@@ -88,7 +92,7 @@
 .seat.draggable:hover {
   transform: translate(-50%, -50%) scale(1.15);
   box-shadow: 0 3px 10px rgba(0,0,0,.35);
-  z-index: 20;
+  z-index: 30;
 }
 
 /* Drag-Zustände */
