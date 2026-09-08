@@ -306,6 +306,18 @@ export function tenureMonths(member, referenceDate = new Date()) {
 }
 
 /**
+ * Durchschnittliche Anzahl Vorstösse pro Amtsjahr.
+ * @returns {number|null}
+ */
+export function inquiriesPerYear(member, referenceDate = new Date()) {
+  const months = tenureMonths(member, referenceDate);
+  if (months == null || months <= 0) return null;
+
+  const count = Number(member.inquiryCount) || 0;
+  return Math.round((count * 12 * 10) / months) / 10;
+}
+
+/**
  * Monatszahl → «4 Jahre 2 Monate» (leer bei fehlendem Wert).
  * @param {number|null|undefined} months
  * @returns {string}
