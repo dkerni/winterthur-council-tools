@@ -18,136 +18,136 @@
       "id": "sp01",
       "name": "Gabriela Stritt",
       "party": "SP",
-      "px": 170.5,
-      "py": 175.1,
+      "px": 154.6,
+      "py": 195.1,
       "isFp": false
     },
     {
       "id": "sp02",
       "name": "Livia Merz",
       "party": "SP",
-      "px": 209.3,
-      "py": 175.6,
+      "px": 193.4,
+      "py": 195.6,
       "isFp": false
     },
     {
       "id": "sp03",
       "name": "Markus Steiner",
       "party": "SP",
-      "px": 248,
-      "py": 177.7,
+      "px": 232.1,
+      "py": 197.7,
       "isFp": false
     },
     {
       "id": "sp04",
       "name": "Beatrice Helbling-Wehrli",
       "party": "SP",
-      "px": 286.6,
-      "py": 181.1,
+      "px": 270.7,
+      "py": 201.1,
       "isFp": true
     },
     {
       "id": "sp05",
       "name": "Maria Sorgo",
       "party": "SP",
-      "px": 326.4,
-      "py": 186,
+      "px": 310.5,
+      "py": 206,
       "isFp": true
     },
     {
       "id": "sp06",
       "name": "Franziska Tschirky Feratovic",
       "party": "SP",
-      "px": 364.6,
-      "py": 192.6,
+      "px": 348.7,
+      "py": 212.6,
       "isFp": false
     },
     {
       "id": "sp07",
       "name": "Philippe Weber",
       "party": "SP",
-      "px": 402.5,
-      "py": 200.4,
+      "px": 386.6,
+      "py": 220.4,
       "isFp": false
     },
     {
       "id": "sp08",
       "name": "Fredy Künzler",
       "party": "SP",
-      "px": 161.2,
-      "py": 242.1,
+      "px": 145.3,
+      "py": 262.1,
       "isFp": false
     },
     {
       "id": "sp09",
       "name": "Katja Hager",
       "party": "SP",
-      "px": 197,
-      "py": 242.2,
+      "px": 181.1,
+      "py": 262.2,
       "isFp": false
     },
     {
       "id": "sp10",
       "name": "Marilena Gnesa",
       "party": "SP",
-      "px": 232.7,
-      "py": 243.7,
+      "px": 216.8,
+      "py": 263.7,
       "isFp": false
     },
     {
       "id": "sp11",
       "name": "Benjamin Kuratli",
       "party": "SP",
-      "px": 268.4,
-      "py": 246.7,
+      "px": 252.5,
+      "py": 266.7,
       "isFp": false
     },
     {
       "id": "sp12",
       "name": "Cristina Brunel",
       "party": "SP",
-      "px": 303.8,
-      "py": 250.7,
+      "px": 287.9,
+      "py": 270.7,
       "isFp": false
     },
     {
       "id": "sp13",
       "name": "Martina Pfirter",
       "party": "SP",
-      "px": 338.4,
-      "py": 256.2,
+      "px": 322.5,
+      "py": 276.2,
       "isFp": false
     },
     {
       "id": "sp14",
       "name": "Thomi Gschwind",
       "party": "SP",
-      "px": 158,
-      "py": 309,
+      "px": 142.1,
+      "py": 329,
       "isFp": false
     },
     {
       "id": "sp15",
       "name": "Tobija Fischer",
       "party": "SP",
-      "px": 193.7,
-      "py": 309.2,
+      "px": 177.8,
+      "py": 329.2,
       "isFp": false
     },
     {
       "id": "sp16",
       "name": "Valeria Muster",
       "party": "SP",
-      "px": 229.6,
-      "py": 310.5,
+      "px": 213.7,
+      "py": 330.5,
       "isFp": false
     },
     {
       "id": "sp17",
       "name": "Lea Jacot-Descombes",
       "party": "SP",
-      "px": 265,
-      "py": 313.4,
+      "px": 249.1,
+      "py": 333.4,
       "isFp": false
     },
     {
@@ -386,32 +386,32 @@
       "id": "gru05",
       "name": "Michael Zundel",
       "party": "Grüne",
-      "px": 408,
-      "py": 289.4,
+      "px": 392.1,
+      "py": 309.4,
       "isFp": false
     },
     {
       "id": "gru06",
       "name": "Maria Lischer",
       "party": "Grüne",
-      "px": 373.4,
-      "py": 268.5,
+      "px": 357.5,
+      "py": 288.5,
       "isFp": false
     },
     {
       "id": "al01",
       "name": "Roman Hugentobler",
       "party": "AL",
-      "px": 438.6,
-      "py": 210.1,
+      "px": 422.7,
+      "py": 230.1,
       "isFp": false
     },
     {
       "id": "al02",
       "name": "Rona Jung",
       "party": "AL",
-      "px": 475.4,
-      "py": 219.8,
+      "px": 459.5,
+      "py": 239.8,
       "isFp": false
     },
     {
@@ -426,16 +426,16 @@
       "id": "evp01",
       "name": "Daniela Roth-Nater",
       "party": "EVP",
-      "px": 299.7,
-      "py": 318.1,
+      "px": 283.8,
+      "py": 338.1,
       "isFp": true
     },
     {
       "id": "evp02",
       "name": "Franziska Kramer-Schwob",
       "party": "EVP",
-      "px": 333.6,
-      "py": 322.9,
+      "px": 317.7,
+      "py": 342.9,
       "isFp": false
     },
     {
