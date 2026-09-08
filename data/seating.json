@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "Sitzkoordinaten des Parlamentssaals. px/py sind die Koordinaten aus dem Original-PDF (Hochformat); die Umrechnung auf die Bühne erfolgt über coordinateMapping. Einzelne Koordinaten sind gegenüber dem PDF minimal verschoben, damit sich die Sitzsymbole in der Darstellung nicht überlappen.",
+  "description": "Sitzkoordinaten des Parlamentssaals. px/py liegen im Koordinatensystem des Original-PDFs (Hochformat); die Umrechnung auf die Bühne erfolgt über coordinateMapping. Die Sitzordnung folgt dem PDF, die Koordinaten sind für die Darstellung auf ein symmetrisches Raster ausgerichtet: Der Mittelgang liegt in der Bühnenmitte, Sitze derselben Reihe teilen sich den px-Wert, Sitze derselben Spalte den py-Wert.",
   "source": "media/Sitzplan_Parlamentssaal_Stand_01.07.2026.pdf",
   "asOf": "2026-07-01",
   "coordinateMapping": {
@@ -18,480 +18,480 @@
       "id": "sp01",
       "name": "Gabriela Stritt",
       "party": "SP",
-      "px": 170.5,
-      "py": 175.1,
+      "px": 165.5,
+      "py": 189.4,
       "isFp": false
     },
     {
       "id": "sp02",
       "name": "Livia Merz",
       "party": "SP",
-      "px": 209.3,
-      "py": 175.6,
+      "px": 202.4,
+      "py": 189.4,
       "isFp": false
     },
     {
       "id": "sp03",
       "name": "Markus Steiner",
       "party": "SP",
-      "px": 248,
-      "py": 177.7,
+      "px": 239.2,
+      "py": 189.4,
       "isFp": false
     },
     {
       "id": "sp04",
       "name": "Beatrice Helbling-Wehrli",
       "party": "SP",
-      "px": 286.6,
-      "py": 181.1,
+      "px": 276,
+      "py": 189.4,
       "isFp": true
     },
     {
       "id": "sp05",
       "name": "Maria Sorgo",
       "party": "SP",
-      "px": 326.4,
-      "py": 186,
+      "px": 312.8,
+      "py": 189.4,
       "isFp": true
     },
     {
       "id": "sp06",
       "name": "Franziska Tschirky Feratovic",
       "party": "SP",
-      "px": 364.6,
-      "py": 192.6,
+      "px": 349.7,
+      "py": 189.4,
       "isFp": false
     },
     {
       "id": "sp07",
       "name": "Philippe Weber",
       "party": "SP",
-      "px": 402.5,
-      "py": 200.4,
+      "px": 386.5,
+      "py": 189.4,
       "isFp": false
     },
     {
       "id": "sp08",
       "name": "Fredy Künzler",
       "party": "SP",
-      "px": 161.2,
-      "py": 242.1,
+      "px": 165.5,
+      "py": 266.2,
       "isFp": false
     },
     {
       "id": "sp09",
       "name": "Katja Hager",
       "party": "SP",
-      "px": 197,
-      "py": 242.2,
+      "px": 202.4,
+      "py": 266.2,
       "isFp": false
     },
     {
       "id": "sp10",
       "name": "Marilena Gnesa",
       "party": "SP",
-      "px": 232.7,
-      "py": 243.7,
+      "px": 239.2,
+      "py": 266.2,
       "isFp": false
     },
     {
       "id": "sp11",
       "name": "Benjamin Kuratli",
       "party": "SP",
-      "px": 268.4,
-      "py": 246.7,
+      "px": 276,
+      "py": 266.2,
       "isFp": false
     },
     {
       "id": "sp12",
       "name": "Cristina Brunel",
       "party": "SP",
-      "px": 303.8,
-      "py": 250.7,
+      "px": 312.8,
+      "py": 266.2,
       "isFp": false
     },
     {
       "id": "sp13",
       "name": "Martina Pfirter",
       "party": "SP",
-      "px": 338.4,
-      "py": 256.2,
+      "px": 349.7,
+      "py": 266.2,
       "isFp": false
     },
     {
       "id": "sp14",
       "name": "Thomi Gschwind",
       "party": "SP",
-      "px": 158,
-      "py": 309,
+      "px": 165.5,
+      "py": 343,
       "isFp": false
     },
     {
       "id": "sp15",
       "name": "Tobija Fischer",
       "party": "SP",
-      "px": 193.7,
-      "py": 309.2,
+      "px": 202.4,
+      "py": 343,
       "isFp": false
     },
     {
       "id": "sp16",
       "name": "Valeria Muster",
       "party": "SP",
-      "px": 229.6,
-      "py": 310.5,
+      "px": 239.2,
+      "py": 343,
       "isFp": false
     },
     {
       "id": "sp17",
       "name": "Lea Jacot-Descombes",
       "party": "SP",
-      "px": 265,
-      "py": 313.4,
+      "px": 276,
+      "py": 343,
       "isFp": false
     },
     {
       "id": "svp01",
       "name": "Gabriella Gisler",
       "party": "SVP",
-      "px": 223.7,
-      "py": 665.7,
+      "px": 239.2,
+      "py": 734.6,
       "isFp": false
     },
     {
       "id": "svp02",
       "name": "Marco Graf",
       "party": "SVP",
-      "px": 265.7,
-      "py": 662.9,
+      "px": 276,
+      "py": 734.6,
       "isFp": false
     },
     {
       "id": "svp03",
       "name": "Christian Hartmann",
       "party": "SVP",
-      "px": 303.4,
-      "py": 659,
+      "px": 312.8,
+      "py": 734.6,
       "isFp": true
     },
     {
       "id": "svp04",
       "name": "Michael Gross",
       "party": "SVP",
-      "px": 345,
-      "py": 652.7,
+      "px": 349.7,
+      "py": 734.6,
       "isFp": false
     },
     {
       "id": "svp05",
       "name": "Stefan Gubler",
       "party": "SVP",
-      "px": 215.1,
-      "py": 600.1,
+      "px": 239.2,
+      "py": 657.8,
       "isFp": false
     },
     {
       "id": "svp06",
       "name": "Marc Wäckerlin",
       "party": "SVP",
-      "px": 251,
-      "py": 597.3,
+      "px": 276,
+      "py": 657.8,
       "isFp": false
     },
     {
       "id": "svp07",
       "name": "Christian Della Sega",
       "party": "SVP",
-      "px": 286.9,
-      "py": 594.2,
+      "px": 312.8,
+      "py": 657.8,
       "isFp": false
     },
     {
       "id": "svp08",
       "name": "Tim Kramer",
       "party": "SVP",
-      "px": 247.8,
-      "py": 530.2,
+      "px": 276,
+      "py": 581,
       "isFp": false
     },
     {
       "id": "svp09",
       "name": "Jan Ehrbar",
       "party": "SVP",
-      "px": 284.3,
-      "py": 526.3,
+      "px": 312.8,
+      "py": 581,
       "isFp": true
     },
     {
       "id": "svp10",
       "name": "Philipp Angele (VP)",
       "party": "SVP",
-      "px": 211.1,
-      "py": 533,
+      "px": 239.2,
+      "py": 581,
       "isFp": false
     },
     {
       "id": "fdp01",
       "name": "Jan Fehr",
       "party": "FDP",
-      "px": 493.6,
-      "py": 605.9,
+      "px": 497,
+      "py": 657.8,
       "isFp": false
     },
     {
       "id": "fdp02",
       "name": "Daniel Zwahlen",
       "party": "FDP",
-      "px": 493.6,
-      "py": 573.1,
+      "px": 497,
+      "py": 619.4,
       "isFp": false
     },
     {
       "id": "fdp03",
       "name": "Raphael Tobler",
       "party": "FDP",
-      "px": 493.6,
-      "py": 538.6,
+      "px": 497,
+      "py": 581,
       "isFp": false
     },
     {
       "id": "fdp04",
       "name": "Raphael Perroulaz",
       "party": "FDP",
-      "px": 461.5,
-      "py": 626.3,
+      "px": 460.2,
+      "py": 696.2,
       "isFp": false
     },
     {
       "id": "fdp05",
       "name": "Dani Romay Ogando",
       "party": "FDP",
-      "px": 423.8,
-      "py": 637.1,
+      "px": 423.3,
+      "py": 734.6,
       "isFp": true
     },
     {
       "id": "fdp06",
       "name": "Felix Helg",
       "party": "FDP",
-      "px": 384.4,
-      "py": 645.7,
+      "px": 386.5,
+      "py": 734.6,
       "isFp": false
     },
     {
       "id": "fdp07",
       "name": "Christian Maier",
       "party": "FDP",
-      "px": 322.1,
-      "py": 589.2,
+      "px": 349.7,
+      "py": 657.8,
       "isFp": false
     },
     {
       "id": "fdp08",
       "name": "Cristina Mancuso Cabello",
       "party": "FDP",
-      "px": 356,
-      "py": 580,
+      "px": 386.5,
+      "py": 657.8,
       "isFp": false
     },
     {
       "id": "glp01",
       "name": "Nora Ernst",
       "party": "GLP",
-      "px": 493.6,
-      "py": 504,
+      "px": 497,
+      "py": 542.6,
       "isFp": false
     },
     {
       "id": "glp02",
       "name": "Annetta Steiner",
       "party": "GLP",
-      "px": 493.6,
-      "py": 469.5,
+      "px": 497,
+      "py": 504.2,
       "isFp": false
     },
     {
       "id": "glp03",
       "name": "Samuel Kocher (Präs.)",
       "party": "GLP",
-      "px": 493.6,
-      "py": 391.8,
+      "px": 497,
+      "py": 419.8,
       "isFp": false
     },
     {
       "id": "glp04",
       "name": "Nicole Holderegger",
       "party": "GLP",
-      "px": 422.4,
-      "py": 388.6,
+      "px": 423.3,
+      "py": 419.8,
       "isFp": false
     },
     {
       "id": "glp05",
       "name": "Jan Guddal",
       "party": "GLP",
-      "px": 422.4,
-      "py": 347.6,
+      "px": 423.3,
+      "py": 381.4,
       "isFp": false
     },
     {
       "id": "glp06",
       "name": "Markus Nater",
       "party": "GLP",
-      "px": 422.4,
-      "py": 472.7,
+      "px": 423.3,
+      "py": 504.2,
       "isFp": true
     },
     {
       "id": "glp07",
       "name": "Benedikt Oeschger",
       "party": "GLP",
-      "px": 422.4,
-      "py": 513.7,
+      "px": 423.3,
+      "py": 542.6,
       "isFp": false
     },
     {
       "id": "gru01",
       "name": "Katharina Frei Glowatz",
       "party": "Grüne",
-      "px": 493.2,
-      "py": 359.6,
+      "px": 497,
+      "py": 381.4,
       "isFp": false
     },
     {
       "id": "gru02",
       "name": "Corinne Hertli-Wanner",
       "party": "Grüne",
-      "px": 493.2,
-      "py": 325,
+      "px": 497,
+      "py": 343,
       "isFp": false
     },
     {
       "id": "gru03",
       "name": "Julius Praetorius",
       "party": "Grüne",
-      "px": 493.2,
-      "py": 290.5,
+      "px": 497,
+      "py": 304.6,
       "isFp": false
     },
     {
       "id": "gru04",
       "name": "Andreas Büeler",
       "party": "Grüne",
-      "px": 421.8,
-      "py": 309.8,
+      "px": 423.3,
+      "py": 343,
       "isFp": true
     },
     {
       "id": "gru05",
       "name": "Michael Zundel",
       "party": "Grüne",
-      "px": 413,
-      "py": 273.4,
+      "px": 423.3,
+      "py": 304.6,
       "isFp": false
     },
     {
       "id": "gru06",
       "name": "Maria Lischer",
       "party": "Grüne",
-      "px": 379.4,
-      "py": 264.5,
+      "px": 386.5,
+      "py": 266.2,
       "isFp": false
     },
     {
       "id": "al01",
       "name": "Roman Hugentobler",
       "party": "AL",
-      "px": 438.6,
-      "py": 210.1,
+      "px": 423.3,
+      "py": 189.4,
       "isFp": false
     },
     {
       "id": "al02",
       "name": "Rona Jung",
       "party": "AL",
-      "px": 475.4,
-      "py": 219.8,
+      "px": 460.2,
+      "py": 227.8,
       "isFp": false
     },
     {
       "id": "al03",
       "name": "Miguel P. Bachmann",
       "party": "AL",
-      "px": 493.2,
-      "py": 250.4,
+      "px": 497,
+      "py": 266.2,
       "isFp": false
     },
     {
       "id": "evp01",
       "name": "Daniela Roth-Nater",
       "party": "EVP",
-      "px": 302.7,
-      "py": 318.1,
+      "px": 312.8,
+      "py": 343,
       "isFp": true
     },
     {
       "id": "evp02",
       "name": "Franziska Kramer-Schwob",
       "party": "EVP",
-      "px": 336.6,
-      "py": 322.9,
+      "px": 349.7,
+      "py": 343,
       "isFp": false
     },
     {
       "id": "evp03",
       "name": "Alexander Würzer",
       "party": "EVP",
-      "px": 351.2,
-      "py": 357.4,
+      "px": 349.7,
+      "py": 381.4,
       "isFp": false
     },
     {
       "id": "edu01",
       "name": "Simon Gonçalves",
       "party": "EDU",
-      "px": 351.1,
-      "py": 392.3,
+      "px": 349.7,
+      "py": 419.8,
       "isFp": false
     },
     {
       "id": "mit01",
       "name": "Simon Bründler",
       "party": "Die Mitte",
-      "px": 315.7,
-      "py": 521.1,
+      "px": 349.7,
+      "py": 581,
       "isFp": false
     },
     {
       "id": "mit02",
       "name": "André Zuraikat",
       "party": "Die Mitte",
-      "px": 349.9,
-      "py": 508.8,
+      "px": 349.7,
+      "py": 542.6,
       "isFp": false
     },
     {
       "id": "mit03",
       "name": "Dominik Kern",
       "party": "Die Mitte",
-      "px": 350.4,
-      "py": 474.7,
+      "px": 349.7,
+      "py": 504.2,
       "isFp": false
     },
     {
       "id": "mit04",
       "name": "Iris Kuster",
       "party": "Die Mitte",
-      "px": 390,
-      "py": 570,
+      "px": 423.3,
+      "py": 619.4,
       "isFp": true
     },
     {
       "id": "mit05",
       "name": "Kaspar Vogel",
       "party": "Die Mitte",
-      "px": 422.4,
-      "py": 553,
+      "px": 423.3,
+      "py": 581,
       "isFp": false
     }
   ],
@@ -500,50 +500,50 @@
       "id": "f01",
       "name": "Kaspar Bopp",
       "party": "SP",
-      "px": 122.0,
-      "py": 661.1
+      "px": 128.7,
+      "py": 734.6
     },
     {
       "id": "f02",
       "name": "Christa Meier",
       "party": "SP",
-      "px": 118.1,
-      "py": 623.5
+      "px": 128.7,
+      "py": 696.2
     },
     {
       "id": "f03",
       "name": "Stefan Fritschi",
       "party": "FDP",
-      "px": 115.3,
-      "py": 589
+      "px": 128.7,
+      "py": 657.8
     },
     {
       "id": "f04",
       "name": "Martina Blum",
       "party": "Grüne",
-      "px": 161.9,
-      "py": 666.8
+      "px": 165.5,
+      "py": 734.6
     },
     {
       "id": "f05",
       "name": "Nicolas Galladé",
       "party": "SP",
-      "px": 158.4,
-      "py": 626.2
+      "px": 165.5,
+      "py": 696.2
     },
     {
       "id": "f06",
       "name": "Andreas Geering",
       "party": "Die Mitte",
-      "px": 155.1,
-      "py": 589.5
+      "px": 165.5,
+      "py": 657.8
     },
     {
       "id": "f07",
       "name": "Romana Heuberger",
       "party": "FDP",
-      "px": 152.6,
-      "py": 548.8
+      "px": 165.5,
+      "py": 619.4
     }
   ]
 }
