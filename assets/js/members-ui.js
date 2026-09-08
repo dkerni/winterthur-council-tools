@@ -33,14 +33,12 @@ export async function createMembersList(container) {
     return;
   }
 
-  const state = { query: '', party: '', fraction: '', commission: '', district: '', sort: 'firstName', dir: 1 };
+  const state = { query: '', party: '', district: '', sort: 'firstName', dir: 1 };
 
   container.innerHTML = skeleton(db);
 
   const searchInput = container.querySelector('#member-search');
   const partySelect = container.querySelector('#filter-party');
-  const fractionSelect = container.querySelector('#filter-fraction');
-  const commissionSelect = container.querySelector('#filter-commission');
   const districtSelect = container.querySelector('#filter-district');
   const tableHost = container.querySelector('#member-table');
   const countHost = container.querySelector('#member-count');
@@ -53,22 +51,14 @@ export async function createMembersList(container) {
     state.party = partySelect.value;
     render();
   });
-  fractionSelect.addEventListener('change', () => {
-    state.fraction = fractionSelect.value;
-    render();
-  });
-  commissionSelect.addEventListener('change', () => {
-    state.commission = commissionSelect.value;
-    render();
-  });
   districtSelect.addEventListener('change', () => {
     state.district = districtSelect.value;
     render();
   });
   container.querySelector('#member-reset').addEventListener('click', () => {
-    Object.assign(state, { query: '', party: '', fraction: '', commission: '', district: '' });
+    Object.assign(state, { query: '', party: '', district: '' });
     searchInput.value = '';
-    [partySelect, fractionSelect, commissionSelect, districtSelect].forEach((select) => {
+    [partySelect, districtSelect].forEach((select) => {
       select.value = '';
     });
     render();
@@ -80,9 +70,7 @@ export async function createMembersList(container) {
   function filtered() {
     return db.members.filter((member) => {
       if (state.party && member.partyId !== state.party) return false;
-      if (state.fraction && member.fractionId !== state.fraction) return false;
       if (state.district && member.district !== state.district) return false;
-      if (state.commission && !member.commissions.some((entry) => entry.id === state.commission)) return false;
       if (!state.query) return true;
       const haystack = [
         member.firstName,
@@ -171,8 +159,10 @@ function skeleton(db) {
           .join('')}</select>
       </label>
       <button type="button" class="btn" id="member-reset">Filter zurücksetzen</button>
+      <button type="button" class="btn" id="member-csv">Auswahl als CSV</button>
       <span class="hint" id="member-count"></span>
-    </div>`;
+    </div>
+    <div class="card" id="member-table"></div>`;
 }
 
 function renderTable(host, db, members, state) {
