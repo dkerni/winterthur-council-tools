@@ -258,7 +258,7 @@
       "id": "fdp04",
       "name": "Raphael Perroulaz",
       "party": "FDP",
-      "px": 461.5,
+      "px": 458.5,
       "py": 626.3,
       "isFp": false
     },
@@ -386,16 +386,16 @@
       "id": "gru05",
       "name": "Michael Zundel",
       "party": "Grüne",
-      "px": 413,
-      "py": 273.4,
+      "px": 408,
+      "py": 289.4,
       "isFp": false
     },
     {
       "id": "gru06",
       "name": "Maria Lischer",
       "party": "Grüne",
-      "px": 379.4,
-      "py": 264.5,
+      "px": 373.4,
+      "py": 268.5,
       "isFp": false
     },
     {
@@ -426,7 +426,7 @@
       "id": "evp01",
       "name": "Daniela Roth-Nater",
       "party": "EVP",
-      "px": 302.7,
+      "px": 299.7,
       "py": 318.1,
       "isFp": true
     },
@@ -434,7 +434,7 @@
       "id": "evp02",
       "name": "Franziska Kramer-Schwob",
       "party": "EVP",
-      "px": 336.6,
+      "px": 333.6,
       "py": 322.9,
       "isFp": false
     },
@@ -458,7 +458,7 @@
       "id": "mit01",
       "name": "Simon Bründler",
       "party": "Die Mitte",
-      "px": 315.7,
+      "px": 317.7,
       "py": 521.1,
       "isFp": false
     },
@@ -482,8 +482,8 @@
       "id": "mit04",
       "name": "Iris Kuster",
       "party": "Die Mitte",
-      "px": 390,
-      "py": 570,
+      "px": 389,
+      "py": 565,
       "isFp": true
     },
     {
@@ -515,7 +515,7 @@
       "name": "Stefan Fritschi",
       "party": "FDP",
       "px": 115.3,
-      "py": 589
+      "py": 586
     },
     {
       "id": "f04",
@@ -536,7 +536,7 @@
       "name": "Andreas Geering",
       "party": "Die Mitte",
       "px": 155.1,
-      "py": 589.5
+      "py": 587.5
     },
     {
       "id": "f07",

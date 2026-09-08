@@ -150,8 +150,6 @@
 /* Vordere Reihen – statisch */
 .seat.static-seat {
   cursor: default;
-  opacity: 0.72;
-  border-style: dashed;
 }
 
 .seat.static-seat:hover {
