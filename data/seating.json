@@ -234,24 +234,24 @@
       "id": "fdp01",
       "name": "Jan Fehr",
       "party": "FDP",
-      "px": 493.6,
-      "py": 605.9,
+      "px": 493.2,
+      "py": 692.4,
       "isFp": false
     },
     {
       "id": "fdp02",
       "name": "Daniel Zwahlen",
       "party": "FDP",
-      "px": 493.6,
-      "py": 573.1,
+      "px": 493.2,
+      "py": 654.0,
       "isFp": false
     },
     {
       "id": "fdp03",
       "name": "Raphael Tobler",
       "party": "FDP",
-      "px": 493.6,
-      "py": 538.6,
+      "px": 493.2,
+      "py": 615.6,
       "isFp": false
     },
     {
@@ -298,24 +298,24 @@
       "id": "glp01",
       "name": "Nora Ernst",
       "party": "GLP",
-      "px": 493.6,
-      "py": 504,
+      "px": 493.2,
+      "py": 577.2,
       "isFp": false
     },
     {
       "id": "glp02",
       "name": "Annetta Steiner",
       "party": "GLP",
-      "px": 493.6,
-      "py": 469.5,
+      "px": 493.2,
+      "py": 538.8,
       "isFp": false
     },
     {
       "id": "glp03",
       "name": "Samuel Kocher (Präs.)",
       "party": "GLP",
-      "px": 493.6,
-      "py": 391.8,
+      "px": 493.2,
+      "py": 385.2,
       "isFp": false
     },
     {
@@ -323,7 +323,7 @@
       "name": "Nicole Holderegger",
       "party": "GLP",
       "px": 422.4,
-      "py": 388.6,
+      "py": 385.2,
       "isFp": false
     },
     {
@@ -331,7 +331,7 @@
       "name": "Jan Guddal",
       "party": "GLP",
       "px": 422.4,
-      "py": 347.6,
+      "py": 346.8,
       "isFp": false
     },
     {
@@ -339,7 +339,7 @@
       "name": "Markus Nater",
       "party": "GLP",
       "px": 422.4,
-      "py": 472.7,
+      "py": 538.8,
       "isFp": true
     },
     {
@@ -347,7 +347,7 @@
       "name": "Benedikt Oeschger",
       "party": "GLP",
       "px": 422.4,
-      "py": 513.7,
+      "py": 577.2,
       "isFp": false
     },
     {
@@ -355,7 +355,7 @@
       "name": "Katharina Frei Glowatz",
       "party": "Grüne",
       "px": 493.2,
-      "py": 359.6,
+      "py": 346.8,
       "isFp": false
     },
     {
@@ -363,7 +363,7 @@
       "name": "Corinne Hertli-Wanner",
       "party": "Grüne",
       "px": 493.2,
-      "py": 325,
+      "py": 308.4,
       "isFp": false
     },
     {
@@ -371,15 +371,15 @@
       "name": "Julius Praetorius",
       "party": "Grüne",
       "px": 493.2,
-      "py": 290.5,
+      "py": 270.0,
       "isFp": false
     },
     {
       "id": "gru04",
       "name": "Andreas Büeler",
       "party": "Grüne",
-      "px": 421.8,
-      "py": 309.8,
+      "px": 422.4,
+      "py": 308.4,
       "isFp": true
     },
     {
@@ -419,7 +419,7 @@
       "name": "Miguel P. Bachmann",
       "party": "AL",
       "px": 493.2,
-      "py": 250.4,
+      "py": 231.6,
       "isFp": false
     },
     {
@@ -442,16 +442,16 @@
       "id": "evp03",
       "name": "Alexander Würzer",
       "party": "EVP",
-      "px": 351.2,
-      "py": 357.4,
+      "px": 350.0,
+      "py": 372.4,
       "isFp": false
     },
     {
       "id": "edu01",
       "name": "Simon Gonçalves",
       "party": "EDU",
-      "px": 351.1,
-      "py": 392.3,
+      "px": 350.0,
+      "py": 410.8,
       "isFp": false
     },
     {
@@ -466,16 +466,16 @@
       "id": "mit02",
       "name": "André Zuraikat",
       "party": "Die Mitte",
-      "px": 349.9,
-      "py": 508.8,
+      "px": 350.0,
+      "py": 551.6,
       "isFp": false
     },
     {
       "id": "mit03",
       "name": "Dominik Kern",
       "party": "Die Mitte",
-      "px": 350.4,
-      "py": 474.7,
+      "px": 350.0,
+      "py": 513.2,
       "isFp": false
     },
     {
@@ -491,7 +491,7 @@
       "name": "Kaspar Vogel",
       "party": "Die Mitte",
       "px": 422.4,
-      "py": 553,
+      "py": 615.6,
       "isFp": false
     }
   ],
