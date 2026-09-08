@@ -69,7 +69,7 @@ function buildSvgBackground() {
   }
 
   const podX = CX - 91;
-  const podW = 182;
+  const podW = 240;
   const podY = 8;
   const podH = 30;
   svgHtml += `

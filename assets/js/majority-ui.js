@@ -401,6 +401,6 @@ function compactSkeleton() {
     <div class="majority-groups compact" data-groups></div>
     <div class="majority-result compact" data-result></div>
     <p class="widget-link">
-      <a href="${siteUrl('tools/mehrheitsrechner.html')}">Alle Optionen (Fraktionen, Absenzen, Allianzen) →</a>
+      <a href="${siteUrl('tools/mehrheitsrechner.html')}">Zum Mehrheitsrechner</a>
     </p>`;
 }
