@@ -21,6 +21,7 @@
 
 import {
   BASE_URL,
+  extractAllDataEntities,
   extractDataEntities,
   extractEmail,
   extractHrefs,
@@ -185,16 +186,34 @@ function buildAddress(fields, text) {
   return parsed || null;
 }
 
+// Felder, die nur in der Vorstoss-Tabelle vorkommen (siehe docs/PHASE-1-PLAN.md:
+// `name`, `kategorieId`, `geschaeftsdatum`, `nummer`, `_rolle`). Die Personenseite
+// enthält daneben weitere `data-entities`-Tabellen (z.B. Kommissionen/Fraktionen),
+// die dieselben generischen Schlüssel wie `name`/`nummer` nutzen können — deshalb
+// reicht «erste Tabelle der Seite nehmen» nicht aus (führte zu falschen Zählungen,
+// u.a. 1 statt 0, wenn die Vorstoss-Sektion mangels Einträgen gar nicht existiert).
+const INQUIRY_TABLE_KEYS = ['geschaeftsdatum', 'kategorieid'];
+
+function isInquiryTableEntity(entity) {
+  const keys = Object.keys(entity).map((key) => key.toLowerCase().replace(/^_/, ''));
+  return INQUIRY_TABLE_KEYS.some((key) => keys.includes(key));
+}
+
 /**
  * Anzahl Vorstösse einer Personenseite — gezählt werden die Einträge der
  * Vorstoss-Tabelle. Einzelheiten (Titel, Datum, Rolle) werden bewusst nicht
  * gespeichert; die Website zeigt nur die Anzahl.
+ *
+ * Fehlt die Sektion «Politische Vorstösse» ganz (0 Vorstösse), gibt es keine
+ * passende Tabelle auf der Seite — dann ist das Ergebnis 0.
  * @returns {number}
  */
 function countInquiries(html) {
-  const entities = extractDataEntities(html);
+  const tables = extractAllDataEntities(html);
+  const inquiryTable = tables.find((entities) => entities.some(isInquiryTableEntity));
+  if (!inquiryTable) return 0;
 
-  return entities.filter((entity) => {
+  return inquiryTable.filter((entity) => {
     const title = toText(entity.name || entity._name || entity.titel || '');
     const number = toText(entity.nummer || entity._nummer || '');
     return Boolean(title || number);
