@@ -17,7 +17,7 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 | `tools/sitzplan.html` | Interaktive Sitzordnung (Drag & Drop, Fraktionspräsidien, Export/Import) |
 | `tools/mehrheitsrechner.html` | Mehrheiten je Fraktion/Partei, Absenzen, mögliche Allianzen (per Klick als Stimmvorlage), teilbarer Link |
 | `tools/statistik.html` | Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise (gesamt/Partei/Fraktion) |
-| `tools/mitglieder.html` | Durchsuchbare, sortierbare Mitgliederliste mit Link auf das Profil und CSV-Export |
+| `tools/mitglieder.html` | Durchsuchbare, sortierbare Mitgliederliste mit Link auf das Profil |
 | `impressum.html` | Betreiber, Datenquellen, Umgang mit Personendaten, Haftungsausschluss |
 
 ## Projektstruktur
@@ -42,7 +42,6 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 │       ├── charts.js       Chart.js-Wrapper mit Tabellen-Fallback
 │       ├── members-ui.js   Mitgliederliste
 │       ├── agenda-ui.js    Download der Traktandenliste (Startseite)
-│       └── csv.js          CSV-Export
 ├── data/
 │   ├── members.json        Mitgliederdatenbank (vom Scraper erzeugt)
 │   ├── party-meta.json     Parteien, Farben, Reihenfolge, Fraktionszuordnung
@@ -285,8 +284,8 @@ Ergänzend:
 * **`package.json` trotz „kein Build-Tool“** — es werden keine Abhängigkeiten installiert
   und nichts gebündelt. Die Datei dient nur den npm-Skripten und `"type": "module"`,
   damit `node --test` die Browser-Module direkt importieren kann.
-* **Zusätzliche Module** `paths.js` (Basis-URL für den GitHub-Pages-Unterpfad samt
-  `fetchJson`) und `csv.js` (CSV-Export der Mitgliederliste).
+* **Zusätzliches Modul** `paths.js` für die Basis-URL des GitHub-Pages-Unterpfads samt
+  `fetchJson`.
 * **Vorläufige `data/members.json`** — die Datei wurde aus `data/seating.json` und
   `data/gender-overrides.json` erzeugt (`scripts/bootstrap-members.mjs`), weil die
   Entwicklungsumgebung keinen Netzwerkzugriff auf `parlament.winterthur.ch` hat. Sie
