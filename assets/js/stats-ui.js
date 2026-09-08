@@ -158,7 +158,6 @@ function renderTable(host, stats, mode) {
 
   host.innerHTML = `<div class="card">
       <h2>Kennzahlen je ${label}</h2>
-      <p class="subtitle">Ø-Werte in Jahren; «–» bedeutet, dass die Grunddaten fehlen.</p>
       <div class="table-wrap">
         <table class="dist-table">
           <thead><tr>

@@ -163,18 +163,6 @@ function skeleton(db) {
           .concat(db.parties.map((party) => option(party.id, `${party.abbr} (${party.seats})`)))
           .join('')}</select>
       </label>
-      <label>Fraktion
-        <select id="filter-fraction">${[option('', 'alle')]
-          .concat(db.fractions.map((fraction) => option(fraction.id, `${fraction.shortName} (${fraction.seats})`)))
-          .join('')}</select>
-      </label>
-      <label>Kommission
-        <select id="filter-commission"${db.commissions.length ? '' : ' disabled title="Noch keine Kommissionen erfasst"'}>${[
-          option('', 'alle'),
-        ]
-          .concat(db.commissions.map((commission) => option(commission.id, commission.shortName || commission.name)))
-          .join('')}</select>
-      </label>
       <label>Stadtkreis
         <select id="filter-district"${districts.length ? '' : ' disabled title="Noch keine Stadtkreise erfasst"'}>${[
           option('', 'alle'),
@@ -183,10 +171,8 @@ function skeleton(db) {
           .join('')}</select>
       </label>
       <button type="button" class="btn" id="member-reset">Filter zurücksetzen</button>
-      <button type="button" class="btn" id="member-csv">Auswahl als CSV</button>
       <span class="hint" id="member-count"></span>
-    </div>
-    <div class="card" id="member-table"></div>`;
+    </div>`;
 }
 
 function renderTable(host, db, members, state) {

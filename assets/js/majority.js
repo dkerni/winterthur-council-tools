@@ -158,7 +158,7 @@ export const ALLIANCES = [
   },
   {
     id: 'unheilig',
-    name: 'Unheilige Allianz :(',
+    name: 'Unheilige Allianz',
     fractionIds: ['svp', 'sp', 'gruene-al'],
     color: '#6d4c41',
   },
