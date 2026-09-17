@@ -2,7 +2,8 @@
  * Sitzplan Parlamentssaal.
  *
  * Zeigt die 60 Ratssitze als Halbrund, erlaubt das Tauschen der Sitze per
- * Drag & Drop sowie Export/Import als JSON. Die Koordinaten stammen aus
+ * Drag & Drop sowie Export/Import als JSON. Die vorderen Reihen (Präsidium/Büro
+ * und Stadtrat) werden als feste Sitze dargestellt. Die Koordinaten stammen aus
  * `data/seating.json` (ursprünglich aus dem Sitzplan-PDF), die Partei-Farben
  * aus `data/party-meta.json`.
  */
@@ -36,6 +37,26 @@ function toStage(px, py) {
 }
 
 /* ─── SVG-Hintergrund ─────────────────────────────────────────────── */
+/** Pult des Präsidiums/Büros: umschliesst die Präsidiumssitze (Fallback: fixe Box). */
+function podGeometry() {
+  const m = config.coordinateMapping;
+  const points = (config.presidiumSeats || []).map((seat) => toStage(seat.px, seat.py));
+  if (points.length < 2) {
+    const width = m.stageWidth * 0.24;
+    return { x: (m.stageWidth - width) / 2, y: 8, width, height: 30 };
+  }
+
+  // Halber Pultabstand als seitlicher Rand, damit die Box wie im PDF
+  // an den äusseren Pultkanten endet.
+  const padX = Math.abs(points[1].sx - points[0].sx) / 2;
+  const padY = 24; // halbe Sitzhöhe plus etwas Luft
+  const left = Math.min(...points.map((p) => p.sx)) - padX;
+  const right = Math.max(...points.map((p) => p.sx)) + padX;
+  const top = Math.max(0, Math.min(...points.map((p) => p.sy)) - padY);
+  const bottom = Math.max(...points.map((p) => p.sy)) + padY;
+  return { x: left, y: top, width: right - left, height: bottom - top };
+}
+
 function buildSvgBackground() {
   const m = config.coordinateMapping;
   const svg = document.getElementById('hemicycle-svg');
@@ -69,14 +90,11 @@ function buildSvgBackground() {
                   fill="none" stroke="#d0d0c0" stroke-width="1" stroke-dasharray="4,6"/>`;
   }
 
-  const podW = m.stageWidth * 0.24;
-  const podX = CX - podW / 2;
-  const podY = 8;
-  const podH = 30;
+  const pod = podGeometry();
   svgHtml += `
-    <rect x="${podX}" y="${podY}" width="${podW}" height="${podH}"
+    <rect x="${pod.x}" y="${pod.y}" width="${pod.width}" height="${pod.height}"
           rx="4" fill="#e8e8d8" stroke="#b0b0a0" stroke-width="1"/>
-    <text x="${CX}" y="${podY + 19}" text-anchor="middle"
+    <text x="${CX}" y="${pod.y + pod.height + 14}" text-anchor="middle"
           font-size="11" fill="#888" font-family="Arial, sans-serif">Präsidium/Büro</text>
   `;
 
@@ -109,6 +127,16 @@ function renderSeats() {
   const layer = document.getElementById('seats-layer');
   layer.innerHTML = '';
 
+  for (const seat of config.presidiumSeats || []) {
+    const { sx, sy } = toStage(seat.px, seat.py);
+    const el = createSeatEl(seat.id, seat.name, seat.party, false, false, sx, sy, {
+      role: seat.role,
+      badge: seat.party ? null : seat.roleAbbr,
+    });
+    el.classList.add('static-seat');
+    layer.appendChild(el);
+  }
+
   for (const seat of config.frontSeats) {
     const { sx, sy } = toStage(seat.px, seat.py);
     const el = createSeatEl(seat.id, seat.name, seat.party, false, false, sx, sy);
@@ -124,7 +152,7 @@ function renderSeats() {
   }
 }
 
-function createSeatEl(id, name, party, isFp, draggable, sx, sy) {
+function createSeatEl(id, name, party, isFp, draggable, sx, sy, { role = '', badge = null } = {}) {
   const m = config.coordinateMapping;
   const el = document.createElement('div');
   el.className = 'seat' + (draggable ? ' draggable' : '');
@@ -139,10 +167,13 @@ function createSeatEl(id, name, party, isFp, draggable, sx, sy) {
   // sonst würde er ausserhalb des Diagramms abgeschnitten.
   if (sy < m.stageHeight * TOOLTIP_BELOW_RATIO) el.classList.add('tip-below');
 
+  const badgeLabel = badge || abbrFor(party);
+  const subtitle = [role, party].filter(Boolean).join(' · ');
+
   el.innerHTML = `
-    <span class="party-badge">${escapeHtml(abbrFor(party))}</span>
+    <span class="party-badge">${escapeHtml(badgeLabel)}</span>
     ${isFp ? '<span class="faction-star">★</span>' : ''}
-    <div class="seat-tooltip">${escapeHtml(name)}<br><em>${escapeHtml(party)}</em>${
+    <div class="seat-tooltip">${escapeHtml(name)}<br><em>${escapeHtml(subtitle)}</em>${
       isFp ? ' · Fraktionspräs.' : ''
     }</div>
   `;
