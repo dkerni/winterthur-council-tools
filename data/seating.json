@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "Sitzkoordinaten des Parlamentssaals. px/py sind die Koordinaten aus dem Original-PDF (Hochformat); die Umrechnung auf die Bühne erfolgt über coordinateMapping. Einzelne Koordinaten sind gegenüber dem PDF minimal verschoben, damit sich die Sitzsymbole in der Darstellung nicht überlappen. Die drei durchgehenden Reihen sind zudem exakt ausgerichtet: gleiche px je Reihe, Sitzabstand = Sitzbreite (34.2), Mittelgang = 1.3 Sitzbreiten um die Saalachse py 432. Alle Parlamentssitze ausser den sechs äussersten SP-Sitzen (sp01, sp02, sp08, sp09, sp14, sp15) bilden Paare, die exakt an der Saalachse py 432 gespiegelt sind (gleiches px, py-Abstand zur Achse identisch); die Stadtratssitze (frontSeats) sind davon ausgenommen.",
+  "description": "Sitzkoordinaten des Parlamentssaals. px/py sind die Koordinaten aus dem Original-PDF (Hochformat); die Umrechnung auf die Bühne erfolgt über coordinateMapping. Einzelne Koordinaten sind gegenüber dem PDF minimal verschoben, damit sich die Sitzsymbole in der Darstellung nicht überlappen. Die drei durchgehenden Reihen sind zudem exakt ausgerichtet: gleiche px je Reihe, Sitzabstand = Sitzbreite (34.2), Mittelgang = 1.3 Sitzbreiten um die Saalachse py 432. Alle Parlamentssitze ausser den sechs äussersten SP-Sitzen (sp01, sp02, sp08, sp09, sp14, sp15) bilden Paare, die exakt an der Saalachse py 432 gespiegelt sind (gleiches px, py-Abstand zur Achse identisch); die Stadtratssitze (frontSeats) sind davon ausgenommen. presidiumSeats enthält die fünf Plätze des Präsidiums/Büros (Pultabstand 50, symmetrisch um py 432); sie sind wie die frontSeats nicht verschiebbar, gegenüber dem PDF leicht nach unten gerückt (px 93 statt ~83), damit sie am oberen Bühnenrand nicht abgeschnitten werden. Sitze ohne Partei (party null) sind Angestellte der Parlamentsdienste; roleAbbr ist die Kurzform der Funktion für das Sitzsymbol.",
   "source": "media/Sitzplan_Parlamentssaal_Stand_01.07.2026.pdf",
   "asOf": "2026-07-01",
   "coordinateMapping": {
@@ -544,6 +544,51 @@
       "party": "FDP",
       "px": 152.6,
       "py": 548.8
+    }
+  ],
+  "presidiumSeats": [
+    {
+      "id": "pr01",
+      "name": "Andrea Furrer",
+      "role": "Protokollführerin",
+      "roleAbbr": "Prot.",
+      "party": null,
+      "px": 93,
+      "py": 532
+    },
+    {
+      "id": "pr02",
+      "name": "Marc Bernhard",
+      "role": "Parlamentsschreiber",
+      "roleAbbr": "Schr.",
+      "party": null,
+      "px": 93,
+      "py": 482
+    },
+    {
+      "id": "pr03",
+      "name": "Samuel Kocher",
+      "role": "Parlamentspräsident",
+      "party": "GLP",
+      "px": 93,
+      "py": 432
+    },
+    {
+      "id": "pr04",
+      "name": "Philipp Angele",
+      "role": "1. Vizepräsident",
+      "party": "SVP",
+      "px": 93,
+      "py": 382
+    },
+    {
+      "id": "pr05",
+      "name": "Jürg Bachmann",
+      "role": "Parlamentssekretär",
+      "roleAbbr": "Sekr.",
+      "party": null,
+      "px": 93,
+      "py": 332
     }
   ]
 }

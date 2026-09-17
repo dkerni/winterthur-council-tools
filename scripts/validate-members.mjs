@@ -267,6 +267,25 @@ function checkSeating(seating, meta) {
       error(`seating.json: coordinateMapping.${key} fehlt`);
     }
   }
+
+  // Präsidium/Büro: Parlamentsdienste sitzen ohne Partei, dafür mit Funktion.
+  for (const seat of seating.presidiumSeats || []) {
+    if (ids.has(seat.id)) error(`seating.json: doppelte Sitz-ID «${seat.id}»`);
+    ids.add(seat.id);
+
+    if (typeof seat.px !== 'number' || typeof seat.py !== 'number') {
+      error(`seating.json: Sitz «${seat.id}» hat keine gültigen Koordinaten`);
+    }
+    if (!seat.name || !seat.role) {
+      error(`seating.json: Präsidiumssitz «${seat.id}» ohne Name oder Funktion`);
+    }
+    if (seat.party && !matchParty(meta, seat.party)) {
+      error(`seating.json: Sitz «${seat.id}» verweist auf unbekannte Partei «${seat.party}»`);
+    }
+    if (!seat.party && !seat.roleAbbr) {
+      error(`seating.json: Präsidiumssitz «${seat.id}» ohne Partei braucht «roleAbbr»`);
+    }
+  }
 }
 
 function checkCouncil(meta, db) {

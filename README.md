@@ -249,8 +249,11 @@ Ergänzend:
   fehlender Grundlage als `unbekannt` geführt. Korrekturen sind über die im Impressum
   genannten Kontaktwege willkommen.
 * `data/seating.json` — Sitzordnung inkl. Koordinatenabbildung aus dem Sitzplan-PDF.
-  Einzelne Koordinaten sind gegenüber dem PDF minimal verschoben, damit sich die
-  Sitzsymbole in der Darstellung nicht überlappen.
+  Nebst den 60 Ratssitzen enthält die Datei die Stadtratssitze (`frontSeats`) und die
+  fünf Plätze des Präsidiums/Büros (`presidiumSeats`: Protokollführung, Parlamentsschreiber,
+  Parlamentspräsidium, 1. Vizepräsidium, Parlamentssekretär). Beide vorderen Reihen sind im
+  Tool nicht verschiebbar. Einzelne Koordinaten sind gegenüber dem PDF minimal verschoben,
+  damit sich die Sitzsymbole in der Darstellung nicht überlappen.
 
 ## Umsetzungsstand der Ideenliste
 
