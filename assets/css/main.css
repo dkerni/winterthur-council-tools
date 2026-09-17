@@ -393,6 +393,9 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .agenda-download .loading { padding: 0; }
 
 /* ─── Diagramme ────────────────────────────────────────────────────── */
+.stats-section { margin-bottom: 1.6rem; }
+.stats-section > h2 { font-size: 1.15rem; margin-bottom: 0.7rem; }
+
 .chart-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
