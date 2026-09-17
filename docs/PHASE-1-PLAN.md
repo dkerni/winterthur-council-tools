@@ -252,8 +252,9 @@ Zähler, damit die Statistik-Seite nicht rechnen muss.
 17. **`charts-wrapper`** — `assets/js/charts.js`: Chart.js (CDN, feste Version + SRI),
     einheitliches Theme, Partei-Farben, sinnvolle Defaults, Fallback-Text falls das CDN
     nicht erreichbar ist.
-18. **`stats-ui`** — `tools/statistik.html`: Kennzahlen-Kacheln oben, darunter Diagramme;
-    Umschalter gesamt / nach Partei / nach Fraktion; Hinweis-Box zur
+18. **`stats-ui`** — `tools/statistik.html`: Kennzahlen-Kacheln oben, darunter zwei
+    Diagramm-Blöcke — zuerst gesamt (Geschlecht, Alter, Amtsdauer, Stadtkreise), danach
+    je Fraktion (Sitzverteilung, Geschlecht, Alter, Amtsdauer); Hinweis-Box zur
     Geschlechts-Datenqualität; Export der Rohdaten als CSV.
 19. **`members-ui`** — `tools/mitglieder.html` + `assets/js/members-ui.js`: sortierbare
     Tabelle, Volltextsuche, Filter (Partei, Fraktion, Kommission, Stadtkreis),
