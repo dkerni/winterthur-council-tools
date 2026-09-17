@@ -412,8 +412,8 @@
       "currentMandateStart": "2013-03-06",
       "mandateEnd": null,
       "district": "Oberwinterthur",
-      "gender": "unbekannt",
-      "genderSource": "unknown",
+      "gender": "w",
+      "genderSource": "override",
       "commissions": [
         {
           "id": "41921",
