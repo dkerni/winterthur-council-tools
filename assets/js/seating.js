@@ -94,8 +94,6 @@ function buildSvgBackground() {
   svgHtml += `
     <rect x="${pod.x}" y="${pod.y}" width="${pod.width}" height="${pod.height}"
           rx="4" fill="#e8e8d8" stroke="#b0b0a0" stroke-width="1"/>
-    <text x="${CX}" y="${pod.y + pod.height + 14}" text-anchor="middle"
-          font-size="11" fill="#888" font-family="Arial, sans-serif">Präsidium/Büro</text>
   `;
 
   svg.innerHTML = svgHtml;
@@ -115,7 +113,7 @@ function initState() {
 
 function colorFor(partyLabel) {
   const party = findParty(meta, partyLabel);
-  return party ? party.color : '#666';
+  return party ? party.color : 'rgb(102 102 102 / 0.5)';
 }
 
 function abbrFor(partyLabel) {

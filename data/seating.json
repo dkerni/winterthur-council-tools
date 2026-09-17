@@ -4,11 +4,11 @@
   "source": "media/Sitzplan_Parlamentssaal_Stand_01.07.2026.pdf",
   "asOf": "2026-07-01",
   "coordinateMapping": {
-    "comment": "display x = pdfHeight - py, display y = px; anschliessend linear auf stageWidth/stageHeight normiert. Der dx-Bereich ist symmetrisch um die Saalachse (py 432 → dx 410) gewählt, damit Mittelgang und Präsidium exakt in der Bühnenmitte liegen.",
+    "comment": "display x = pdfHeight - py, display y = px; anschliessend linear auf stageWidth/stageHeight normiert. Der dx-Bereich ist symmetrisch um die Saalachse (py 432 → dx 410) gewählt, damit Mittelgang und Präsidium exakt in der Bühnenmitte liegen. Der dy-Bereich ist so gewählt, dass die oberste Reihe (Präsidium, px 93) den gleichen Abstand zum oberen Bühnenrand hat wie die unterste Reihe (px 493.4) zum unteren: dyMin = 93 - (dyMax - 493.4).",
     "pdfHeight": 842,
     "dxMin": 110,
     "dxMax": 710,
-    "dyMin": 75,
+    "dyMin": 66.4,
     "dyMax": 520,
     "stageWidth": 940,
     "stageHeight": 580
@@ -551,7 +551,7 @@
       "id": "pr01",
       "name": "Andrea Furrer",
       "role": "Protokollführerin",
-      "roleAbbr": "Prot.",
+      "roleAbbr": "Protokoll",
       "party": null,
       "px": 93,
       "py": 532
@@ -560,7 +560,7 @@
       "id": "pr02",
       "name": "Marc Bernhard",
       "role": "Parlamentsschreiber",
-      "roleAbbr": "Schr.",
+      "roleAbbr": "Schreiber",
       "party": null,
       "px": 93,
       "py": 482
@@ -569,7 +569,8 @@
       "id": "pr03",
       "name": "Samuel Kocher",
       "role": "Parlamentspräsident",
-      "party": "GLP",
+      "roleAbbr": "Präsident",
+      "party": null,
       "px": 93,
       "py": 432
     },
@@ -577,7 +578,8 @@
       "id": "pr04",
       "name": "Philipp Angele",
       "role": "1. Vizepräsident",
-      "party": "SVP",
+      "roleAbbr": "Vizepräsident",
+      "party": null,
       "px": 93,
       "py": 382
     },
@@ -585,7 +587,7 @@
       "id": "pr05",
       "name": "Jürg Bachmann",
       "role": "Parlamentssekretär",
-      "roleAbbr": "Sekr.",
+      "roleAbbr": "Sekretär",
       "party": null,
       "px": 93,
       "py": 332
