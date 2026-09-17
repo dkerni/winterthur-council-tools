@@ -325,6 +325,7 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 
 .badge.neutral { background: #e8e8e0; color: #444; font-weight: 400; }
 .badge.ok { background: var(--clr-yes); }
+.badge.bad { background: var(--clr-no); }
 
 .chip {
   display: inline-block;
@@ -581,51 +582,58 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .result-summary { font-size: 0.82rem; line-height: 1.55; color: #444; }
 
 /* Mögliche Allianzen */
-.alliance-list {
-  list-style: none;
+.alliance-table {
+  width: 100%;
+  border-collapse: collapse;
   font-size: 0.83rem;
-  display: grid;
-  gap: 0.3rem;
 }
 
+.alliance-table th, .alliance-table td {
+  text-align: left;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid var(--clr-border-soft);
+  vertical-align: middle;
+}
+
+.alliance-table thead th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--clr-muted);
+  border-bottom: 2px solid var(--clr-border);
+  white-space: nowrap;
+}
+
+.alliance-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.alliance-table tbody tr:hover { background: #f6f5ec; }
+
 .alliance {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  flex-wrap: wrap;
   border-left: 4px solid var(--alliance-color, var(--clr-border));
-  border-radius: var(--radius-sm);
   background: #fafaf5;
 }
 
+.alliance-name { font-weight: 600; padding: 0; }
+
 .alliance-apply {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
   width: 100%;
-  padding: 0.35rem 0.5rem;
+  padding: 0.3rem 0.5rem;
   border: 0;
-  border-radius: inherit;
+  border-radius: var(--radius-sm);
   background: none;
   color: inherit;
   font-size: inherit;
+  font-weight: inherit;
   text-align: left;
 }
 
 .alliance-apply:hover, .alliance-apply:focus-visible { background: #efeee2; color: inherit; }
 
-.alliance.is-losing { opacity: 0.72; }
-.alliance-name { display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
 .alliance-parts { color: var(--clr-muted); font-size: 0.78rem; }
-.alliance-votes {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--clr-muted);
-  white-space: nowrap;
-}
+.alliance-margin { white-space: nowrap; }
+.alliance-margin .badge { min-width: 7.5rem; text-align: center; }
 
 /* Kompaktes Widget auf der Landing Page */
 .majority-groups.compact { border: 0; box-shadow: none; padding: 0; background: transparent; }

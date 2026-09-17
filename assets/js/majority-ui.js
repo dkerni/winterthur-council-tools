@@ -302,25 +302,25 @@ export async function createMajorityCalculator(container, options = {}) {
     const rows = results
       .map(
         (entry) => `
-      <li class="alliance ${entry.winning ? 'is-winning' : 'is-losing'}"
+      <tr class="alliance ${entry.winning ? 'is-winning' : 'is-losing'}"
           style="--alliance-color:${escapeHtml(entry.alliance.color)}">
-        <button type="button" class="alliance-apply" data-alliance="${escapeHtml(entry.alliance.id)}"
-                title="Stimmen setzen: diese Fraktionen Ja, alle übrigen Nein">
-          <span class="alliance-name">
+        <th scope="row" class="alliance-name">
+          <button type="button" class="alliance-apply" data-alliance="${escapeHtml(entry.alliance.id)}"
+                  title="Stimmen setzen: diese Fraktionen Ja, alle übrigen Nein">
             <span class="group-dot" style="background:${escapeHtml(entry.alliance.color)}"></span>
-            <strong>${escapeHtml(entry.alliance.name)}</strong>
-            <span class="alliance-parts">${entry.groups
-              .map((group) => escapeHtml(group.shortName || group.name))
-              .join(' &amp; ')}</span>
-          </span>
-          <span class="alliance-votes">
-            <strong>${entry.votes}</strong> Stimmen
-            <span class="badge ${entry.winning ? 'ok' : 'neutral'}">${
-              entry.winning ? `Mehrheit (+${entry.margin})` : `fehlen ${-entry.margin}`
-            }</span>
-          </span>
-        </button>
-      </li>`,
+            ${escapeHtml(entry.alliance.name)}
+          </button>
+        </th>
+        <td class="alliance-parts">${entry.groups
+          .map((group) => escapeHtml(group.shortName || group.name))
+          .join(' &amp; ')}</td>
+        <td class="alliance-count num"><strong>${entry.votes}</strong></td>
+        <td class="alliance-margin">
+          <span class="badge ${entry.winning ? 'ok' : 'bad'}">${
+            entry.winning ? `Mehrheit (+${entry.margin})` : `fehlen ${-entry.margin}`
+          }</span>
+        </td>
+      </tr>`,
       )
       .join('');
 
@@ -331,7 +331,17 @@ export async function createMajorityCalculator(container, options = {}) {
         stimmt nicht mit. Ein Klick auf ein Bündnis setzt dessen Fraktionen auf Ja und alle
         übrigen auf Nein.
       </p>
-      <ul class="alliance-list">${rows}</ul>`;
+      <table class="alliance-table">
+        <thead>
+          <tr>
+            <th scope="col">Bündnis</th>
+            <th scope="col">Fraktionen</th>
+            <th scope="col" class="num">Stimmen</th>
+            <th scope="col">Mehrheit</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
 
     refs.alliances.querySelectorAll('[data-alliance]').forEach((button) => {
       button.addEventListener('click', () => {
