@@ -656,6 +656,48 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 
 .bar-cell { display: block; height: 10px; border-radius: 2px; background: var(--clr-faint); min-width: 2px; }
 
+/* ─── Vorstösse (historische Auswertungen) ─────────────────────────── */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.6rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--clr-border-soft);
+}
+
+.control-group { display: flex; flex-direction: column; gap: 0.25rem; }
+.control-label { font-size: 0.74rem; color: var(--clr-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.segmented button[aria-checked='true'] { background: var(--clr-accent); color: #fff; }
+.segmented button { font-size: 0.82rem; }
+
+.table-scroll { overflow-x: auto; }
+
+.party-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+  vertical-align: baseline;
+}
+
+.heat-table th[scope='row'] { white-space: nowrap; font-weight: 600; }
+.heat-table .heat-cell {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  min-width: 2.6rem;
+  border: 1px solid #fff;
+}
+.heat-table .heat-strong { color: #fff; font-weight: 600; }
+
+.quality-notes { margin: 0.5rem 0 0 1.1rem; font-size: 0.8rem; }
+.quality-notes li { margin-bottom: 0.2rem; }
+.quality-details { margin-top: 0.9rem; font-size: 0.85rem; }
+.quality-details summary { cursor: pointer; color: var(--clr-muted); }
+.quality-details > .table-scroll { margin-top: 0.6rem; }
+
 /* ─── Mitglieder ───────────────────────────────────────────────────── */
 .filter-bar {
   display: flex;

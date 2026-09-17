@@ -154,6 +154,99 @@ export async function renderChart(container, spec) {
   return new Chart(canvas, { type, data: { labels, datasets: [dataset] }, options });
 }
 
+/**
+ * Zeichnet ein Diagramm mit mehreren Reihen (gestapelte Balken, Linien).
+ *
+ * Fällt ohne Chart.js auf eine Tabelle zurück: Zeilen sind die Kategorien,
+ * Spalten die Reihen.
+ *
+ * @param {HTMLElement} container
+ * @param {{type?: 'bar'|'line', labels: Array<string|number>,
+ *          series: Array<{label: string, color?: string, values: number[]}>,
+ *          stacked?: boolean, horizontal?: boolean, unit?: string, max?: number,
+ *          legend?: boolean}} spec
+ */
+export async function renderSeriesChart(container, spec) {
+  const {
+    labels,
+    series = [],
+    type = 'bar',
+    stacked = type === 'bar',
+    horizontal = false,
+    unit = '',
+    max,
+    legend = true,
+  } = spec;
+
+  if (!labels.length || !series.length || series.every((row) => row.values.every((value) => !value))) {
+    container.innerHTML = '<p class="empty">Für diese Auswertung liegen keine Daten vor.</p>';
+    return;
+  }
+
+  let Chart;
+  try {
+    Chart = await loadChartLibrary();
+  } catch (err) {
+    renderSeriesFallback(container, { labels, series, unit }, err);
+    return;
+  }
+
+  container.innerHTML = '';
+  const canvas = document.createElement('canvas');
+  container.appendChild(canvas);
+
+  const datasets = series.map((row) => ({
+    label: row.label,
+    data: row.values,
+    backgroundColor: row.color || '#6b7f9e',
+    borderColor: row.color || '#6b7f9e',
+    borderWidth: type === 'line' ? 2 : 0,
+    borderRadius: type === 'bar' ? 2 : 0,
+    pointRadius: type === 'line' ? 2 : 0,
+    fill: false,
+    tension: type === 'line' ? 0.25 : 0,
+  }));
+
+  const valueAxis = { stacked, beginAtZero: true, max, ticks: { font: { family: FONT_FAMILY, size: 11 } }, grid: { color: '#eee' } };
+  const categoryAxis = { stacked, ticks: { font: { family: FONT_FAMILY, size: 11 } }, grid: { display: false } };
+
+  const options = baseOptions({
+    indexAxis: horizontal ? 'y' : 'x',
+    interaction: { mode: 'index', intersect: false },
+    scales: horizontal ? { x: valueAxis, y: categoryAxis } : { x: categoryAxis, y: valueAxis },
+    plugins: {
+      legend: { display: legend, position: 'bottom', labels: { boxWidth: 10, font: { family: FONT_FAMILY, size: 11 } } },
+      tooltip: {
+        callbacks: {
+          label: (context) =>
+            `${context.dataset.label}: ${context.parsed[horizontal ? 'x' : 'y']}${unit ? ' ' + unit : ''}`,
+        },
+      },
+    },
+  });
+
+  return new Chart(canvas, { type, data: { labels, datasets }, options });
+}
+
+/** Ersatzdarstellung für Mehrfachreihen: Kreuztabelle. */
+function renderSeriesFallback(container, { labels, series, unit }, err) {
+  const head = `<tr><th scope="col"></th>${series
+    .map((row) => `<th scope="col" class="num">${escapeHtml(row.label)}</th>`)
+    .join('')}</tr>`;
+  const body = labels
+    .map(
+      (label, index) =>
+        `<tr><th scope="row">${escapeHtml(String(label))}</th>${series
+          .map((row) => `<td class="num">${row.values[index] ?? 0}${unit ? ' ' + escapeHtml(unit) : ''}</td>`)
+          .join('')}</tr>`,
+    )
+    .join('');
+
+  container.innerHTML = `
+    <p class="chart-fallback">Diagramm nicht verfügbar (${escapeHtml(err.message)}) — Werte als Tabelle:</p>
+    <div class="table-scroll"><table class="dist-table"><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
+}
+
 /** Ersatzdarstellung ohne Chart.js: Tabelle mit Balken. */
 function renderFallback(container, { labels, values, colors, unit = '' }, err) {
   const max = Math.max(...values, 1);

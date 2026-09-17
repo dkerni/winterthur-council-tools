@@ -16,7 +16,8 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 | `index.html` | Startseite mit Tool-Kacheln, Traktanden-Download und kompaktem Mehrheitsrechner |
 | `tools/sitzplan.html` | Interaktive Sitzordnung (Drag & Drop, Fraktionspräsidien, Export/Import) |
 | `tools/mehrheitsrechner.html` | Mehrheiten je Fraktion/Partei, Absenzen, mögliche Allianzen (per Klick als Stimmvorlage), teilbarer Link |
-| `tools/statistik.html` | Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise (gesamt/Partei/Fraktion) |
+| `tools/statistik.html` | «Zusammensetzung»: Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise (gesamt/Partei/Fraktion) |
+| `tools/vorstoesse.html` | Historische Auswertungen zu den Geschäften seit 2000, durchgehend nach Partei |
 | `tools/mitglieder.html` | Durchsuchbare, sortierbare Mitgliederliste mit Link auf das Profil |
 | `impressum.html` | Betreiber, Datenquellen, Umgang mit Personendaten, Haftungsausschluss |
 
@@ -39,16 +40,21 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 │       ├── majority-ui.js  Oberfläche des Mehrheitsrechners (voll + kompakt)
 │       ├── stats.js        Statistik-Aggregationen
 │       ├── stats-ui.js     Statistik-Oberfläche
+│       ├── inquiry-stats.js     Auswertungen zu den Geschäften (rein, ohne DOM, getestet)
+│       ├── inquiry-stats-ui.js  Oberfläche der Seite «Vorstösse»
 │       ├── charts.js       Chart.js-Wrapper mit Tabellen-Fallback
 │       ├── members-ui.js   Mitgliederliste
 │       ├── agenda-ui.js    Download der Traktandenliste (Startseite)
 ├── data/
 │   ├── members.json        Mitgliederdatenbank (vom Scraper erzeugt)
-│   ├── party-meta.json     Parteien, Farben, Reihenfolge, Fraktionszuordnung
+│   ├── party-meta.json     Parteien, Farben, Reihenfolge, Fraktions- und Quellzuordnung
 │   ├── gender-overrides.json  manuell gepflegtes Merkmal Geschlecht
 │   ├── seating.json        Sitzordnung aus dem offiziellen Sitzplan-PDF
 │   ├── agenda.json         Stand der Traktandenliste (vom Traktanden-Workflow erzeugt)
 │   ├── traktandenliste.xlsx  Traktanden der nächsten Sitzung (Download der Startseite)
+│   ├── people.json         alle je erfassten Ratsmitglieder samt Partei und Mandatsdauer
+│   ├── people-overrides.json  manuelle Korrekturen zum Personenverzeichnis
+│   ├── inquiry-facts.json  kompakte Auswertungsbasis der Seite «Vorstösse»
 │   └── inquiries/         politische Geschäfte seit 2000 (vom Geschäfte-Workflow erzeugt)
 │       ├── index.json     Registry aller Geschäfte samt Kennzahlen
 │       └── <jahr>.json    vollständige Datensätze, ein Shard je Jahrgang
@@ -107,6 +113,8 @@ npm run scrape:dry      # nur abrufen und Ergebnis anzeigen, nichts schreiben
 npm run scrape:agenda   # Traktanden der nächsten Sitzung als Excel speichern
 npm run scrape:inquiries      # politische Geschäfte abgleichen (neue und offene)
 npm run scrape:inquiries:dry  # Trockenlauf mit den ersten 25 Geschäften
+npm run scrape:people         # Personenverzeichnis abrufen (aktive und ausgeschiedene)
+npm run build:facts           # data/inquiry-facts.json für die Seite «Vorstösse» aufbauen
 npm run validate        # data/*.json prüfen
 npm test                # Unit-Tests der Mehrheits-, Traktanden- und Geschäftslogik
 ```
@@ -363,6 +371,114 @@ aussen vor, weil sie nur eine Zwischenstufe sind. Wer ausschliesslich Datumsanga
 Quelle auswerten will, filtert auf `concludedSource === "decision"` oder nutzt
 `dates.finalDecision` direkt.
 
+## Historische Auswertungen («Vorstösse»)
+
+Die Seite `tools/vorstoesse.html` wertet die 3 217 Geschäfte **nach Partei** aus:
+Vorstösse je Partei und Jahr, genutzte Instrumente, Mitunterzeichnungen, Beschlüsse
+und Behandlungsdauer. Gruppiert wird bewusst nach Partei und nicht nach Fraktion —
+Fraktionszugehörigkeiten wechselten über 25 Jahre zu häufig, um vergleichbar zu sein.
+
+Die bestehende Statistikseite heisst neu **«Zusammensetzung»** (`tools/statistik.html`,
+URL unverändert) und behandelt weiterhin den aktuellen Rat.
+
+### Ablauf
+
+```
+scrape-inquiries  →  data/inquiries/*.json   (Geschäfte samt Verfasserangaben)
+scrape-people     →  data/people.json        (alle je erfassten Ratsmitglieder)
+build-inquiry-facts → data/inquiry-facts.json (Auswertungsbasis fürs Frontend)
+```
+
+Alle drei Schritte laufen im Workflow «Politische Geschäfte aktualisieren»
+nacheinander; `build-inquiry-facts` greift nicht aufs Netz zu.
+
+### Personenverzeichnis
+
+`https://parlament.winterthur.ch/stadtparlament/27428` liefert in **einem** Request die
+Tabelle `icmsTable-personList` mit **allen 226 Personen** — aktiven und ausgeschiedenen.
+Der Status-Filter der Seite wirkt rein clientseitig. Laufende Mandate tragen das
+Enddatum `9999-12-31`; `_mandatPersonFirstDatumVon` nennt den ersten Eintritt,
+`_mandatPersonDatumVon` das aktuelle Mandat.
+
+`data/people.json` ist eine Obermenge von `data/members.json` (gleicher ID-Raum), aber
+schlanker: nur Name, Partei, Wahlkreis, Mandatsdaten. `members.json` bleibt die Quelle
+für Sitzplan, Mehrheitsrechner und Mitgliederseite.
+
+### Parteien über die Zeit
+
+Parteien wurden umbenannt (CVP → Die Mitte, Alternative Liste → Alternative Linke).
+Anker ist deshalb die **Partei-ID der Quelle** (`/_rte/partei/<id>`), nicht der Name.
+Die Zuordnung steht in `data/party-meta.json` unter `sourceIds`:
+
+| Quell-ID | Bezeichnung in der Quelle | Partei |
+| --- | --- | --- |
+| 5762 | Sozialdemokratische Partei (SP) | `sp` |
+| 5759 | Schweizerische Volkspartei (SVP) | `svp` |
+| 5753 | FDP.Die Liberalen (FDP) | `fdp` |
+| 5771 | Grüne Partei (Grüne) | `gruene` |
+| 5756 | Grünliberale Partei (GLP) | `glp` |
+| 5774 | Evangelische Volkspartei (EVP) | `evp` |
+| 5777 | Eidgenössisch-Demokratische Union (EDU) | `edu` |
+| 5780 | Alternative Linke (AL; früher: Alternative Liste) | `al` |
+| 5920 | Christliche Volkspartei (CVP; heute: Die Mitte) | `mitte` |
+| 5750 | Die Mitte | `mitte` |
+| 8263 | Schweizer Demokraten (früher Nationale Aktion) | `sd` |
+
+`sd` ist mit `historical: true` gekennzeichnet und hat keine Fraktion. Sitzplan und
+Mehrheitsrechner filtern Parteien ohne Sitze bereits heraus und bleiben unverändert.
+Personen ohne Partei-Link in der Quelle werden über `data/people-overrides.json`
+zugeordnet (derzeit ein Fall: Urs Glättli → GLP).
+
+### Zuordnung Verfasser → Person → Partei
+
+Alle 3 153 Verfassernennungen in 1 531 Geschäften lassen sich auflösen: 930 über die
+`personId` aus dem Geschäft, 2 223 über den Namen im Verzeichnis, **keine offen**.
+
+### Grenzen der Daten
+
+Die Seite weist sie unter «Datengrundlage» aus:
+
+* **Verfasserangaben** führen nur Vorstösse. Verwaltungsgeschäfte (Wahlen, Kreditantrag,
+  Bericht, Budget, Jahresrechnung, Verordnung) nennen keine Person — rund 1 460 Geschäfte.
+* **2000 enthält keine einzige Verfasserangabe, 2001 genau eine.** Partei-Auswertungen
+  beginnen deshalb bei **2002**.
+* **Keine Partei-Historie:** die Quelle hinterlegt je Person nur die zuletzt erfasste
+  Partei. Parteiwechsel werden rückwirkend der letzten Partei zugerechnet.
+* **Beschlussarten** sind erst ab rund **2017** erfasst (522 Geschäfte im Auswertungs-
+  zeitraum) — Auswertungen zum Ausgang gelten nur für diese Jahre.
+* **Behandlungsdauer** liegt für 1 853 Geschäfte vor, brauchbar ab etwa 2007.
+* **Sitzzahlen je Jahr** werden aus den Mandatsperioden abgeleitet. Ab 2007 ergeben sich
+  Totale von 59–63 (Soll 60), davor ist das Verzeichnis lückenhaft (2000: 20 von 60);
+  wer vor 2003 ausschied, fehlt ganz. Die Normalisierung «je Ratsmitglied» rechnet
+  deshalb erst ab **2007** und nur mit plausiblen Jahren.
+
+### `data/inquiry-facts.json`
+
+Eine Zeile je Geschäft, kurze Feldnamen, leere Felder entfallen — rund 355 kB statt der
+6 MB der Jahres-Shards. Die Feldbeschreibung steht im Kopf der Datei selbst (`fields`):
+
+```jsonc
+{
+  "i": "2777389",              // ID; URL = https://parlament.winterthur.ch/politbusiness/<i>
+  "y": 2024,                   // Jahr des Eingangs
+  "t": "interpellation",       // Geschäftsart, siehe "types"
+  "s": "erledigt",             // Status
+  "d": 288,                    // Behandlungsdauer in Tagen
+  "o": "angenommen",           // Gruppe der Beschlussart, siehe "outcomeGroups"
+  "b": "Überweisung",          // Beschlussart im Wortlaut
+  "p": "sp",                   // Partei der erstunterzeichnenden Person
+  "a": [["281057", "glp", 1]]  // [Personen-ID, Partei-ID, Rolle]
+}
+```
+
+Rolle: `1` = Erstunterzeichnung, `2` = Mitunterzeichnung, `3` = übrige Beteiligung.
+Der Kopf enthält zusätzlich `types`, `parties`, `outcomeGroups`, `people` (nur die
+verfassenden Personen), `seats` (abgeleitete Besetzung je Jahr und Partei), `coverage`
+(Abdeckung je Jahr) und `dataQuality`.
+
+Das Frontend lädt **ausschliesslich** diese Datei — weder die Jahres-Shards noch
+`data/inquiries/index.json`.
+
 ## Datenschema
 
 `data/members.json` (`schemaVersion: 2`):
@@ -425,8 +541,8 @@ Ergänzend:
 | --- | --- |
 | Sitzordnung | umgesetzt (`tools/sitzplan.html`) |
 | Mehrheitsrechner | umgesetzt (`tools/mehrheitsrechner.html`), inkl. möglicher Allianzen |
-| Statistik zur aktuellen Zusammensetzung | umgesetzt (`tools/statistik.html`); Alter, Beruf, Stadtkreis und Amtsdauer erscheinen, sobald der Scraper gelaufen ist |
-| Historische Statistik (Vorstösse) | Datengrundlage umgesetzt (`scripts/scrape-inquiries.mjs`, `data/inquiries/`): alle Geschäfte ab 2000 inkl. Verfassern, Beschlüssen, Dokumenten und Sitzungen; die Auswertung im Frontend folgt |
+| Statistik zur aktuellen Zusammensetzung | umgesetzt (`tools/statistik.html`, «Zusammensetzung»); Alter, Beruf, Stadtkreis und Amtsdauer erscheinen, sobald der Scraper gelaufen ist |
+| Historische Statistik (Vorstösse) | umgesetzt (`tools/vorstoesse.html`): Auswertungen nach Partei auf Basis von `data/inquiries/`, `data/people.json` und `data/inquiry-facts.json` |
 | Zusammenfassung der nächsten Sitzung | offen (nächste Ausbaustufe) |
 | Traktandenliste als Excel/CSV | umgesetzt (`scripts/scrape-agenda.mjs`, Download auf der Startseite) |
 
@@ -476,6 +592,10 @@ Ergänzend:
 ## Weitere Datenquellen für spätere Ausbaustufen
 
 * Vorstösse/Geschäfte: `https://parlament.winterthur.ch/politbusiness` — erschlossen, siehe
-  [Politische Geschäfte](#politische-geschäfte)
+  [Politische Geschäfte](#politische-geschäfte) und
+  [Historische Auswertungen](#historische-auswertungen-vorstösse)
+* Personenverzeichnis (aktive und ausgeschiedene Mitglieder):
+  `https://parlament.winterthur.ch/stadtparlament/27428` — erschlossen, siehe
+  `scripts/scrape-people.mjs`
 * Sitzungen und Protokolle: `https://parlament.winterthur.ch/sitzung`
 * Kommissionen: `https://parlament.winterthur.ch/kommissionen`

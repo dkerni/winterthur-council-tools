@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vorstösse — Stadtparlament Winterthur Tools</title>
+  <meta name="description" content="Historische Auswertungen zu den politischen Geschäften des Stadtparlaments Winterthur: Vorstösse je Partei und Jahr, genutzte Instrumente, Mitunterzeichnungen, Beschlüsse und Behandlungsdauer." />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="icon" href="../media/Logo.jpg" />
+  <script
+    id="chartjs"
+    defer
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.js"
+    integrity="sha384-hfkuqrKeWFmnTMWN31VWyoe8xgdTADD11kgxmdpx2uyE6j5Az5uZq6u6AKYYmAOw"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+  <script type="module" src="../assets/js/layout.js"></script>
+  <script type="module">
+    import { createInquiryStatistics } from '../assets/js/inquiry-stats-ui.js';
+    createInquiryStatistics(document.getElementById('inquiry-statistics'));
+  </script>
+</head>
+<body data-page="vorstoesse">
+
+<main>
+  <h1 class="page-title">Vorstösse</h1>
+  <p class="page-lead">
+    Historische Auswertungen zu den politischen Geschäften des Stadtparlaments seit 2000 —
+    wer reicht wie viele Vorstösse ein, welche Instrumente werden genutzt, wie unterstützen
+    sich die Parteien gegenseitig und wie werden die Vorstösse behandelt. Gruppiert wird
+    durchwegs nach <strong>Partei</strong>, nicht nach Fraktion. Alle Zahlen stammen aus den
+    öffentlich publizierten Angaben des Parlamentsdienstes; Lücken der Quelle sind unter
+    «Datengrundlage» ausgewiesen.
+  </p>
+
+  <div id="inquiry-statistics">
+    <p class="loading">Daten werden geladen …</p>
+  </div>
+</main>
+
+</body>
+</html>

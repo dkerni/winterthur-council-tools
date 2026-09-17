@@ -38,6 +38,8 @@ function checkPartyMeta(meta) {
   const partyIds = new Set();
   const orders = new Set();
 
+  const sourceIds = new Map();
+
   for (const party of meta.parties) {
     if (partyIds.has(party.id)) error(`party-meta: doppelte Partei-ID «${party.id}»`);
     partyIds.add(party.id);
@@ -47,7 +49,21 @@ function checkPartyMeta(meta) {
     if (orders.has(party.order)) error(`party-meta: Reihenfolge ${party.order} ist doppelt vergeben`);
     orders.add(party.order);
 
-    if (!meta.fractions.some((f) => f.id === party.fractionId)) {
+    // Eine Quell-Partei-ID darf nur zu einer Partei gehören; mehrere IDs je Partei
+    // sind dagegen normal (Umbenennungen wie CVP → Die Mitte).
+    for (const sourceId of party.sourceIds || []) {
+      if (sourceIds.has(sourceId)) {
+        error(`party-meta: Quell-Partei-ID ${sourceId} ist «${sourceIds.get(sourceId)}» und «${party.id}» zugeordnet`);
+      }
+      sourceIds.set(sourceId, party.id);
+    }
+
+    // Historische Parteien sind heute in keiner Fraktion mehr vertreten.
+    if (party.historical) {
+      if (party.fractionId) {
+        error(`party-meta: historische Partei «${party.id}» darf keiner Fraktion zugeordnet sein`);
+      }
+    } else if (!meta.fractions.some((f) => f.id === party.fractionId)) {
       error(`party-meta: Partei «${party.id}» verweist auf unbekannte Fraktion «${party.fractionId}»`);
     }
   }

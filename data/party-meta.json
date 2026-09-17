@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "Manuell gepflegte Stammdaten zu Parteien und Fraktionen. Reihenfolge 'order' entspricht der Sitzordnung von rechts (1) nach links (9). Wird vom Scraper zum Normalisieren der Quelltexte und von der Website für Farben, Kurznamen und Sortierung verwendet.",
+  "description": "Manuell gepflegte Stammdaten zu Parteien und Fraktionen. Reihenfolge 'order' entspricht der Sitzordnung von rechts (1) nach links (9). Wird vom Scraper zum Normalisieren der Quelltexte und von der Website für Farben, Kurznamen und Sortierung verwendet. 'sourceIds' sind die Partei-IDs der Quelle (/_rte/partei/<id>) und der verbindliche Anker für die Zuordnung — Parteien, die im Lauf der Zeit umbenannt wurden, haben mehrere. Parteien mit 'historical': true sind heute nicht mehr im Rat vertreten und erscheinen nur in historischen Auswertungen.",
   "council": {
     "legislature": "2026–2030",
     "seats": 60,
@@ -25,6 +25,7 @@
       "color": "#3d7c3d",
       "order": 1,
       "fractionId": "svp",
+      "sourceIds": [5759],
       "aliases": ["SVP", "Schweizerische Volkspartei", "Schweizerische Volkspartei (SVP)"]
     },
     {
@@ -34,6 +35,7 @@
       "color": "#1565c0",
       "order": 2,
       "fractionId": "fdp",
+      "sourceIds": [5753],
       "aliases": ["FDP", "FDP.Die Liberalen", "FDP. Die Liberalen", "FDP.Die Liberalen (FDP)", "Freisinnig-Demokratische Partei"]
     },
     {
@@ -43,7 +45,8 @@
       "color": "#e06400",
       "order": 3,
       "fractionId": "mitte",
-      "aliases": ["Die Mitte", "Mitte", "Die Mitte (Mitte)", "CVP", "Die Mitte Winterthur"]
+      "sourceIds": [5750, 5920],
+      "aliases": ["Die Mitte", "Mitte", "Die Mitte (Mitte)", "CVP", "Die Mitte Winterthur", "Christliche Volkspartei", "Christliche Volkspartei (CVP)", "Christliche Volkspartei (CVP; heute: Die Mitte)"]
     },
     {
       "id": "glp",
@@ -52,6 +55,7 @@
       "color": "#8fae00",
       "order": 4,
       "fractionId": "glp",
+      "sourceIds": [5756],
       "aliases": ["GLP", "glp", "Grünliberale Partei", "Grünliberale Partei (GLP)", "Grünliberale"]
     },
     {
@@ -61,6 +65,7 @@
       "color": "#555555",
       "order": 5,
       "fractionId": "evp-edu",
+      "sourceIds": [5777],
       "aliases": ["EDU", "Eidgenössisch-Demokratische Union", "Eidgenössisch-Demokratische Union (EDU)"]
     },
     {
@@ -70,6 +75,7 @@
       "color": "#e6a400",
       "order": 6,
       "fractionId": "evp-edu",
+      "sourceIds": [5774],
       "aliases": ["EVP", "Evangelische Volkspartei", "Evangelische Volkspartei (EVP)"]
     },
     {
@@ -79,6 +85,7 @@
       "color": "#e8001a",
       "order": 7,
       "fractionId": "sp",
+      "sourceIds": [5762],
       "aliases": ["SP", "Sozialdemokratische Partei", "Sozialdemokratische Partei (SP)"]
     },
     {
@@ -88,7 +95,8 @@
       "color": "#1e9e1e",
       "order": 8,
       "fractionId": "gruene-al",
-      "aliases": ["Grüne", "Gruene", "Grüne Winterthur", "Grüne (Grüne)"]
+      "sourceIds": [5771],
+      "aliases": ["Grüne", "Gruene", "Grüne Winterthur", "Grüne (Grüne)", "Grüne Partei", "Grüne Partei (Grüne)"]
     },
     {
       "id": "al",
@@ -97,7 +105,18 @@
       "color": "#d95b0e",
       "order": 9,
       "fractionId": "gruene-al",
-      "aliases": ["AL", "Alternative Liste", "Alternative Liste (AL)", "Alternative Linke", "Alternative Linke (AL)"]
+      "sourceIds": [5780],
+      "aliases": ["AL", "Alternative Liste", "Alternative Liste (AL)", "Alternative Linke", "Alternative Linke (AL)", "Alternative Linke (AL; früher: Alternative Liste)"]
+    },
+    {
+      "id": "sd",
+      "abbr": "SD",
+      "name": "Schweizer Demokraten",
+      "color": "#8a6d3b",
+      "order": 10,
+      "historical": true,
+      "sourceIds": [8263],
+      "aliases": ["SD", "Schweizer Demokraten", "Schweizer Demokraten (SD)", "Schweizer Demokraten (früher Nationale Aktion)", "Nationale Aktion"]
     }
   ],
   "fractions": [

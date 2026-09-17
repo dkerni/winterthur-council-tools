@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "description": "Manuell gepflegte Korrekturen zum Personenverzeichnis auf parlament.winterthur.ch. Die Quelle lässt bei einzelnen Personen die Partei offen; diese Datei wird von scripts/scrape-people.mjs in data/people.json eingemischt. Zuordnung über die Personen-ID (falls bekannt), sonst über den normalisierten Namen. Gültige partyId-Werte sind die IDs aus data/party-meta.json.",
+  "correctionContact": "https://dominik-kern.ch/",
+  "overrides": [
+    {
+      "personId": "281057",
+      "name": "Glättli Urs",
+      "partyId": "glp",
+      "note": "Im Rat 2017–2023. Die Quelle führt zu dieser Person keine Partei."
+    }
+  ]
+}

@@ -16,6 +16,10 @@
     "scrape:inquiries": "node scripts/scrape-inquiries.mjs",
     "scrape:inquiries:dry": "node scripts/scrape-inquiries.mjs --dry-run --verbose --limit=25",
     "scrape:inquiries:full": "node scripts/scrape-inquiries.mjs --full",
+    "scrape:people": "node scripts/scrape-people.mjs",
+    "scrape:people:dry": "node scripts/scrape-people.mjs --dry-run --verbose",
+    "build:facts": "node scripts/build-inquiry-facts.mjs",
+    "build:facts:dry": "node scripts/build-inquiry-facts.mjs --dry-run --verbose",
     "validate": "node scripts/validate-members.mjs",
     "test": "node --test scripts/test/*.test.mjs"
   }
