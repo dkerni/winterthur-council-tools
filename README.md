@@ -48,7 +48,10 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 │   ├── gender-overrides.json  manuell gepflegtes Merkmal Geschlecht
 │   ├── seating.json        Sitzordnung aus dem offiziellen Sitzplan-PDF
 │   ├── agenda.json         Stand der Traktandenliste (vom Traktanden-Workflow erzeugt)
-│   └── traktandenliste.xlsx  Traktanden der nächsten Sitzung (Download der Startseite)
+│   ├── traktandenliste.xlsx  Traktanden der nächsten Sitzung (Download der Startseite)
+│   └── inquiries/         politische Geschäfte seit 2000 (vom Geschäfte-Workflow erzeugt)
+│       ├── index.json     Registry aller Geschäfte samt Kennzahlen
+│       └── <jahr>.json    vollständige Datensätze, ein Shard je Jahrgang
 ├── scripts/                Node-Skripte (Scraper, Validierung, Tests)
 ├── media/                  Logos, Wappen, Sitzplan-PDF
 └── docs/PHASE-1-PLAN.md    Umsetzungsplan dieser Ausbaustufe
@@ -102,8 +105,10 @@ npx serve _site
 npm run scrape          # Mitgliederdaten abrufen und data/members.json schreiben
 npm run scrape:dry      # nur abrufen und Ergebnis anzeigen, nichts schreiben
 npm run scrape:agenda   # Traktanden der nächsten Sitzung als Excel speichern
+npm run scrape:inquiries      # politische Geschäfte abgleichen (neue und offene)
+npm run scrape:inquiries:dry  # Trockenlauf mit den ersten 25 Geschäften
 npm run validate        # data/*.json prüfen
-npm test                # Unit-Tests der Mehrheits- und Traktandenlogik
+npm test                # Unit-Tests der Mehrheits-, Traktanden- und Geschäftslogik
 ```
 
 Nützliche Flags: `--limit=N` (nur die ersten N Personen), `--verbose` (jede abgerufene URL),
@@ -199,6 +204,165 @@ Ortszeit (06:00 und 07:00 UTC, für Sommer- und Winterzeit), danach Tests, Commi
 Branch und ein angestossenes Pages-Deployment. Der Lauf zur jeweils anderen Uhrzeit findet
 nichts Neues und schreibt deshalb nichts.
 
+## Politische Geschäfte
+
+`scripts/scrape-inquiries.mjs` erfasst alle politischen Geschäfte (Vorstösse, Anträge,
+Wahlen …) als Grundlage für historische Statistiken. Stand der Erhebung: **3 217
+Geschäfte ab dem Jahr 2000** in 26 Geschäftsarten.
+
+Die Trefferliste unter `https://parlament.winterthur.ch/politbusiness` liefert mit einem
+früh gesetzten Startdatum (`vomStart=17.9.1800`) den **gesamten Bestand in einem einzigen
+Request** — das CMS legt die Liste als JSON im Attribut `data-entities` ab, es gibt weder
+Paginierung noch eine Prüfung des Formular-Tokens. Daraus ergeben sich ID, Nummer, Titel,
+Geschäftsart und Eingangsdatum; alles Weitere stammt von der Detailseite
+`https://parlament.winterthur.ch/politbusiness/<id>`.
+
+### Aktualisierungslogik
+
+Ein zweiter Listenabruf mit dem Filter `statusId=erledigt` verrät ohne einen einzigen
+Detailabruf, welche Geschäfte abgeschlossen sind (aktuell 3 138 von 3 217). Abgerufen
+wird deshalb nur, was sich noch ändern kann:
+
+| Grund | Auswahl |
+| --- | --- |
+| `new` | Geschäft steht nicht im Index |
+| `open` | gespeichertes Geschäft ohne Status «Erledigt» — es kann sich noch ändern |
+| `reopened` | als erledigt gespeichert, fehlt aber im Erledigt-Filter |
+| `changed` | Nummer, Eingangsdatum oder Geschäftsart weichen von der Liste ab |
+| `all` | `--full`, fehlender Index oder erhöhte `schemaVersion` |
+
+Geschäfte, die an der Quelle verschwinden, werden entfernt. Ein Datensatz, dessen
+`contentHash` unverändert bleibt, wird **nicht** neu geschrieben — auch sein `fetchedAt`
+bleibt stehen, damit der wöchentliche Lauf keine leeren Commits erzeugt.
+
+Der erste Lauf liest rund 3 200 Detailseiten und dauert 20–30 Minuten; danach sind es pro
+Woche rund 80 neue und offene Geschäfte (etwa eine Minute). Wie die übrigen Scraper ruft
+auch dieser die Quelle sequenziell mit Pause, Timeout und Wiederholversuchen ab.
+
+Nützliche Flags: `--full` (Vollabgleich), `--dry-run`, `--verbose`, `--limit=N`,
+`--year=YYYY`, `--id=<id>`, `--force` (überspringt die Plausibilitätsprüfung). Liefert die
+Liste weniger als 90 % des gespeicherten Bestands, bricht der Lauf ab, ohne zu schreiben —
+eine Störung der Quelle soll die Daten nicht leeren.
+
+Automatisiert läuft das über `.github/workflows/update-inquiries.yml`: montags um 04:00
+UTC, danach Tests, Commit auf den Branch und ein angestossenes Pages-Deployment. Der
+Vollabgleich lässt sich über *Actions → Politische Geschäfte aktualisieren → Run workflow*
+mit der Option **full** anstossen.
+
+### Ablage
+
+Die Daten liegen in `data/inquiries/`: ein schlanker `index.json` als Registry samt
+Kennzahlen und je Jahrgang ein Shard mit den vollständigen Datensätzen. Beide Dateien
+schreiben **eine Zeile je Geschäft** — gültiges JSON, aber mit zeilenweisen Git-Diffs, so
+dass eine wöchentliche Änderung nur die betroffenen Zeilen berührt.
+
+```jsonc
+// data/inquiries/index.json
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-17T12:00:00Z",
+  "source": "https://parlament.winterthur.ch/politbusiness?…",
+  "lastFullSync": "2026-09-17T12:00:00Z",
+  "lastSubmittedDate": "2026-09-08",   // jüngstes Eingangsdatum im Bestand
+  "counts": { "total": 3217, "closed": 3138, "open": 79,
+              "byYear": { "2000": 98 }, "byType": { "Motion": 113 },
+              "byStatus": { "Erledigt": 3138 } },
+  "years": [{ "year": 2026, "file": "2026.json", "count": 94, "open": 70 }],
+  "inquiries": [{ "id": "2777389", "number": "2026.14", "year": 2026,
+                  "type": "Schriftliche Anfrage", "status": "Erledigt",
+                  "submittedDate": "2026-03-02", "closed": true,
+                  "contentHash": "…" }]
+}
+```
+
+```jsonc
+// data/inquiries/<jahr>.json — ein Eintrag je Geschäft
+{
+  "id": "2777389",
+  "url": "https://parlament.winterthur.ch/politbusiness/2777389",
+  "number": "2026.14",
+  "numberSort": "202600014",           // stabile Sortierung aus der Quelle
+  "year": 2026,
+  "title": "Schulabsentismus in Winterthur",
+  "type": "Schriftliche Anfrage",
+  "typeId": "schriftliche-anfrage",
+  "status": "Erledigt",                // null, wenn die Quelle keinen Status nennt
+  "statusId": "erledigt",
+  "closed": true,                      // steuert den wöchentlichen Nachlauf
+  "submittedDate": "2026-03-02",       // Eingangsdatum
+
+  "authors": [{ "name": "Vogel Kaspar", "lastName": "Vogel", "firstName": "Kaspar",
+                "role": "Erstunterzeichner/-in", "roleId": "erstunterzeichner",
+                "personId": "297677",  // gleiche ID wie in data/members.json
+                "personUrl": "https://parlament.winterthur.ch/behoerdenmitglieder/297677" }],
+
+  // Verlauf des Geschäfts: alle Felder der Detailseite in Quellreihenfolge,
+  // inklusive Wiederholungen (zwei Beratungsstufen = zweimal «Beschlussdatum …»)
+  "stages": [{ "label": "Beschlussdatum Stadtparlament", "value": "11. Mai 2026",
+               "date": "2026-05-11" },
+             { "label": "Beschlussart Stadtparlament", "value": "Zustimmung" }],
+
+  // aus stages abgeleitet: je Beratungsschritt ein Eintrag
+  "decisions": [{ "body": "Stadtparlament", "date": "2026-05-11", "decision": "Zustimmung",
+                  "vote": { "raw": "27:25 (3 Enthaltungen)", "yes": 27, "no": 25,
+                            "abstentions": 3, "unanimous": false } }],
+
+  "dates": { "submitted": "2026-03-02",
+             "deadline": "2026-06-02",          // «Frist für Antrag / Beantwortung bis»
+             "answeredByCouncil": "2026-05-20", // «Beantwortung durch Stadtrat vom»
+             "motion": null,                    // «Antrag vom»
+             "report": null,                    // «Antrag und Bericht vom»
+             "assigned": null,                  // «Zuweisung am»
+             "finalDecision": "2026-05-11",     // letzter Parlamentsbeschluss laut Quelle
+             "concluded": "2026-05-11" },       // Abschlussdatum, notfalls abgeleitet
+  "concludedSource": "decision",       // decision | document | session | null
+  "durationDays": 70,                  // submitted → concluded
+
+  "applicant": null,                   // «Antragsteller» (Stadtrat, Parlamentsleitung …)
+  "committee": null,                   // «Geschäft in Vorberatung bei»
+  "remarks": null,                     // «Bemerkungen»
+
+  "documents": [{ "name": "2026.14V", "url": "https://…/_doc/5536708",
+                  "date": "2026-03-02", "category": "Vorstoss",
+                  "fileType": "PDF", "fileSize": "71 kB" }],
+  "sessions": [{ "id": "6789199", "name": "9./10. Sitzungen", "date": "2026-01-19",
+                 "url": "https://parlament.winterthur.ch/sitzung/6789199" }],
+
+  "fetchedAt": "2026-09-17T12:00:00Z",
+  "contentHash": "…"                   // erkennt echte inhaltliche Änderungen
+}
+```
+
+Alle Geschäftsarten nutzen **dasselbe Schema**. Die festen Kernfelder (Jahr, Art, Status,
+Dauer, Verfasser) erlauben Auswertungen über alle Arten hinweg; die typabhängigen Abläufe
+stecken verlustfrei in `stages`, aus dem `decisions` und `dates` abgeleitet werden.
+Führt die Quelle ein neues Feld ein, landet es automatisch in `stages`, statt verloren zu
+gehen.
+
+Die Quelle nennt Verfasser als Text («Vogel Kaspar (Erstunterzeichner/-in)») und verlinkt
+nur einen Teil von ihnen als Person. Gespeichert werden deshalb Name, Rolle und — sofern
+vorhanden — die Personen-ID; eine Zuordnung zu Partei und Fraktion ist damit bis auf
+Weiteres nur für verlinkte Personen möglich.
+
+### Abschlussdatum und Dauer
+
+Vor etwa 2017 nennt die Quelle bei den meisten Geschäften **kein Beschlussdatum**; ein
+allein darauf gestütztes `durationDays` gäbe es nur für rund 500 der 3 138 erledigten
+Geschäfte. `dates.concluded` fällt deshalb gestuft zurück, `concludedSource` weist die
+Herkunft aus:
+
+| `concludedSource` | Herleitung | Anzahl |
+| --- | --- | --- |
+| `decision` | `dates.finalDecision` aus der Quelle | 536 |
+| `document` | jüngstes Dokument der Kategorie «Beschluss …» | 1 294 |
+| `session` | jüngstes Sitzungsdatum | 24 |
+| `null` | nicht ermittelbar oder Geschäft noch offen | 1 363 |
+
+Die Rückfälle greifen **nur bei erledigten Geschäften**; Überweisungsbeschlüsse bleiben
+aussen vor, weil sie nur eine Zwischenstufe sind. Wer ausschliesslich Datumsangaben der
+Quelle auswerten will, filtert auf `concludedSource === "decision"` oder nutzt
+`dates.finalDecision` direkt.
+
 ## Datenschema
 
 `data/members.json` (`schemaVersion: 2`):
@@ -262,7 +426,7 @@ Ergänzend:
 | Sitzordnung | umgesetzt (`tools/sitzplan.html`) |
 | Mehrheitsrechner | umgesetzt (`tools/mehrheitsrechner.html`), inkl. möglicher Allianzen |
 | Statistik zur aktuellen Zusammensetzung | umgesetzt (`tools/statistik.html`); Alter, Beruf, Stadtkreis und Amtsdauer erscheinen, sobald der Scraper gelaufen ist |
-| Historische Statistik (Vorstösse) | Je Person wird nur die **Anzahl** Vorstösse gespeichert; eine detaillierte Auswertung folgt |
+| Historische Statistik (Vorstösse) | Datengrundlage umgesetzt (`scripts/scrape-inquiries.mjs`, `data/inquiries/`): alle Geschäfte ab 2000 inkl. Verfassern, Beschlüssen, Dokumenten und Sitzungen; die Auswertung im Frontend folgt |
 | Zusammenfassung der nächsten Sitzung | offen (nächste Ausbaustufe) |
 | Traktandenliste als Excel/CSV | umgesetzt (`scripts/scrape-agenda.mjs`, Download auf der Startseite) |
 
@@ -311,6 +475,7 @@ Ergänzend:
 
 ## Weitere Datenquellen für spätere Ausbaustufen
 
-* Vorstösse/Geschäfte: `https://parlament.winterthur.ch/politbusiness`
+* Vorstösse/Geschäfte: `https://parlament.winterthur.ch/politbusiness` — erschlossen, siehe
+  [Politische Geschäfte](#politische-geschäfte)
 * Sitzungen und Protokolle: `https://parlament.winterthur.ch/sitzung`
 * Kommissionen: `https://parlament.winterthur.ch/kommissionen`

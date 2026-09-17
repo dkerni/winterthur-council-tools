@@ -1,0 +1,71 @@
+name: Politische Geschäfte aktualisieren
+
+on:
+  schedule:
+    # Wöchentlich am Montag um 04:00 UTC. Der Lauf holt neue Geschäfte und
+    # prüft alle noch nicht erledigten erneut.
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      full:
+        description: 'Vollabgleich: alle Geschäfte neu einlesen (dauert 20–30 Minuten)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: update-inquiries
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # Der erste Lauf liest rund 3200 Detailseiten ein.
+    timeout-minutes: 120
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Geschäfte abrufen
+        run: npm run scrape:inquiries -- ${{ inputs.full && '--full' || '' }}
+
+      - name: Tests ausführen
+        run: npm test
+
+      - name: Änderungen prüfen
+        id: diff
+        run: |
+          if git diff --quiet -- data/inquiries; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Keine neuen oder geänderten Geschäfte — es gibt nichts zu tun."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git status --short -- data/inquiries
+          fi
+
+      - name: Änderungen committen
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A data/inquiries
+          git commit -m 'Politische Geschäfte aktualisieren'
+          git push origin HEAD:"${GITHUB_REF_NAME}"
+
+      - name: Website neu veröffentlichen
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Pushes mit dem GITHUB_TOKEN lösen keine Workflows aus — das
+          # Pages-Deployment wird deshalb ausdrücklich angestossen.
+          gh workflow run deploy-pages.yml --ref "${GITHUB_REF_NAME}"

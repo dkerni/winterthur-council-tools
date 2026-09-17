@@ -13,6 +13,9 @@
     "scrape:dry": "node scripts/scrape-members.mjs --dry-run",
     "scrape:agenda": "node scripts/scrape-agenda.mjs",
     "scrape:agenda:dry": "node scripts/scrape-agenda.mjs --dry-run --verbose",
+    "scrape:inquiries": "node scripts/scrape-inquiries.mjs",
+    "scrape:inquiries:dry": "node scripts/scrape-inquiries.mjs --dry-run --verbose --limit=25",
+    "scrape:inquiries:full": "node scripts/scrape-inquiries.mjs --full",
     "validate": "node scripts/validate-members.mjs",
     "test": "node --test scripts/test/*.test.mjs"
   }

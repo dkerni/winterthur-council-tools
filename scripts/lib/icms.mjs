@@ -217,30 +217,48 @@ export function extractRefId(html, kind) {
 }
 
 /**
- * Sammelt Label/Wert-Paare einer Detailseite aus `<dt>/<dd>`- und
- * `<th>/<td>`-Strukturen.
- * @returns {Map<string, string>} Label (klein geschrieben) → Text
+ * Sammelt Label/Wert-Paare einer Detailseite in Dokumentreihenfolge — **mit**
+ * Wiederholungen. Geschäftsseiten führen denselben Schritt mehrfach auf
+ * (z.B. zweimal «Beschlussdatum Stadtparlament» für zwei Beratungsstufen);
+ * diese Abfolge ist der Verlauf des Geschäfts und darf nicht verloren gehen.
+ * @param {string} html Seitenquelltext
+ * @returns {Array<{label: string, value: string, html: string}>}
  */
-export function extractLabeledFields(html) {
-  const fields = new Map();
+export function extractLabeledFieldPairs(html) {
+  const pairs = [];
   const add = (label, value) => {
-    const key = toText(label).replace(/[:*]/g, '').trim().toLowerCase();
+    const name = toText(label).replace(/[:*]/g, '').trim();
     const text = toText(value);
-    if (key && text && !fields.has(key)) fields.set(key, text);
+    if (name && text) pairs.push({ label: name, value: text, html: String(value) });
   };
 
-  for (const m of html.matchAll(/<dt\b[^>]*>([\s\S]*?)<\/dt>\s*<dd\b[^>]*>([\s\S]*?)<\/dd>/gi)) {
+  for (const m of String(html ?? '').matchAll(/<dt\b[^>]*>([\s\S]*?)<\/dt>\s*<dd\b[^>]*>([\s\S]*?)<\/dd>/gi)) {
     add(m[1], m[2]);
   }
-  for (const m of html.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>\s*<td\b[^>]*>([\s\S]*?)<\/td>/gi)) {
+  for (const m of String(html ?? '').matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>\s*<td\b[^>]*>([\s\S]*?)<\/td>/gi)) {
     add(m[1], m[2]);
   }
-  for (const m of html.matchAll(
+  for (const m of String(html ?? '').matchAll(
     /<(?:span|div|strong|b)\b[^>]*class="[^"]*label[^"]*"[^>]*>([\s\S]*?)<\/(?:span|div|strong|b)>\s*<(?:span|div|p)\b[^>]*>([\s\S]*?)<\/(?:span|div|p)>/gi,
   )) {
     add(m[1], m[2]);
   }
 
+  return pairs;
+}
+
+/**
+ * Sammelt Label/Wert-Paare einer Detailseite aus `<dt>/<dd>`- und
+ * `<th>/<td>`-Strukturen. Bei Wiederholungen gewinnt das erste Vorkommen;
+ * wer den vollständigen Verlauf braucht, nutzt `extractLabeledFieldPairs`.
+ * @returns {Map<string, string>} Label (klein geschrieben) → Text
+ */
+export function extractLabeledFields(html) {
+  const fields = new Map();
+  for (const { label, value } of extractLabeledFieldPairs(html)) {
+    const key = label.toLowerCase();
+    if (!fields.has(key)) fields.set(key, value);
+  }
   return fields;
 }
 
@@ -267,8 +285,50 @@ export function extractEmail(html) {
   return match ? decodeEntities(match[1]).trim() : null;
 }
 
+/** Monatsnamen des CMS (auch ohne Umlaut/Akzent geschrieben). */
+const MONTH_NAMES = new Map([
+  ['januar', 1],
+  ['jan', 1],
+  ['februar', 2],
+  ['feb', 2],
+  ['marz', 3],
+  ['mrz', 3],
+  ['mar', 3],
+  ['april', 4],
+  ['apr', 4],
+  ['mai', 5],
+  ['juni', 6],
+  ['jun', 6],
+  ['juli', 7],
+  ['jul', 7],
+  ['august', 8],
+  ['aug', 8],
+  ['september', 9],
+  ['sep', 9],
+  ['oktober', 10],
+  ['okt', 10],
+  ['november', 11],
+  ['nov', 11],
+  ['dezember', 12],
+  ['dez', 12],
+]);
+
+/** Vergleichsform eines Monatsnamens (ohne Umlaute und Satzzeichen). */
+function monthKey(value) {
+  return String(value ?? '')
+    .replace(/ä/gi, 'a')
+    .replace(/ö/gi, 'o')
+    .replace(/ü/gi, 'u')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z]/g, '');
+}
+
 /**
- * Schweizer Datum (`31.12.2026`) oder ISO-Datum → ISO-Datum `YYYY-MM-DD`.
+ * Datum → ISO-Datum `YYYY-MM-DD`. Erkannt werden das Schweizer Zahlenformat
+ * (`31.12.2026`), ISO-Daten und die auf Detailseiten übliche ausgeschriebene
+ * Form (`2. März 2026`).
  * @returns {string|null}
  */
 export function parseDate(value) {
@@ -283,6 +343,12 @@ export function parseDate(value) {
 
   const iso = text.match(/(\d{4})-(\d{2})-(\d{2})/);
   if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+
+  const long = text.match(/(\d{1,2})\.\s*([A-Za-zÄÖÜäöü]+)\.?\s+(\d{4})/);
+  if (long) {
+    const month = MONTH_NAMES.get(monthKey(long[2]));
+    if (month) return `${long[3]}-${String(month).padStart(2, '0')}-${long[1].padStart(2, '0')}`;
+  }
 
   return null;
 }
