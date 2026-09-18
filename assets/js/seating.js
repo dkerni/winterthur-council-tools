@@ -2,10 +2,12 @@
  * Sitzplan Parlamentssaal.
  *
  * Zeigt die 60 Ratssitze als Halbrund, erlaubt das Tauschen der Sitze per
- * Drag & Drop sowie Export/Import als JSON. Die vorderen Reihen (Präsidium/Büro
- * und Stadtrat) werden als feste Sitze dargestellt. Die Koordinaten stammen aus
- * `data/seating.json` (ursprünglich aus dem Sitzplan-PDF), die Partei-Farben
- * aus `data/party-meta.json`.
+ * Drag & Drop sowie Export/Import als JSON. Während eines Drags erscheint in der
+ * Saalmitte ein "Pool", in dem Sitze temporär zwischengelagert werden können —
+ * so lassen sich Umstellungen bauen, die über einen reinen Tausch hinausgehen.
+ * Die vorderen Reihen (Präsidium/Büro und Stadtrat) werden als feste Sitze
+ * dargestellt. Die Koordinaten stammen aus `data/seating.json` (ursprünglich aus
+ * dem Sitzplan-PDF), die Partei-Farben aus `data/party-meta.json`.
  */
 
 import { fetchJson } from './paths.js';
@@ -16,12 +18,20 @@ let config = null; // Inhalt von data/seating.json
 let meta = null; // Inhalt von data/party-meta.json
 
 let seatPositions = {}; // id → { px, py }
-let seatOccupants = {}; // id → { name, party, isFp }
+let seatOccupants = {}; // id → { name, party, isFp } | null (freier Sitz)
 let initialOccupants = {}; // id → { name, party, isFp }
-let dragSourceId = null;
+let poolOccupants = []; // zwischengelagerte Personen (Reihenfolge = Anzeige)
+
+/** Aktive Drag-Quelle: { type: 'seat', id } | { type: 'pool', index } | null. */
+let dragSource = null;
+/** Zähler für dragenter/dragleave am Pool (Kind-Elemente lösen sonst Flackern aus). */
+let poolDragDepth = 0;
 
 /** Anteil der Bühnenhöhe, unterhalb dessen der Tooltip nach unten klappt. */
 const TOOLTIP_BELOW_RATIO = 0.25;
+
+/** Pseudo-Sitz-ID, unter der Pool-Einträge exportiert/importiert werden. */
+const POOL_ENTRY_ID = 'pool';
 
 /* ─── Koordinaten-Mapping ─────────────────────────────────────────────
    Hochformat-PDF → Anzeige:  dx = pdfHeight - py,  dy = px
@@ -104,6 +114,7 @@ function initState() {
   seatPositions = {};
   seatOccupants = {};
   initialOccupants = {};
+  poolOccupants = [];
   for (const seat of config.seats) {
     seatPositions[seat.id] = { px: seat.px, py: seat.py };
     seatOccupants[seat.id] = { name: seat.name, party: seat.party, isFp: seat.isFp };
@@ -145,40 +156,66 @@ function renderSeats() {
   for (const seat of config.seats) {
     const { sx, sy } = toStage(seat.px, seat.py);
     const occupant = seatOccupants[seat.id];
-    const el = createSeatEl(seat.id, occupant.name, occupant.party, occupant.isFp, true, sx, sy);
+    const el = occupant
+      ? createSeatEl(seat.id, occupant.name, occupant.party, occupant.isFp, true, sx, sy, {
+          dropTarget: true,
+        })
+      : createSeatEl(seat.id, '', null, false, false, sx, sy, { dropTarget: true, empty: true });
     layer.appendChild(el);
   }
 }
 
-function createSeatEl(id, name, party, isFp, draggable, sx, sy, { role = '', badge = null } = {}) {
+/** Sitze und Pool gemeinsam neu zeichnen. */
+function renderAll() {
+  renderSeats();
+  renderPool();
+}
+
+function createSeatEl(
+  id,
+  name,
+  party,
+  isFp,
+  draggable,
+  sx,
+  sy,
+  { role = '', badge = null, empty = false, dropTarget = false } = {},
+) {
   const m = config.coordinateMapping;
   const el = document.createElement('div');
-  el.className = 'seat' + (draggable ? ' draggable' : '');
+  el.className = 'seat' + (draggable ? ' draggable' : '') + (empty ? ' empty-seat' : '');
   el.dataset.id = id;
   el.draggable = draggable;
 
   el.style.left = (sx / m.stageWidth) * 100 + '%';
   el.style.top = (sy / m.stageHeight) * 100 + '%';
-  el.style.background = colorFor(party);
+  el.style.background = empty ? 'transparent' : colorFor(party);
 
   // Sitze am oberen Bühnenrand bekommen den Tooltip unterhalb,
   // sonst würde er ausserhalb des Diagramms abgeschnitten.
   if (sy < m.stageHeight * TOOLTIP_BELOW_RATIO) el.classList.add('tip-below');
 
-  const badgeLabel = badge || abbrFor(party);
-  const subtitle = [role, party].filter(Boolean).join(' · ');
+  if (empty) {
+    el.innerHTML = `<span class="party-badge empty-badge">frei</span>`;
+  } else {
+    const badgeLabel = badge || abbrFor(party);
+    const subtitle = [role, party].filter(Boolean).join(' · ');
 
-  el.innerHTML = `
-    <span class="party-badge">${escapeHtml(badgeLabel)}</span>
-    ${isFp ? '<span class="faction-star">★</span>' : ''}
-    <div class="seat-tooltip">${escapeHtml(name)}<br><em>${escapeHtml(subtitle)}</em>${
-      isFp ? ' · Fraktionspräs.' : ''
-    }</div>
-  `;
+    el.innerHTML = `
+      <span class="party-badge">${escapeHtml(badgeLabel)}</span>
+      ${isFp ? '<span class="faction-star">★</span>' : ''}
+      <div class="seat-tooltip">${escapeHtml(name)}<br><em>${escapeHtml(subtitle)}</em>${
+        isFp ? ' · Fraktionspräs.' : ''
+      }</div>
+    `;
+  }
 
   if (draggable) {
-    el.addEventListener('dragstart', onDragStart);
+    el.addEventListener('dragstart', onSeatDragStart);
     el.addEventListener('dragend', onDragEnd);
+  }
+
+  if (dropTarget) {
     el.addEventListener('dragover', onDragOver);
     el.addEventListener('dragleave', onDragLeave);
     el.addEventListener('drop', onDrop);
@@ -187,28 +224,127 @@ function createSeatEl(id, name, party, isFp, draggable, sx, sy, { role = '', bad
   return el;
 }
 
-/* ─── Drag & Drop ─────────────────────────────────────────────────── */
-function onDragStart(e) {
-  dragSourceId = e.currentTarget.dataset.id;
-  e.currentTarget.classList.add('dragging');
-  e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/plain', dragSourceId);
-  setStatus('Sitz wird verschoben …');
+/* ─── Pool (temporäre Ablage in der Saalmitte) ────────────────────── */
+function renderPool() {
+  const itemsEl = document.getElementById('pool-items');
+  const hintEl = document.getElementById('pool-hint');
+  if (!itemsEl) return;
+
+  itemsEl.innerHTML = '';
+  poolOccupants.forEach((occupant, index) => {
+    const el = document.createElement('div');
+    el.className = 'pool-seat';
+    el.draggable = true;
+    el.dataset.index = String(index);
+    el.style.background = colorFor(occupant.party);
+    el.innerHTML = `
+      <span class="party-badge">${escapeHtml(abbrFor(occupant.party))}</span>
+      ${occupant.isFp ? '<span class="faction-star">★</span>' : ''}
+      <div class="seat-tooltip">${escapeHtml(occupant.name)}<br><em>${escapeHtml(
+        occupant.party || '',
+      )}</em>${occupant.isFp ? ' · Fraktionspräs.' : ''}</div>
+    `;
+    el.addEventListener('dragstart', onPoolDragStart);
+    el.addEventListener('dragend', onDragEnd);
+    itemsEl.appendChild(el);
+  });
+
+  if (hintEl) {
+    hintEl.textContent = poolOccupants.length
+      ? `${poolOccupants.length} ${poolOccupants.length === 1 ? 'Person' : 'Personen'} zwischengelagert`
+      : 'Sitz hier ablegen';
+  }
+  updatePoolVisibility();
 }
 
-function onDragEnd(e) {
-  e.currentTarget.classList.remove('dragging');
-  document.querySelectorAll('.seat.drag-over').forEach((el) => el.classList.remove('drag-over'));
-  dragSourceId = null;
+/** Pool einblenden, solange gezogen wird oder noch Einträge darin liegen. */
+function updatePoolVisibility() {
+  const pool = document.getElementById('seat-pool');
+  if (!pool) return;
+  pool.classList.toggle('visible', Boolean(dragSource) || poolOccupants.length > 0);
+  pool.classList.toggle('has-items', poolOccupants.length > 0);
+}
+
+function bindPool() {
+  const pool = document.getElementById('seat-pool');
+  if (!pool) return;
+
+  pool.addEventListener('dragenter', (e) => {
+    if (!isPoolDropAllowed()) return;
+    e.preventDefault();
+    poolDragDepth++;
+    pool.classList.add('drag-over');
+  });
+
+  pool.addEventListener('dragover', (e) => {
+    if (!isPoolDropAllowed()) {
+      e.dataTransfer.dropEffect = 'none';
+      return;
+    }
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  });
+
+  pool.addEventListener('dragleave', () => {
+    poolDragDepth = Math.max(0, poolDragDepth - 1);
+    if (poolDragDepth === 0) pool.classList.remove('drag-over');
+  });
+
+  pool.addEventListener('drop', onPoolDrop);
+}
+
+/** Nur besetzte Sitze dürfen in den Pool — Pool→Pool wäre ein No-Op. */
+function isPoolDropAllowed() {
+  return Boolean(dragSource) && dragSource.type === 'seat' && Boolean(seatOccupants[dragSource.id]);
+}
+
+/** Echte Ratssitz-ID? (`in` würde auch Prototyp-Keys wie "constructor" treffen.) */
+function isSeatId(id) {
+  return Object.prototype.hasOwnProperty.call(seatOccupants, id);
+}
+
+/* ─── Drag & Drop ─────────────────────────────────────────────────── */
+function onSeatDragStart(e) {
+  const id = e.currentTarget.dataset.id;
+  dragSource = { type: 'seat', id };
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', id);
+  updatePoolVisibility();
+  setStatus('Sitz wird verschoben — Ablage im Pool möglich …');
+}
+
+function onPoolDragStart(e) {
+  const index = Number(e.currentTarget.dataset.index);
+  dragSource = { type: 'pool', index };
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', `pool:${index}`);
+  updatePoolVisibility();
+  setStatus('Person aus dem Pool auf einen Sitz ziehen …');
+}
+
+function onDragEnd() {
+  finishDrag();
+}
+
+/** Drag-Zustand und alle visuellen Hervorhebungen zurücksetzen. */
+function finishDrag() {
+  dragSource = null;
+  poolDragDepth = 0;
+  document
+    .querySelectorAll('.drag-over, .dragging')
+    .forEach((el) => el.classList.remove('drag-over', 'dragging'));
+  updatePoolVisibility();
 }
 
 function onDragOver(e) {
+  if (!dragSource) return;
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
   const target = e.currentTarget;
-  if (target.dataset.id !== dragSourceId && target.classList.contains('draggable')) {
-    target.classList.add('drag-over');
-  }
+  const isSelf = dragSource.type === 'seat' && target.dataset.id === dragSource.id;
+  if (!isSelf) target.classList.add('drag-over');
 }
 
 function onDragLeave(e) {
@@ -220,15 +356,47 @@ function onDrop(e) {
   const targetId = e.currentTarget.dataset.id;
   e.currentTarget.classList.remove('drag-over');
 
-  if (!dragSourceId || dragSourceId === targetId) return;
-  if (!seatOccupants[dragSourceId] || !seatOccupants[targetId]) return;
+  const source = dragSource;
+  finishDrag();
+  if (!source || !isSeatId(targetId)) return;
 
-  const tmp = seatOccupants[dragSourceId];
-  seatOccupants[dragSourceId] = seatOccupants[targetId];
-  seatOccupants[targetId] = tmp;
+  if (source.type === 'seat') {
+    if (source.id === targetId || !isSeatId(source.id)) return;
+    const tmp = seatOccupants[source.id];
+    seatOccupants[source.id] = seatOccupants[targetId];
+    seatOccupants[targetId] = tmp;
+    renderAll();
+    setStatus('Sitzplan aktualisiert.');
+    return;
+  }
 
-  renderSeats();
-  setStatus('Sitzplan aktualisiert.');
+  const occupant = poolOccupants[source.index];
+  if (!occupant) return;
+  const previous = seatOccupants[targetId];
+  // Besetzter Zielsitz: die bisherige Person wandert an die Pool-Stelle zurück.
+  if (previous) poolOccupants[source.index] = previous;
+  else poolOccupants.splice(source.index, 1);
+  seatOccupants[targetId] = occupant;
+  renderAll();
+  setStatus(
+    previous
+      ? `${occupant.name} ↔ ${previous.name} getauscht (Pool).`
+      : `${occupant.name} platziert.`,
+  );
+}
+
+function onPoolDrop(e) {
+  e.preventDefault();
+  const source = dragSource;
+  finishDrag();
+  if (!source || source.type !== 'seat') return;
+
+  const occupant = seatOccupants[source.id];
+  if (!occupant) return;
+  poolOccupants.push(occupant);
+  seatOccupants[source.id] = null;
+  renderAll();
+  setStatus(`${occupant.name} in den Pool gelegt.`);
 }
 
 /* ─── Legende ─────────────────────────────────────────────────────── */
@@ -257,6 +425,16 @@ function buildCouncilNote() {
 }
 
 /* ─── Toolbar ─────────────────────────────────────────────────────── */
+/** Import-Eintrag → Belegung; `isFp` stammt weiterhin aus der Basisdatenbank. */
+function occupantFromEntry(entry) {
+  const original = config.seats.find((s) => s.name === entry.occupant);
+  return {
+    name: entry.occupant,
+    party: entry.party,
+    isFp: original ? original.isFp : false,
+  };
+}
+
 function setStatus(msg, duration = 3000) {
   const el = document.getElementById('status-msg');
   el.textContent = msg;
@@ -272,7 +450,8 @@ function bindToolbar() {
     for (const id of Object.keys(initialOccupants)) {
       seatOccupants[id] = { ...initialOccupants[id] };
     }
-    renderSeats();
+    poolOccupants = [];
+    renderAll();
     setStatus('Sitzplan zurückgesetzt.');
   });
 
@@ -282,12 +461,16 @@ function bindToolbar() {
       const position = seatPositions[seat.id];
       return {
         seatId: seat.id,
-        occupant: occupant.name,
-        party: occupant.party,
+        occupant: occupant ? occupant.name : '',
+        party: occupant ? occupant.party : '',
         positionPx: position.px,
         positionPy: position.py,
       };
     });
+    // Pool-Einträge mitexportieren, damit beim Re-Import nichts verloren geht.
+    for (const occupant of poolOccupants) {
+      data.push({ seatId: POOL_ENTRY_ID, occupant: occupant.name, party: occupant.party });
+    }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -314,6 +497,7 @@ function bindToolbar() {
         if (!Array.isArray(data)) throw new Error('Array von Sitzplatz-Einträgen erwartet');
         let updated = 0;
         let skipped = 0;
+        const importedPool = [];
         for (const entry of data) {
           if (
             !entry ||
@@ -324,21 +508,26 @@ function bindToolbar() {
             skipped++;
             continue;
           }
-          if (!seatOccupants[entry.seatId]) {
+          if (entry.seatId === POOL_ENTRY_ID) {
+            if (!entry.occupant) {
+              skipped++;
+              continue;
+            }
+            importedPool.push(occupantFromEntry(entry));
+            updated++;
+            continue;
+          }
+          if (!isSeatId(entry.seatId)) {
             skipped++;
             continue;
           }
-          const original = config.seats.find((s) => s.name === entry.occupant);
-          seatOccupants[entry.seatId] = {
-            name: entry.occupant,
-            party: entry.party,
-            isFp: original ? original.isFp : false,
-          };
+          seatOccupants[entry.seatId] = entry.occupant ? occupantFromEntry(entry) : null;
           updated++;
         }
-        renderSeats();
+        poolOccupants = importedPool;
+        renderAll();
         setStatus(
-          `JSON importiert (${updated} Sitze aktualisiert${skipped ? ', ' + skipped + ' übersprungen' : ''}).`,
+          `JSON importiert (${updated} Einträge übernommen${skipped ? ', ' + skipped + ' übersprungen' : ''}).`,
         );
       } catch (err) {
         setStatus('Fehler beim Import: ' + err.message);
@@ -363,7 +552,8 @@ async function init() {
     buildSvgBackground();
     buildLegend();
     buildCouncilNote();
-    renderSeats();
+    renderAll();
+    bindPool();
     bindToolbar();
   } catch (err) {
     if (statusEl) {

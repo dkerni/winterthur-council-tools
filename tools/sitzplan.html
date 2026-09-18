@@ -16,7 +16,9 @@
 <main>
   <h1 class="page-title">Sitzplan Parlamentssaal</h1>
   <p class="page-lead">
-    Die 60 Ratssitze können per Drag &amp; Drop neu angeordnet werden.
+    Die 60 Ratssitze können per Drag &amp; Drop neu angeordnet werden. Beim Ziehen erscheint in der
+    Saalmitte ein <strong>Pool</strong>, in dem Sitze temporär abgelegt werden können — so sind
+    auch Umstellungen über mehrere Plätze hinweg möglich und nicht nur einfache Tausche.
     Die vorderen Reihen (Präsidium/Büro, Stadtrat) sind nicht verschiebbar. Eine Anordnung lässt
     sich als JSON exportieren und später wieder importieren.
   </p>
@@ -38,6 +40,11 @@
     <div class="hemicycle-stage" id="hemicycle-stage">
       <svg class="hemicycle-svg" id="hemicycle-svg" xmlns="http://www.w3.org/2000/svg"></svg>
       <div class="seats-layer" id="seats-layer"></div>
+      <div class="seat-pool" id="seat-pool" aria-label="Pool: temporäre Ablage für Sitze">
+        <div class="pool-title">Pool</div>
+        <div class="pool-items" id="pool-items"></div>
+        <div class="pool-hint" id="pool-hint">Sitz hier ablegen</div>
+      </div>
     </div>
 
     <div class="publikum-label">— Publikum —</div>

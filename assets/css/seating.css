@@ -107,6 +107,128 @@
   z-index: 20;
 }
 
+/* Freier Sitz (Person liegt im Pool) */
+.seat.empty-seat {
+  border-style: dashed;
+  border-color: rgba(0,0,0,.28);
+  background: transparent;
+}
+
+.seat .empty-badge {
+  color: #777;
+  text-shadow: none;
+  font-weight: 600;
+}
+
+/* ─── Pool: temporäre Ablage in der Saalmitte ─────────────────────── */
+.seat-pool {
+  position: absolute;
+  left: 50%;
+  top: 17%;
+  transform: translateX(-50%);
+  width: min(28%, 260px);
+  min-height: 74px;
+  box-sizing: border-box;
+  padding: 0.45rem 0.55rem 0.4rem;
+  border: 2px dashed #b3b3a2;
+  border-radius: 10px;
+  background: rgba(255,255,255,.88);
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .15s, border-color .12s, box-shadow .12s;
+  z-index: 40;
+}
+
+.seat-pool.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.seat-pool.drag-over {
+  border-color: #111;
+  border-style: solid;
+  background: rgba(255,255,255,.97);
+  box-shadow: 0 0 0 3px rgba(17,17,17,.14), 0 4px 14px rgba(0,0,0,.18);
+}
+
+.pool-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.pool-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  min-height: 26px;
+  align-items: flex-start;
+  align-content: flex-start;
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.pool-hint {
+  font-size: 0.68rem;
+  color: #999;
+  flex: 0 0 auto;
+}
+
+/* Sitz-Chip im Pool */
+.pool-seat {
+  position: relative;
+  width: 34px;
+  height: 27px;
+  border-radius: 4px;
+  border: 2px solid rgba(0,0,0,.32);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+  transition: transform .12s, box-shadow .12s, opacity .12s;
+}
+
+.pool-seat:active { cursor: grabbing; }
+
+.pool-seat:hover {
+  transform: scale(1.15);
+  box-shadow: 0 3px 10px rgba(0,0,0,.35);
+  z-index: 50;
+}
+
+.pool-seat.dragging { opacity: .45; }
+
+.pool-seat .party-badge {
+  font-size: 8px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+  pointer-events: none;
+}
+
+.pool-seat .faction-star {
+  font-size: 7px;
+  color: #fff;
+  line-height: 1;
+  opacity: .9;
+  pointer-events: none;
+}
+
+.pool-seat:hover .seat-tooltip { display: block; }
+
 /* Tooltip */
 .seat-tooltip {
   position: absolute;
