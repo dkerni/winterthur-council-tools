@@ -1,5 +1,5 @@
 /**
- * Bereich «Aktuelle Ratsstatistiken» der Statistik-Seite.
+ * Bereich «Aktuelle Ratszusammensetzung» der Statistiken-Seite.
  *
  * Die Seite zeigt zuerst die Gesamtauswertung des Rats und darunter die
  * Auswertung je Fraktion; beide Blöcke werden gleichzeitig dargestellt.

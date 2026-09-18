@@ -17,7 +17,7 @@ const NAV_ITEMS = [
   { page: 'start', label: 'Start', href: 'index.html' },
   { page: 'sitzplan', label: 'Sitzplan', href: 'tools/sitzplan.html' },
   { page: 'mehrheitsrechner', label: 'Mehrheitsrechner', href: 'tools/mehrheitsrechner.html' },
-  { page: 'statistik', label: 'Statistik', href: 'tools/statistik.html' },
+  { page: 'statistik', label: 'Statistiken', href: 'tools/statistik.html' },
   { page: 'mitglieder', label: 'Mitglieder', href: 'tools/mitglieder.html' },
   { page: 'impressum', label: 'Impressum', href: 'impressum.html' },
 ];

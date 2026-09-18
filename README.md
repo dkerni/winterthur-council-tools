@@ -16,7 +16,7 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 | `index.html` | Startseite mit Tool-Kacheln, Traktanden-Download und kompaktem Mehrheitsrechner |
 | `tools/sitzplan.html` | Interaktive Sitzordnung (Drag & Drop, Fraktionspräsidien, Export/Import) |
 | `tools/mehrheitsrechner.html` | Mehrheiten je Fraktion/Partei, Absenzen, mögliche Allianzen (per Klick als Stimmvorlage), teilbarer Link |
-| `tools/statistik.html` | «Statistik» mit Umschalter: «Aktuelle Ratsstatistiken» (Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise) und «Historische Vorstoss Auswertungen» (Geschäfte seit 2000, nach Partei) |
+| `tools/statistik.html` | «Statistiken» mit Umschalter: «Aktuelle Ratszusammensetzung» (Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise) und «Historische Geschäftsauswertungen» (Geschäfte seit 2000, nach Partei) |
 | `tools/mitglieder.html` | Durchsuchbare, sortierbare Mitgliederliste mit Link auf das Profil |
 | `impressum.html` | Betreiber, Datenquellen, Umgang mit Personendaten, Haftungsausschluss |
 
@@ -38,10 +38,10 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 │       ├── majority.js     Mehrheitslogik (rein, ohne DOM, getestet)
 │       ├── majority-ui.js  Oberfläche des Mehrheitsrechners (voll + kompakt)
 │       ├── stats.js        Statistik-Aggregationen
-│       ├── stats-ui.js     Oberfläche «Aktuelle Ratsstatistiken»
+│       ├── stats-ui.js     Oberfläche «Aktuelle Ratszusammensetzung»
 │       ├── inquiry-stats.js     Auswertungen zu den Geschäften (rein, ohne DOM, getestet)
-│       ├── inquiry-stats-ui.js  Oberfläche «Historische Vorstoss Auswertungen»
-│       ├── statistics-page.js   Umschalter der Statistik-Seite (beide Bereiche)
+│       ├── inquiry-stats-ui.js  Oberfläche «Historische Geschäftsauswertungen»
+│       ├── statistics-page.js   Umschalter der Statistiken-Seite (beide Bereiche)
 │       ├── charts.js       Chart.js-Wrapper mit Tabellen-Fallback
 │       ├── members-ui.js   Mitgliederliste
 │       ├── agenda-ui.js    Download der Traktandenliste (Startseite)
@@ -373,15 +373,15 @@ Quelle auswerten will, filtert auf `concludedSource === "decision"` oder nutzt
 
 ## Historische Auswertungen («Vorstösse»)
 
-Der Bereich «Historische Vorstoss Auswertungen» auf `tools/statistik.html` wertet die
+Der Bereich «Historische Geschäftsauswertungen» auf `tools/statistik.html` wertet die
 3 217 Geschäfte **nach Partei** aus: Vorstösse je Partei und Jahr, genutzte Instrumente,
 Mitunterzeichnungen, Beschlüsse und Behandlungsdauer. Gruppiert wird bewusst nach Partei
 und nicht nach Fraktion — Fraktionszugehörigkeiten wechselten über 25 Jahre zu häufig,
 um vergleichbar zu sein.
 
 Die Seite `tools/statistik.html` fasst beide Auswertungen zusammen: Ein Umschalter
-wechselt zwischen **«Aktuelle Ratsstatistiken»** (`#ratsstatistik`, Zusammensetzung des
-heutigen Rats) und **«Historische Vorstoss Auswertungen»** (`#vorstoesse`). Der jeweilige
+wechselt zwischen **«Aktuelle Ratszusammensetzung»** (`#ratsstatistik`, Zusammensetzung des
+heutigen Rats) und **«Historische Geschäftsauswertungen»** (`#vorstoesse`). Der jeweilige
 Bereich wird erst beim ersten Aufruf aufgebaut; die Auswahl steht im URL-Fragment und ist
 damit teilbar.
 
@@ -545,8 +545,8 @@ Ergänzend:
 | --- | --- |
 | Sitzordnung | umgesetzt (`tools/sitzplan.html`) |
 | Mehrheitsrechner | umgesetzt (`tools/mehrheitsrechner.html`), inkl. möglicher Allianzen |
-| Statistik zur aktuellen Zusammensetzung | umgesetzt (`tools/statistik.html`, Bereich «Aktuelle Ratsstatistiken»); Alter, Beruf, Stadtkreis und Amtsdauer erscheinen, sobald der Scraper gelaufen ist |
-| Historische Statistik (Vorstösse) | umgesetzt (`tools/statistik.html`, Bereich «Historische Vorstoss Auswertungen»): Auswertungen nach Partei auf Basis von `data/inquiries/`, `data/people.json` und `data/inquiry-facts.json` |
+| Statistik zur aktuellen Zusammensetzung | umgesetzt (`tools/statistik.html`, Bereich «Aktuelle Ratszusammensetzung»); Alter, Beruf, Stadtkreis und Amtsdauer erscheinen, sobald der Scraper gelaufen ist |
+| Historische Statistik (Vorstösse) | umgesetzt (`tools/statistik.html`, Bereich «Historische Geschäftsauswertungen»): Auswertungen nach Partei auf Basis von `data/inquiries/`, `data/people.json` und `data/inquiry-facts.json` |
 | Zusammenfassung der nächsten Sitzung | offen (nächste Ausbaustufe) |
 | Traktandenliste als Excel/CSV | umgesetzt (`scripts/scrape-agenda.mjs`, Download auf der Startseite) |
 

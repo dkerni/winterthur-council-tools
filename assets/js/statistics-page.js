@@ -1,10 +1,10 @@
 /**
- * Seite «Statistik» — Umschalter zwischen den beiden Auswertungsbereichen.
+ * Seite «Statistiken» — Umschalter zwischen den beiden Auswertungsbereichen.
  *
  * Die Seite fasst die früheren Seiten «Zusammensetzung» und «Vorstösse»
  * zusammen. Ein Umschalter (wie im Mehrheitsrechner) wechselt zwischen
- * «Aktuelle Ratsstatistiken» (Zusammensetzung des Rats) und «Historische
- * Vorstoss Auswertungen» (Geschäfte seit 2000).
+ * «Aktuelle Ratszusammensetzung» und «Historische Geschäftsauswertungen»
+ * (Geschäfte seit 2000).
  *
  * Der jeweilige Bereich wird erst beim ersten Aufruf aufgebaut; dadurch
  * werden die Diagramme immer in einem sichtbaren Container gezeichnet und
@@ -19,7 +19,7 @@ import { createInquiryStatistics } from './inquiry-stats-ui.js';
 const VIEWS = [
   {
     id: 'ratsstatistik',
-    label: 'Aktuelle Ratsstatistiken',
+    label: 'Aktuelle Ratszusammensetzung',
     lead: `Auswertungen zur Zusammensetzung des Stadtparlaments: zuerst gesamthaft (Geschlecht, Alter,
       Amtsdauer, Stadtkreise), danach je Fraktion (Sitzverteilung, Geschlecht, Alter, Amtsdauer).
       Alle Zahlen beruhen ausschliesslich auf den öffentlich publizierten Angaben des
@@ -28,7 +28,7 @@ const VIEWS = [
   },
   {
     id: 'vorstoesse',
-    label: 'Historische Vorstoss Auswertungen',
+    label: 'Historische Geschäftsauswertungen',
     lead: `Historische Auswertungen zu den politischen Geschäften des Stadtparlaments seit 2000 —
       wer reicht wie viele Vorstösse ein, welche Instrumente werden genutzt, wie unterstützen
       sich die Parteien gegenseitig und wie werden die Vorstösse behandelt. Gruppiert wird
@@ -71,7 +71,7 @@ function skeleton() {
 }
 
 /**
- * Baut die Statistik-Seite mit Umschalter in den Container.
+ * Baut die Statistiken-Seite mit Umschalter in den Container.
  * @param {HTMLElement} container
  */
 export function createStatisticsPage(container) {

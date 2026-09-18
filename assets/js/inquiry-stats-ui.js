@@ -1,5 +1,5 @@
 /**
- * Bereich «Historische Vorstoss Auswertungen» der Statistik-Seite.
+ * Bereich «Historische Geschäftsauswertungen» der Statistiken-Seite.
  *
  * Grundlage ist `data/inquiry-facts.json`: eine kompakte Zeile je Geschäft mit
  * Jahr, Geschäftsart, Beschluss und den verfassenden Personen samt Partei.
