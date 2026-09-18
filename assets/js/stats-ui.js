@@ -1,5 +1,5 @@
 /**
- * Statistik-Seite — Aufbau der Oberfläche.
+ * Bereich «Aktuelle Ratsstatistiken» der Statistik-Seite.
  *
  * Die Seite zeigt zuerst die Gesamtauswertung des Rats und darunter die
  * Auswertung je Fraktion; beide Blöcke werden gleichzeitig dargestellt.

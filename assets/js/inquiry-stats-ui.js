@@ -1,5 +1,5 @@
 /**
- * Seite «Vorstösse» — Aufbau der Oberfläche.
+ * Bereich «Historische Vorstoss Auswertungen» der Statistik-Seite.
  *
  * Grundlage ist `data/inquiry-facts.json`: eine kompakte Zeile je Geschäft mit
  * Jahr, Geschäftsart, Beschluss und den verfassenden Personen samt Partei.

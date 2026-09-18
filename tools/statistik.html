@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zusammensetzung — Stadtparlament Winterthur Tools</title>
-  <meta name="description" content="Zusammensetzung des Stadtparlaments Winterthur in Zahlen: Sitzverteilung, Alter, Geschlecht, Amtsdauer und Stadtkreise der Mitglieder." />
+  <title>Statistik — Stadtparlament Winterthur Tools</title>
+  <meta name="description" content="Statistiken zum Stadtparlament Winterthur: aktuelle Ratsstatistiken zu Sitzverteilung, Alter, Geschlecht, Amtsdauer und Stadtkreisen sowie historische Auswertungen zu den Vorstössen seit 2000." />
   <link rel="stylesheet" href="../assets/css/main.css" />
   <link rel="icon" href="../media/Logo.jpg" />
   <script
@@ -16,24 +16,16 @@
     referrerpolicy="no-referrer"></script>
   <script type="module" src="../assets/js/layout.js"></script>
   <script type="module">
-    import { createStatistics } from '../assets/js/stats-ui.js';
-    createStatistics(document.getElementById('statistics'));
+    import { createStatisticsPage } from '../assets/js/statistics-page.js';
+    createStatisticsPage(document.getElementById('statistics-page'));
   </script>
 </head>
 <body data-page="statistik">
 
 <main>
-  <h1 class="page-title">Zusammensetzung</h1>
-  <p class="page-lead">
-    Auswertungen zur Zusammensetzung des Stadtparlaments: zuerst gesamthaft (Geschlecht, Alter,
-    Amtsdauer, Stadtkreise), danach je Fraktion (Sitzverteilung, Geschlecht, Alter, Amtsdauer).
-    Alle Zahlen beruhen ausschliesslich auf den öffentlich publizierten Angaben des
-    Parlamentsdienstes; fehlende Angaben werden als solche ausgewiesen.
-    Historische Auswertungen zu den eingereichten Geschäften finden sich unter
-    <a href="vorstoesse.html">Vorstösse</a>.
-  </p>
+  <h1 class="page-title">Statistik</h1>
 
-  <div id="statistics">
+  <div id="statistics-page">
     <p class="loading">Daten werden geladen …</p>
   </div>
 </main>
