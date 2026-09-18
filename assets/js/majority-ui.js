@@ -285,6 +285,11 @@ export async function createMajorityCalculator(container, options = {}) {
     if (refs.alliances) renderAlliances();
   }
 
+  /** Beteiligte Fraktionen als Text, z. B. "SVP &amp; FDP &amp; Mitte". */
+  function partsHtml(entry) {
+    return entry.groups.map((group) => escapeHtml(group.shortName || group.name)).join(' &amp; ');
+  }
+
   function renderAlliances() {
     const groups = fractionGroups();
     const results = allianceResults({
@@ -308,12 +313,13 @@ export async function createMajorityCalculator(container, options = {}) {
           <button type="button" class="alliance-apply" data-alliance="${escapeHtml(entry.alliance.id)}"
                   title="Stimmen setzen: diese Fraktionen Ja, alle übrigen Nein">
             <span class="group-dot" style="background:${escapeHtml(entry.alliance.color)}"></span>
-            ${escapeHtml(entry.alliance.name)}
+            <span class="alliance-label">
+              ${escapeHtml(entry.alliance.name)}
+              <span class="alliance-parts-inline">${partsHtml(entry)}</span>
+            </span>
           </button>
         </th>
-        <td class="alliance-parts">${entry.groups
-          .map((group) => escapeHtml(group.shortName || group.name))
-          .join(' &amp; ')}</td>
+        <td class="alliance-parts">${partsHtml(entry)}</td>
         <td class="alliance-count num"><strong>${entry.votes}</strong></td>
         <td class="alliance-margin">
           <span class="badge ${entry.winning ? 'ok' : 'bad'}">${
@@ -331,17 +337,19 @@ export async function createMajorityCalculator(container, options = {}) {
         stimmt nicht mit. Ein Klick auf ein Bündnis setzt dessen Fraktionen auf Ja und alle
         übrigen auf Nein.
       </p>
-      <table class="alliance-table">
-        <thead>
-          <tr>
-            <th scope="col">Bündnis</th>
-            <th scope="col">Fraktionen</th>
-            <th scope="col" class="num">Stimmen</th>
-            <th scope="col">Mehrheit</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>`;
+      <div class="table-wrap">
+        <table class="alliance-table">
+          <thead>
+            <tr>
+              <th scope="col">Bündnis</th>
+              <th scope="col">Fraktionen</th>
+              <th scope="col" class="num">Stimmen</th>
+              <th scope="col">Mehrheit</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
 
     refs.alliances.querySelectorAll('[data-alliance]').forEach((button) => {
       button.addEventListener('click', () => {

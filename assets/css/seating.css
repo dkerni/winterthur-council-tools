@@ -26,6 +26,11 @@
 }
 
 /* Bühne */
+.hemicycle-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .hemicycle-stage {
   position: relative;
   width: 100%;
@@ -290,4 +295,30 @@
   color: #888;
   margin-top: 0.6rem;
   letter-spacing: .05em;
+}
+
+/* ─── Mobile / Touch ──────────────────────────────────────────────── */
+/* Ohne Drag & Drop bleiben nur Ansicht und Tooltips: Greif-Cursor und
+   Hover-Vergrösserung entfallen, damit nichts Interaktives suggeriert wird. */
+body.seating-no-drag .seat.draggable,
+body.seating-no-drag .pool-seat {
+  cursor: default;
+}
+
+body.seating-no-drag .seat.draggable:hover {
+  transform: translate(-50%, -50%);
+  box-shadow: none;
+}
+
+body.seating-no-drag .pool-seat:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 700px) {
+  /* Bei 60 Sitzen wird das Halbrund unter ~520px unleserlich — stattdessen
+     horizontal scrollen statt die Sitze weiter zu schrumpfen. */
+  .hemicycle-scroll .hemicycle-stage { min-width: 520px; }
+  .legend { font-size: 0.7rem; gap: 0.3rem 0.6rem; }
+  .publikum-label { font-size: 0.72rem; }
 }

@@ -30,6 +30,16 @@ let poolDragDepth = 0;
 /** Anteil der Bühnenhöhe, unterhalb dessen der Tooltip nach unten klappt. */
 const TOOLTIP_BELOW_RATIO = 0.25;
 
+/**
+ * Touch-Geräte: HTML5-Drag-&-Drop funktioniert dort nicht zuverlässig und
+ * blockiert zudem das Scrollen. Der Sitzplan wird deshalb nur angezeigt.
+ */
+const TOUCH_QUERY = window.matchMedia('(hover: none) and (pointer: coarse)');
+
+function dragEnabled() {
+  return !TOUCH_QUERY.matches;
+}
+
 /** Pseudo-Sitz-ID, unter der Pool-Einträge exportiert/importiert werden. */
 const POOL_ENTRY_ID = 'pool';
 
@@ -182,10 +192,11 @@ function createSeatEl(
   { role = '', badge = null, empty = false, dropTarget = false } = {},
 ) {
   const m = config.coordinateMapping;
+  const canDrag = draggable && dragEnabled();
   const el = document.createElement('div');
-  el.className = 'seat' + (draggable ? ' draggable' : '') + (empty ? ' empty-seat' : '');
+  el.className = 'seat' + (canDrag ? ' draggable' : '') + (empty ? ' empty-seat' : '');
   el.dataset.id = id;
-  el.draggable = draggable;
+  el.draggable = canDrag;
 
   el.style.left = (sx / m.stageWidth) * 100 + '%';
   el.style.top = (sy / m.stageHeight) * 100 + '%';
@@ -210,12 +221,12 @@ function createSeatEl(
     `;
   }
 
-  if (draggable) {
+  if (canDrag) {
     el.addEventListener('dragstart', onSeatDragStart);
     el.addEventListener('dragend', onDragEnd);
   }
 
-  if (dropTarget) {
+  if (dropTarget && dragEnabled()) {
     el.addEventListener('dragover', onDragOver);
     el.addEventListener('dragleave', onDragLeave);
     el.addEventListener('drop', onDrop);
@@ -231,10 +242,11 @@ function renderPool() {
   if (!itemsEl) return;
 
   itemsEl.innerHTML = '';
+  const canDrag = dragEnabled();
   poolOccupants.forEach((occupant, index) => {
     const el = document.createElement('div');
     el.className = 'pool-seat';
-    el.draggable = true;
+    el.draggable = canDrag;
     el.dataset.index = String(index);
     el.style.background = colorFor(occupant.party);
     el.innerHTML = `
@@ -244,8 +256,10 @@ function renderPool() {
         occupant.party || '',
       )}</em>${occupant.isFp ? ' · Fraktionspräs.' : ''}</div>
     `;
-    el.addEventListener('dragstart', onPoolDragStart);
-    el.addEventListener('dragend', onDragEnd);
+    if (canDrag) {
+      el.addEventListener('dragstart', onPoolDragStart);
+      el.addEventListener('dragend', onDragEnd);
+    }
     itemsEl.appendChild(el);
   });
 
@@ -265,6 +279,8 @@ function updatePoolVisibility() {
   pool.classList.toggle('has-items', poolOccupants.length > 0);
 }
 
+/* Die Pool-Listener bleiben ohne aktive Drag-Quelle wirkungslos — auf
+   Touch-Geräten wird nie ein Drag gestartet (siehe `dragEnabled`). */
 function bindPool() {
   const pool = document.getElementById('seat-pool');
   if (!pool) return;
@@ -424,6 +440,23 @@ function buildCouncilNote() {
   if (el) el.textContent = councilNote(meta);
 }
 
+/** Hinweis einblenden, solange Drag & Drop (Touch-Gerät) nicht verfügbar ist. */
+function updateTouchNote() {
+  const el = document.getElementById('seating-touch-note');
+  if (el) el.hidden = dragEnabled();
+  document.body.classList.toggle('seating-no-drag', !dragEnabled());
+}
+
+/** Wechselt der Eingabemodus (z. B. Geräte-Emulation), neu aufbauen. */
+function bindPointerModeWatcher() {
+  const onChange = () => {
+    updateTouchNote();
+    renderAll();
+  };
+  if (typeof TOUCH_QUERY.addEventListener === 'function') TOUCH_QUERY.addEventListener('change', onChange);
+  else if (typeof TOUCH_QUERY.addListener === 'function') TOUCH_QUERY.addListener(onChange);
+}
+
 /* ─── Toolbar ─────────────────────────────────────────────────────── */
 /** Import-Eintrag → Belegung; `isFp` stammt weiterhin aus der Basisdatenbank. */
 function occupantFromEntry(entry) {
@@ -552,8 +585,10 @@ async function init() {
     buildSvgBackground();
     buildLegend();
     buildCouncilNote();
+    updateTouchNote();
     renderAll();
     bindPool();
+    bindPointerModeWatcher();
     bindToolbar();
   } catch (err) {
     if (statusEl) {
