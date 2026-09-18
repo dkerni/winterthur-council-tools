@@ -316,9 +316,8 @@ body.seating-no-drag .pool-seat:hover {
 }
 
 @media (max-width: 700px) {
-  /* Bei 60 Sitzen wird das Halbrund unter ~520px unleserlich — stattdessen
-     horizontal scrollen statt die Sitze weiter zu schrumpfen. */
-  .hemicycle-scroll .hemicycle-stage { min-width: 520px; }
+  /* Der Sitzplan bleibt auf voller Breite sichtbar (kein Scrollen); die
+     Sitze skalieren mit und werden dadurch etwas kleiner. */
   .legend { font-size: 0.7rem; gap: 0.3rem 0.6rem; }
   .publikum-label { font-size: 0.72rem; }
 }
