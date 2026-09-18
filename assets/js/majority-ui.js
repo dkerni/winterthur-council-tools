@@ -57,7 +57,10 @@ export async function createMajorityCalculator(container, options = {}) {
     majorityType: 'simple',
     votes: {},
     absences: {},
+    activeAlliance: null,
   };
+
+  let feedbackTimer = null;
 
   if (usePermalink) readStateFromUrl(state);
 
@@ -68,6 +71,7 @@ export async function createMajorityCalculator(container, options = {}) {
     result: container.querySelector('[data-result]'),
     alliances: container.querySelector('[data-alliances]'),
     note: container.querySelector('[data-council-note]'),
+    feedback: container.querySelector('[data-feedback]'),
   };
 
   function currentGroups() {
@@ -147,6 +151,7 @@ export async function createMajorityCalculator(container, options = {}) {
         state.mode = button.dataset.mode;
         state.votes = {};
         state.absences = {};
+        state.activeAlliance = null;
         renderAll();
       });
     });
@@ -160,6 +165,8 @@ export async function createMajorityCalculator(container, options = {}) {
       state.votes = {};
       state.absences = {};
       state.majorityType = 'simple';
+      state.activeAlliance = null;
+      hideFeedback();
       renderAll();
     });
   }
@@ -212,6 +219,7 @@ export async function createMajorityCalculator(container, options = {}) {
       input.addEventListener('change', (event) => {
         const groupId = event.target.closest('[data-group]').dataset.group;
         state.votes[groupId] = event.target.value;
+        state.activeAlliance = null;
         renderResult();
         syncUrl();
       });
@@ -283,6 +291,7 @@ export async function createMajorityCalculator(container, options = {}) {
       </p>`;
 
     if (refs.alliances) renderAlliances();
+    return result;
   }
 
   /** Beteiligte Fraktionen als Text, z. B. "SVP &amp; FDP &amp; Mitte". */
@@ -307,17 +316,22 @@ export async function createMajorityCalculator(container, options = {}) {
     const rows = results
       .map(
         (entry) => `
-      <tr class="alliance ${entry.winning ? 'is-winning' : 'is-losing'}"
-          style="--alliance-color:${escapeHtml(entry.alliance.color)}">
+      <tr class="alliance ${entry.winning ? 'is-winning' : 'is-losing'}${
+        state.activeAlliance === entry.alliance.id ? ' is-active' : ''
+      }"
+          style="--alliance-color:${escapeHtml(entry.alliance.color)}"
+          data-alliance="${escapeHtml(entry.alliance.id)}"
+          role="button" tabindex="0"
+          aria-pressed="${state.activeAlliance === entry.alliance.id}"
+          title="Stimmen setzen: diese Fraktionen Ja, alle übrigen Nein">
         <th scope="row" class="alliance-name">
-          <button type="button" class="alliance-apply" data-alliance="${escapeHtml(entry.alliance.id)}"
-                  title="Stimmen setzen: diese Fraktionen Ja, alle übrigen Nein">
+          <span class="alliance-label">
             <span class="group-dot" style="background:${escapeHtml(entry.alliance.color)}"></span>
-            <span class="alliance-label">
+            <span>
               ${escapeHtml(entry.alliance.name)}
               <span class="alliance-parts-inline">${partsHtml(entry)}</span>
             </span>
-          </button>
+          </span>
         </th>
         <td class="alliance-parts">${partsHtml(entry)}</td>
         <td class="alliance-count num"><strong>${entry.votes}</strong></td>
@@ -332,10 +346,7 @@ export async function createMajorityCalculator(container, options = {}) {
 
     refs.alliances.innerHTML = `
       <p class="subtitle">
-        Übliche fraktionsweise Bündnisse und ihre Stimmenzahl. Erforderliches Mehr:
-        <strong>${required}</strong> Stimmen. Absenzen sind berücksichtigt; das Ratspräsidium
-        stimmt nicht mit. Ein Klick auf ein Bündnis setzt dessen Fraktionen auf Ja und alle
-        übrigen auf Nein.
+        Ein Klick auf eine Zeile setzt die Fraktionen des Bündnisses auf Ja und alle übrigen auf Nein.
       </p>
       <div class="table-wrap">
         <table class="alliance-table">
@@ -351,16 +362,82 @@ export async function createMajorityCalculator(container, options = {}) {
         </table>
       </div>`;
 
-    refs.alliances.querySelectorAll('[data-alliance]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const alliance = ALLIANCES.find((entry) => entry.id === button.dataset.alliance);
-        if (!alliance) return;
-        state.votes = allianceVotes(currentGroups(), alliance, fractionGroups());
-        renderGroups();
-        renderResult();
-        syncUrl();
+    refs.alliances.querySelectorAll('[data-alliance]').forEach((row) => {
+      row.addEventListener('click', () => applyAlliance(row.dataset.alliance));
+      row.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ' && event.key !== 'Spacebar') return;
+        event.preventDefault();
+        applyAlliance(row.dataset.alliance);
       });
     });
+  }
+
+  /** Setzt die Stimmen eines Bündnisses und gibt dem Nutzer Rückmeldung. */
+  function applyAlliance(allianceId) {
+    const alliance = ALLIANCES.find((entry) => entry.id === allianceId);
+    if (!alliance) return;
+    state.votes = allianceVotes(currentGroups(), alliance, fractionGroups());
+    state.activeAlliance = alliance.id;
+    renderGroups();
+    const result = renderResult();
+    syncUrl();
+    announceResult(alliance, result);
+  }
+
+  /** Sichtbarkeit der Ergebniskarte im Viewport (grosszügig geprüft). */
+  function resultInView() {
+    if (!refs.result) return true;
+    const rect = refs.result.getBoundingClientRect();
+    const viewport = window.innerHeight || document.documentElement.clientHeight;
+    return rect.bottom > 48 && rect.top < viewport - 48;
+  }
+
+  function reducedMotion() {
+    return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+  }
+
+  function hideFeedback() {
+    if (feedbackTimer) clearTimeout(feedbackTimer);
+    feedbackTimer = null;
+    if (refs.feedback) refs.feedback.classList.remove('is-visible');
+  }
+
+  /**
+   * Rückmeldung nach einem Bündnis-Klick: Die Ergebniskarte blinkt kurz auf.
+   * Ist sie nicht sichtbar (typisch auf dem Handy, wenn zur Allianz-Tabelle
+   * gescrollt wurde), erscheint zusätzlich ein Hinweis mit Sprung nach oben.
+   */
+  function announceResult(alliance, result) {
+    if (refs.result) {
+      refs.result.classList.remove('is-updated');
+      void refs.result.offsetWidth;
+      refs.result.classList.add('is-updated');
+    }
+
+    if (!refs.feedback || !result) return;
+    if (resultInView()) {
+      hideFeedback();
+      return;
+    }
+
+    refs.feedback.innerHTML = `
+      <span class="calc-feedback-text">
+        <strong>${escapeHtml(alliance.name)}</strong> angewendet —
+        ${escapeHtml(outcomeLabel(result.outcome))}: ${result.yes} Ja zu ${result.no} Nein
+      </span>
+      <button type="button" data-feedback-jump>Zum Ergebnis ↑</button>`;
+    refs.feedback.classList.add('is-visible');
+
+    refs.feedback.querySelector('[data-feedback-jump]').addEventListener('click', () => {
+      hideFeedback();
+      refs.result?.scrollIntoView({
+        behavior: reducedMotion() ? 'auto' : 'smooth',
+        block: 'center',
+      });
+    });
+
+    if (feedbackTimer) clearTimeout(feedbackTimer);
+    feedbackTimer = setTimeout(hideFeedback, 6000);
   }
 
   function syncUrl() {
@@ -428,7 +505,8 @@ function fullSkeleton() {
     <div class="card alliance-card">
       <h2>Mögliche Allianzen</h2>
       <div data-alliances></div>
-    </div>`;
+    </div>
+    <div class="calc-feedback" data-feedback role="status" aria-live="polite"></div>`;
 }
 
 function compactSkeleton() {

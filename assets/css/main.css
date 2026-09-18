@@ -666,38 +666,70 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 }
 
 .alliance-table .num { text-align: right; font-variant-numeric: tabular-nums; }
-.alliance-table tbody tr:hover { background: #f6f5ec; }
 
 .alliance {
   border-left: 4px solid var(--alliance-color, var(--clr-border));
   background: #fafaf5;
+  cursor: pointer;
 }
 
-.alliance-name { font-weight: 600; padding: 0; }
+.alliance-table tbody tr:hover { background: #efeee2; }
+.alliance:focus-visible { outline: 2px solid #06c; outline-offset: -2px; }
+.alliance.is-active { background: #eceadb; }
+.alliance.is-active .alliance-name { text-decoration: underline; text-underline-offset: 2px; }
+
+.alliance-name { font-weight: 600; }
+
+.alliance-label { display: flex; align-items: center; gap: 0.4rem; }
 
 /* Fraktionsliste unter dem Bündnisnamen — nur in der Schmalansicht sichtbar. */
 .alliance-parts-inline { display: none; }
 
-.alliance-apply {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  width: 100%;
-  padding: 0.3rem 0.5rem;
-  border: 0;
-  border-radius: var(--radius-sm);
-  background: none;
-  color: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  text-align: left;
-}
-
-.alliance-apply:hover, .alliance-apply:focus-visible { background: #efeee2; color: inherit; }
-
 .alliance-parts { color: var(--clr-muted); font-size: 0.78rem; }
 .alliance-margin { white-space: nowrap; }
 .alliance-margin .badge { min-width: 7.5rem; text-align: center; }
+
+/* Rückmeldung nach einem Bündnis-Klick: Ergebniskarte blinkt kurz auf. */
+@keyframes result-flash {
+  0%   { box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.55); }
+  100% { box-shadow: var(--shadow); }
+}
+
+.majority-result.is-updated { animation: result-flash 1s ease-out; }
+
+/* Hinweis-Leiste, wenn die Ergebniskarte beim Klick ausserhalb des
+   Sichtbereichs liegt (typisch auf dem Handy). */
+.calc-feedback {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: max-content;
+  max-width: min(94vw, 32rem);
+  padding: 0.55rem 0.8rem;
+  border-radius: var(--radius-sm);
+  background: #222;
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 130%);
+  transition: transform 0.25s ease, opacity 0.25s ease, visibility 0.25s;
+}
+
+.calc-feedback.is-visible { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.calc-feedback button { flex-shrink: 0; background: #fff; border-color: #fff; }
+.calc-feedback button:hover { background: #e6e6e6; }
+
+@media (prefers-reduced-motion: reduce) {
+  .calc-feedback { transition: none; }
+  .majority-result.is-updated { animation: none; outline: 2px solid #06c; outline-offset: 2px; }
+}
 
 /* Kompaktes Widget auf der Landing Page */
 .majority-groups.compact { border: 0; box-shadow: none; padding: 0; background: transparent; }
@@ -720,9 +752,9 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
   .absence { margin-left: auto; }
 
   .alliance-table { font-size: 0.78rem; }
-  .alliance-table th, .alliance-table td { padding: 0.3rem 0.35rem; }
-  .alliance-apply { padding: 0.3rem 0.35rem; gap: 0.3rem; align-items: flex-start; }
-  .alliance-apply .group-dot { margin-top: 0.2rem; }
+  .alliance-table th, .alliance-table td { padding: 0.5rem 0.35rem; }
+  .alliance-label { align-items: flex-start; gap: 0.3rem; }
+  .alliance-label .group-dot { margin-top: 0.2rem; }
   .alliance-margin .badge { min-width: 0; }
 
   /* Die eigene Fraktions-Spalte weicht einer Zeile unter dem Bündnisnamen,
