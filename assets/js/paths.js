@@ -3,12 +3,12 @@
  *
  * Die Website läuft sowohl unter `/` (lokaler Server) als auch unter
  * `/winterthur-council-tools/` (GitHub Pages) und wird aus unterschiedlichen
- * Verzeichnistiefen aufgerufen (`/index.html`, `/tools/*.html`).
+ * Verzeichnistiefen aufgerufen (`/`, `/sitzplan/`, …).
  * Alle Module liegen unter `<basis>/assets/js/`, deshalb lässt sich die
  * Basis-URL zuverlässig aus `import.meta.url` ableiten — ohne absolute Pfade.
  */
 
-/** Basis-URL der Website (Verzeichnis, das `assets/`, `data/`, `tools/` enthält). */
+/** Basis-URL der Website (Verzeichnis, das `assets/`, `data/` und die Toolseiten enthält). */
 export const SITE_BASE = new URL('../../', import.meta.url);
 
 /**

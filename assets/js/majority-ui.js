@@ -1,7 +1,7 @@
 /**
  * Mehrheitsrechner — Oberfläche.
  *
- * Wird sowohl für die vollständige Toolseite (`tools/mehrheitsrechner.html`)
+ * Wird sowohl für die vollständige Toolseite (`mehrheitsrechner/index.html`)
  * als auch als kompaktes Widget auf der Landing Page verwendet.
  * Die Rechenlogik steckt vollständig in `majority.js`.
  */
@@ -428,6 +428,6 @@ function compactSkeleton() {
     <div class="majority-groups compact" data-groups></div>
     <div class="majority-result compact" data-result></div>
     <p class="widget-link">
-      <a href="${siteUrl('tools/mehrheitsrechner.html')}">Zum Mehrheitsrechner</a>
+      <a href="${siteUrl('mehrheitsrechner')}">Zum Mehrheitsrechner</a>
     </p>`;
 }

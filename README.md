@@ -7,25 +7,31 @@ Das Repository ist öffentlich; veröffentlicht wird die Seite über **GitHub Pa
 (siehe [Veröffentlichung](#veröffentlichung)).
 
 > Privates Projekt ohne Verbindung zur Stadt Winterthur. Alle Angaben ohne Gewähr.
-> Details im [Impressum](impressum.html).
+> Details im [Impressum](impressum/index.html).
 
 ## Werkzeuge
 
 | Seite | Beschreibung |
 | --- | --- |
 | `index.html` | Startseite mit Tool-Kacheln, Traktanden-Download und kompaktem Mehrheitsrechner |
-| `tools/sitzplan.html` | Interaktive Sitzordnung (Drag & Drop mit Pool-Zwischenablage, Fraktionspräsidien, Export/Import) |
-| `tools/mehrheitsrechner.html` | Mehrheiten je Fraktion/Partei, Absenzen, mögliche Allianzen (per Klick als Stimmvorlage), teilbarer Link |
-| `tools/statistik.html` | «Statistiken» mit Umschalter: «Aktuelle Ratszusammensetzung» (Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise) und «Historische Geschäftsauswertungen» (Geschäfte seit 2000, nach Partei) |
-| `tools/mitglieder.html` | Durchsuchbare, sortierbare Mitgliederliste mit Link auf das Profil |
-| `impressum.html` | Betreiber, Datenquellen, Umgang mit Personendaten, Haftungsausschluss |
+| `sitzplan` | Interaktive Sitzordnung (Drag & Drop mit Pool-Zwischenablage, Fraktionspräsidien, Export/Import) |
+| `mehrheitsrechner` | Mehrheiten je Fraktion/Partei, Absenzen, mögliche Allianzen (per Klick als Stimmvorlage), teilbarer Link |
+| `statistiken` | «Statistiken» mit Umschalter: «Aktuelle Ratszusammensetzung» (Sitzverteilung, Alter, Geschlecht, Amtsdauer, Stadtkreise) und «Historische Geschäftsauswertungen» (Geschäfte seit 2000, nach Partei) |
+| `mitglieder` | Durchsuchbare, sortierbare Mitgliederliste mit Link auf das Profil |
+| `impressum` | Betreiber, Datenquellen, Umgang mit Personendaten, Haftungsausschluss |
+
+Jede Seite liegt als `<name>/index.html` im Repository, damit die URLs ohne `.html`-Endung
+und ohne Präfix auskommen (z.B. `/sitzplan`).
 
 ## Projektstruktur
 
 ```
 ├── index.html              Startseite
-├── impressum.html
-├── tools/                  je eine HTML-Seite pro Werkzeug
+├── sitzplan/index.html     je eine HTML-Seite pro Werkzeug (Verzeichnis = URL)
+├── mehrheitsrechner/index.html
+├── statistiken/index.html
+├── mitglieder/index.html
+├── impressum/index.html
 ├── assets/
 │   ├── css/main.css        Design-Tokens, Layout, Komponenten
 │   ├── css/seating.css     nur für den Sitzplan
@@ -81,7 +87,8 @@ im Repository liegt.
 Die Seite wird von `.github/workflows/deploy-pages.yml` bei jedem Push auf `main` (oder
 manuell über *Actions → GitHub Pages veröffentlichen → Run workflow*) auf GitHub Pages
 veröffentlicht: Tests → Datenvalidierung → `_site` zusammenstellen → Upload des
-Pages-Artefakts → Deployment. Nur `index.html`, `impressum.html`, `tools/`, `assets/`,
+Pages-Artefakts → Deployment. Nur `index.html`, die Seitenverzeichnisse (`sitzplan`,
+`mehrheitsrechner`, `statistiken`, `mitglieder`, `impressum`), `assets/`,
 `data/`, `media/` und `.nojekyll` gelangen ins Deployment; Skripte, Workflows und
 Dokumentation bleiben aussen vor.
 
@@ -101,7 +108,7 @@ Repository.
 ### Deployment lokal nachstellen
 
 ```bash
-mkdir -p _site && cp index.html impressum.html .nojekyll _site/ && cp -r assets data media tools _site/
+mkdir -p _site && cp index.html .nojekyll _site/ && cp -r assets data media impressum mehrheitsrechner mitglieder sitzplan statistiken _site/
 npx serve _site
 ```
 
@@ -373,13 +380,13 @@ Quelle auswerten will, filtert auf `concludedSource === "decision"` oder nutzt
 
 ## Historische Auswertungen («Vorstösse»)
 
-Der Bereich «Historische Geschäftsauswertungen» auf `tools/statistik.html` wertet die
+Der Bereich «Historische Geschäftsauswertungen» auf `statistiken` wertet die
 3 217 Geschäfte **nach Partei** aus: Vorstösse je Partei und Jahr, genutzte Instrumente,
 Mitunterzeichnungen, Beschlüsse und Behandlungsdauer. Gruppiert wird bewusst nach Partei
 und nicht nach Fraktion — Fraktionszugehörigkeiten wechselten über 25 Jahre zu häufig,
 um vergleichbar zu sein.
 
-Die Seite `tools/statistik.html` fasst beide Auswertungen zusammen: Ein Umschalter
+Die Seite `statistiken` fasst beide Auswertungen zusammen: Ein Umschalter
 wechselt zwischen **«Aktuelle Ratszusammensetzung»** (`#ratsstatistik`, Zusammensetzung des
 heutigen Rats) und **«Historische Geschäftsauswertungen»** (`#vorstoesse`). Der jeweilige
 Bereich wird erst beim ersten Aufruf aufgebaut; die Auswahl steht im URL-Fragment und ist
@@ -543,10 +550,10 @@ Ergänzend:
 
 | Idee | Stand |
 | --- | --- |
-| Sitzordnung | umgesetzt (`tools/sitzplan.html`) |
-| Mehrheitsrechner | umgesetzt (`tools/mehrheitsrechner.html`), inkl. möglicher Allianzen |
-| Statistik zur aktuellen Zusammensetzung | umgesetzt (`tools/statistik.html`, Bereich «Aktuelle Ratszusammensetzung»); Alter, Beruf, Stadtkreis und Amtsdauer erscheinen, sobald der Scraper gelaufen ist |
-| Historische Statistik (Vorstösse) | umgesetzt (`tools/statistik.html`, Bereich «Historische Geschäftsauswertungen»): Auswertungen nach Partei auf Basis von `data/inquiries/`, `data/people.json` und `data/inquiry-facts.json` |
+| Sitzordnung | umgesetzt (`sitzplan`) |
+| Mehrheitsrechner | umgesetzt (`mehrheitsrechner`), inkl. möglicher Allianzen |
+| Statistik zur aktuellen Zusammensetzung | umgesetzt (`statistiken`, Bereich «Aktuelle Ratszusammensetzung»); Alter, Beruf, Stadtkreis und Amtsdauer erscheinen, sobald der Scraper gelaufen ist |
+| Historische Statistik (Vorstösse) | umgesetzt (`statistiken`, Bereich «Historische Geschäftsauswertungen»): Auswertungen nach Partei auf Basis von `data/inquiries/`, `data/people.json` und `data/inquiry-facts.json` |
 | Zusammenfassung der nächsten Sitzung | offen (nächste Ausbaustufe) |
 | Traktandenliste als Excel/CSV | umgesetzt (`scripts/scrape-agenda.mjs`, Download auf der Startseite) |
 

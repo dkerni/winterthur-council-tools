@@ -14,12 +14,12 @@ const SOURCE_URL = 'https://parlament.winterthur.ch';
 const AUTHOR_URL = 'https://dominik-kern.ch/';
 
 const NAV_ITEMS = [
-  { page: 'start', label: 'Start', href: 'index.html' },
-  { page: 'sitzplan', label: 'Sitzplan', href: 'tools/sitzplan.html' },
-  { page: 'mehrheitsrechner', label: 'Mehrheitsrechner', href: 'tools/mehrheitsrechner.html' },
-  { page: 'statistik', label: 'Statistiken', href: 'tools/statistik.html' },
-  { page: 'mitglieder', label: 'Mitglieder', href: 'tools/mitglieder.html' },
-  { page: 'impressum', label: 'Impressum', href: 'impressum.html' },
+  { page: 'start', label: 'Start', href: '' },
+  { page: 'mehrheitsrechner', label: 'Mehrheitsrechner', href: 'mehrheitsrechner' },
+  { page: 'sitzplan', label: 'Sitzplan', href: 'sitzplan' },
+  { page: 'statistik', label: 'Statistiken', href: 'statistiken' },
+  { page: 'mitglieder', label: 'Mitglieder', href: 'mitglieder' },
+  { page: 'impressum', label: 'Impressum', href: 'impressum' },
 ];
 
 /** Escaped Text für die Verwendung in HTML. */
@@ -36,10 +36,10 @@ function buildHeader() {
   const header = document.createElement('header');
   header.className = 'site-header';
   header.innerHTML = `
-    <a href="${siteUrl('index.html')}" aria-label="Zur Startseite">
+    <a href="${siteUrl('')}" aria-label="Zur Startseite">
       <img class="logo" src="${siteUrl('media/Logo.jpg')}" alt="Wappen Winterthur" />
     </a>
-    <a class="site-title" href="${siteUrl('index.html')}">
+    <a class="site-title" href="${siteUrl('')}">
       Stadtparlament Winterthur Tools
       <span>Werkzeuge rund um das Stadtparlament Winterthur</span>
     </a>`;
@@ -67,7 +67,7 @@ function buildFooter() {
         — Stadt Winterthur. Alle Angaben ohne Gewähr. Dieses Projekt ist ein privates Angebot und
         steht in keiner Verbindung zur Stadt Winterthur oder zum Parlamentsdienst.
         Erstellt von <a href="${AUTHOR_URL}" rel="noopener noreferrer" target="_blank">Dominik Kern</a>.
-        Weitere Angaben im <a href="${siteUrl('impressum.html')}">Impressum</a>.
+        Weitere Angaben im <a href="${siteUrl('impressum')}">Impressum</a>.
       </p>
       <p class="footer-meta">
         Datenstand: <span data-generated-at>wird geladen …</span>
